@@ -13,7 +13,7 @@
 </head>
 <body>
 <main>
-<div class="page-heading"><div><p class="eyebrow">학습 관리</p><h1>공부한 만큼, 차곡차곡</h1></div></div>
+<div class="page-heading"><div><p class="eyebrow">학습 관리</p><h1>공부한 만큼, 차곡차곡</h1></div><button class="icon-button settings-trigger" id="open-settings" type="button" aria-label="설정" aria-haspopup="dialog" aria-controls="settings-dialog" aria-expanded="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9.5 3-.5 2a7 7 0 0 0-1.8 1l-2-.6-2 3.4 1.5 1.4a7 7 0 0 0 0 2.1l-1.5 1.4 2 3.4 2-.6A7 7 0 0 0 9 18l.5 2h4l.5-2a7 7 0 0 0 1.8-1l2 .6 2-3.4-1.5-1.4a7 7 0 0 0 0-2.1l1.5-1.4-2-3.4-2 .6A7 7 0 0 0 14 5l-.5-2Z"/><circle cx="11.5" cy="11.5" r="3"/></svg></button></div>
 <div class="section-heading"><h2>학습 자료 <span id="material-count">3</span></h2><div class="section-actions"><span class="preview-label" id="example-label">예시 자료</span><button class="add-button" type="button" id="add-material"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg><span class="add-label">추가</span></button></div></div>
 <section class="cards" id="material-cards" aria-label="학습 자료별 진행 상황">
 <article class="study-card">
@@ -103,6 +103,22 @@
 <div class="form-field"><label class="sr-only" for="material-note">자료 메모</label><textarea id="material-note" rows="6"></textarea></div>
 <div class="dialog-actions"><button class="primary-button" type="submit">저장</button></div>
 </form>
+</dialog>
+<dialog class="material-dialog settings-panel" id="settings-dialog" aria-labelledby="settings-title">
+<div class="dialog-header"><h2 id="settings-title">설정</h2><button class="icon-button" type="button" data-close="settings-dialog" aria-label="설정 닫기"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg></button></div>
+<div class="settings-cards">
+<section class="settings-card" aria-labelledby="backup-title"><h3 id="backup-title">학습 데이터 백업</h3><p>현재 학습 데이터를 JSON 파일로 저장해요.</p><button class="settings-file-button" id="backup-data" type="button">백업 파일 저장</button></section>
+<section class="settings-card" aria-labelledby="restore-title"><h3 id="restore-title">학습 데이터 복원</h3><p>저장한 백업 파일을 불러오면 현재 학습 데이터가 교체돼요.</p><button class="settings-file-button" id="restore-data" type="button">백업 파일 선택</button></section>
+<section class="settings-card settings-reset" aria-labelledby="reset-title"><h3 id="reset-title">초기화</h3><p>저장된 모든 학습 데이터를 삭제해요.</p><button class="text-button" id="reset-data" type="button">초기화</button></section>
+</div>
+<input id="restore-file" type="file" accept=".json,application/json" hidden>
+<p class="field-help settings-feedback" id="settings-feedback" role="status" aria-live="polite"></p>
+</dialog>
+<dialog class="material-dialog" id="data-confirm-dialog" aria-labelledby="data-confirm-title" aria-describedby="data-confirm-description">
+<div class="dialog-header"><h2 id="data-confirm-title"></h2><button class="icon-button" type="button" data-close="data-confirm-dialog" aria-label="닫기"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg></button></div>
+<p class="field-help" id="data-confirm-description"></p>
+<p class="form-error" id="data-confirm-error" role="alert" hidden></p>
+<div class="dialog-actions"><button class="secondary-button" type="button" data-close="data-confirm-dialog" autofocus>취소</button><button class="primary-button" id="confirm-data-action" type="button"></button></div>
 </dialog>
 </body>
 </html>

@@ -41,7 +41,7 @@ function node(tag, className, text) {
   return result;
 }
 
-function render() {
+function render(persist = true) {
   if (showingExamples) return;
   $('material-count').textContent = format(materials.length);
   $('example-label').hidden = true;
@@ -128,7 +128,7 @@ function render() {
     }
     cards.append(card);
   });
-  saveData();
+  if (persist) saveData();
 }
 
 function updateTotalUnit() {
@@ -181,9 +181,9 @@ $('material-type').addEventListener('change', () => updateUnitOptions());
 $('material-unit').addEventListener('change', updateTotalUnit);
 $('custom-unit').addEventListener('input', updateTotalUnit);
 document.querySelectorAll('[data-close]').forEach((button) => {
-  button.addEventListener('click', () => $(button.dataset.close).close());
+  button.addEventListener('click', () => button.dataset.close === 'settings-dialog' ? closeSettings() : $(button.dataset.close).close());
 });
-[dialog, deleteDialog, progressDialog, nextRoundDialog, roundHistoryDialog, reviewDialog, noteDialog].forEach((modal) => {
+[dialog, deleteDialog, progressDialog, nextRoundDialog, roundHistoryDialog, reviewDialog, noteDialog, $('data-confirm-dialog')].forEach((modal) => {
   modal.addEventListener('click', (event) => {
     if (event.target !== modal) return;
     const bounds = modal.getBoundingClientRect();
@@ -555,44 +555,49 @@ function validStoredDate(date) {
   return typeof date === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(date) && !Number.isNaN(Date.parse(date)) && new Date(date).toISOString().slice(0, 10) === date;
 }
 
+function validateSavedData(saved) {
+  const check = (condition) => { if (!condition) throw new Error('Invalid saved data'); };
+  const positive = (value) => Number.isSafeInteger(value) && value > 0;
+  const text = (value) => typeof value === 'string' && value.trim().length > 0;
+  const ids = new Set();
+  let maxSequence = -1;
+  const checkRecord = (entry) => {
+    check(entry && text(entry.id) && !ids.has(entry.id) && validStoredDate(entry.date) && Number.isSafeInteger(entry.sequence) && entry.sequence >= 0);
+    ids.add(entry.id);
+    maxSequence = Math.max(maxSequence, entry.sequence);
+  };
+  check((saved?.app === undefined || saved.app === 'study-progress') && saved?.version === 1 && Array.isArray(saved.materials));
+  for (const material of saved.materials) {
+    check(material && text(material.id) && !ids.has(material.id) && text(material.name) && Object.hasOwn(types, material.type) && text(material.unit) && positive(material.total) && positive(material.round));
+    ids.add(material.id);
+    if (material.note === undefined) material.note = '';
+    check(typeof material.note === 'string');
+    check(Array.isArray(material.records) && Array.isArray(material.roundHistory) && Array.isArray(material.reviews));
+    material.records.forEach(checkRecord);
+    recalculate(material);
+    check(material.roundHistory.length === material.round - 1);
+    material.roundHistory.forEach((round, index) => {
+      check(round && round.round === index + 1 && positive(round.total) && text(round.unit) && validStoredDate(round.completedDate) && Array.isArray(round.records));
+      round.records.forEach(checkRecord);
+      round.records = calculateRecords(round.records, round.total);
+      check(round.records.at(-1)?.position === round.total);
+    });
+    material.reviews.forEach((review) => {
+      checkRecord(review);
+      check(positive(review.total) && text(review.unit) && positive(review.start) && positive(review.end) && review.start <= review.end && review.end <= review.total);
+    });
+  }
+  return { version: 1, materials: saved.materials, recordSequence: maxSequence + 1 };
+}
+
 function loadData() {
   try {
     const raw = localStorage.getItem(storageKey);
     if (raw === null) return;
     const saved = JSON.parse(raw);
-    const check = (condition) => { if (!condition) throw new Error('Invalid saved data'); };
-    const positive = (value) => Number.isSafeInteger(value) && value > 0;
-    const text = (value) => typeof value === 'string' && value.trim().length > 0;
-    const ids = new Set();
-    let maxSequence = -1;
-    const checkRecord = (entry) => {
-      check(entry && text(entry.id) && !ids.has(entry.id) && validStoredDate(entry.date) && Number.isSafeInteger(entry.sequence) && entry.sequence >= 0);
-      ids.add(entry.id);
-      maxSequence = Math.max(maxSequence, entry.sequence);
-    };
-    check(saved?.version === 1 && Array.isArray(saved.materials));
-    for (const material of saved.materials) {
-      check(material && text(material.id) && !ids.has(material.id) && text(material.name) && Object.hasOwn(types, material.type) && text(material.unit) && positive(material.total) && positive(material.round));
-      ids.add(material.id);
-      if (material.note === undefined) material.note = '';
-      check(typeof material.note === 'string');
-      check(Array.isArray(material.records) && Array.isArray(material.roundHistory) && Array.isArray(material.reviews));
-      material.records.forEach(checkRecord);
-      recalculate(material);
-      check(material.roundHistory.length === material.round - 1);
-      material.roundHistory.forEach((round, index) => {
-        check(round && round.round === index + 1 && positive(round.total) && text(round.unit) && validStoredDate(round.completedDate) && Array.isArray(round.records));
-        round.records.forEach(checkRecord);
-        round.records = calculateRecords(round.records, round.total);
-        check(round.records.at(-1)?.position === round.total);
-      });
-      material.reviews.forEach((review) => {
-        checkRecord(review);
-        check(positive(review.total) && text(review.unit) && positive(review.start) && positive(review.end) && review.start <= review.end && review.end <= review.total);
-      });
-    }
-    materials = saved.materials;
-    recordSequence = maxSequence + 1;
+    const validated = validateSavedData(saved);
+    materials = validated.materials;
+    recordSequence = validated.recordSequence;
     showingExamples = false;
     render();
   } catch {
@@ -617,6 +622,114 @@ $('note-form').addEventListener('submit', (event) => {
   render();
   noteDialog.close();
   $('status').textContent = '메모를 저장했습니다.';
+});
+
+const settingsDialog = $('settings-dialog');
+let pendingData = null;
+let dataAction = null;
+
+function openSettings() {
+  if (settingsDialog.open) return;
+  $('settings-feedback').textContent = '';
+  settingsDialog.showModal();
+  $('open-settings').setAttribute('aria-expanded', 'true');
+}
+
+function closeSettings() {
+  if (settingsDialog.open) settingsDialog.close();
+}
+
+settingsDialog.addEventListener('close', () => {
+  $('open-settings').setAttribute('aria-expanded', 'false');
+  $('open-settings').focus();
+});
+settingsDialog.addEventListener('cancel', (event) => { event.preventDefault(); closeSettings(); });
+settingsDialog.addEventListener('click', (event) => {
+  if (event.target !== settingsDialog) return;
+  const bounds = settingsDialog.getBoundingClientRect();
+  if (event.clientX < bounds.left || event.clientX > bounds.right || event.clientY < bounds.top || event.clientY > bounds.bottom) closeSettings();
+});
+$('open-settings').addEventListener('click', openSettings);
+
+$('backup-data').addEventListener('click', () => {
+  try {
+    if (storageBlocked) throw new Error('Unreadable saved data');
+    const backup = { app: 'study-progress', backupVersion: 1, createdAt: new Date().toISOString(), data: { version: 1, materials, recordSequence } };
+    const url = URL.createObjectURL(new Blob([JSON.stringify(backup, null, 2)], { type: 'application/json' }));
+    const link = node('a');
+    link.href = url;
+    link.download = `study-progress-backup-${today()}.json`;
+    document.body.append(link);
+    link.click();
+    link.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+    $('settings-feedback').textContent = '백업 파일을 내려받습니다.';
+  } catch {
+    $('settings-feedback').textContent = '백업 파일을 만들지 못했어요. 저장된 기록과 브라우저 설정을 확인해 주세요.';
+  }
+});
+
+function validateBackup(backup) {
+  if (backup?.app !== 'study-progress') throw new Error('Wrong application');
+  // Accept this app's previous exported format without changing local storage.
+  if (backup.backupVersion === undefined && backup.version === 1 && typeof backup.exportedAt === 'string' && !Number.isNaN(Date.parse(backup.exportedAt))) {
+    return validateSavedData(backup);
+  }
+  if (backup.backupVersion !== 1 || typeof backup.createdAt !== 'string' || Number.isNaN(Date.parse(backup.createdAt)) || !backup.data) {
+    throw new Error('Unsupported or invalid backup');
+  }
+  return validateSavedData(backup.data);
+}
+
+$('restore-data').addEventListener('click', () => $('restore-file').click());
+$('restore-file').addEventListener('change', async () => {
+  const file = $('restore-file').files[0];
+  $('restore-file').value = '';
+  if (!file) return;
+  try {
+    pendingData = validateBackup(JSON.parse(await file.text()));
+    dataAction = 'restore';
+    $('data-confirm-title').textContent = '백업 데이터를 복원할까요?';
+    $('data-confirm-description').textContent = `현재 자료와 모든 기록·메모를 백업 파일의 내용으로 교체합니다. 백업에 학습 자료 ${format(pendingData.materials.length)}개가 포함되어 있어요.`;
+    $('confirm-data-action').textContent = '복원';
+    $('data-confirm-error').hidden = true;
+    $('data-confirm-dialog').showModal();
+  } catch {
+    pendingData = null;
+    $('settings-feedback').textContent = '올바른 학습 관리 백업 파일이 아니에요. 현재 데이터는 변경하지 않았습니다.';
+  }
+});
+
+$('reset-data').addEventListener('click', () => {
+  dataAction = 'reset';
+  pendingData = { version: 1, materials: [], recordSequence: 0 };
+  $('data-confirm-title').textContent = '모든 학습 데이터를 초기화할까요?';
+  $('data-confirm-description').textContent = '학습 자료와 모든 기록·메모가 삭제되며 되돌릴 수 없어요. 필요한 데이터는 먼저 백업해 주세요.';
+  $('confirm-data-action').textContent = '초기화';
+  $('data-confirm-error').hidden = true;
+  $('data-confirm-dialog').showModal();
+});
+
+$('data-confirm-dialog').addEventListener('close', () => { pendingData = null; dataAction = null; });
+$('confirm-data-action').addEventListener('click', () => {
+  if (!pendingData) return;
+  try {
+    // Persist first: failed writes must leave the current dataset untouched.
+    localStorage.setItem(storageKey, JSON.stringify(pendingData));
+  } catch {
+    $('data-confirm-error').textContent = '저장하지 못했어요. 현재 데이터는 변경하지 않았습니다.';
+    $('data-confirm-error').hidden = false;
+    return;
+  }
+  materials = pendingData.materials;
+  recordSequence = pendingData.recordSequence;
+  showingExamples = false;
+  storageBlocked = false;
+  render(false);
+  $('storage-note').textContent = '자료와 기록이 자동으로 저장됩니다.';
+  $('settings-feedback').textContent = dataAction === 'restore' ? '백업 데이터를 복원했습니다.' : '모든 데이터를 초기화했습니다.';
+  $('status').textContent = $('settings-feedback').textContent;
+  $('data-confirm-dialog').close();
 });
 
 loadData();

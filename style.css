@@ -74,3 +74,21 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid 
 .card-actions>button{white-space:nowrap;flex-shrink:0}
 #material-note{display:block;font:inherit;font-size:1rem;line-height:1.6;width:100%;min-height:144px;resize:vertical;color:inherit;background:#fff;border:1px solid #dce5de;border-radius:10px;padding:10px 12px}
 #material-note:focus-visible{outline:3px solid #92b79e;outline-offset:3px}
+
+.page-heading{position:relative}
+.page-heading>div{padding-right:44px}
+.settings-trigger{position:absolute;right:0;top:-8px;color:var(--green)}
+.settings-trigger svg{width:22px;height:22px;stroke-linejoin:round}
+.settings-panel{width:min(520px,calc(100% - 32px));max-height:calc(100dvh - 32px);background:#fff;box-shadow:0 12px 40px #29433314}
+.settings-panel::backdrop{background:#263b302e}
+.settings-panel .dialog-header{margin-bottom:18px}
+.settings-cards{display:flex;flex-direction:column;gap:14px}
+.settings-card{padding:18px;border:1px solid var(--line);border-radius:16px;background:#fff}
+.settings-card h3{font-size:1rem;line-height:1.5;font-weight:700;color:#263b30;margin:0 0 8px;letter-spacing:-.025em}
+.settings-card p{font-size:.875rem;line-height:1.7;color:var(--muted);margin:0 0 14px}
+.settings-file-button{font:inherit;font-size:.9375rem;font-weight:600;display:block;width:100%;min-height:44px;border:0;border-radius:10px;background:#eef4ee;color:var(--green);padding:10px 14px;cursor:pointer}
+.settings-reset{background:#fcf7f5;border-color:#f1e7e2}
+.settings-reset .text-button{display:block;margin:0 auto;color:#9a463b}
+.settings-reset .text-button:hover{background:#f7eeea}
+.settings-feedback:empty{display:none}
+.settings-feedback{margin-top:12px}
