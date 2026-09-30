@@ -69,5 +69,17 @@
 </form>
 <div class="history-section"><h3>기록 내역</h3><p class="history-empty" id="history-empty">아직 학습 기록이 없어요.</p><ul class="record-list" id="record-list"></ul></div>
 </dialog>
+<dialog class="material-dialog" id="next-round-dialog" aria-labelledby="next-round-title" aria-describedby="next-round-description">
+<div class="dialog-header"><h2 id="next-round-title">다음 회독을 시작할까요?</h2><button class="icon-button" type="button" data-close="next-round-dialog" aria-label="닫기"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg></button></div>
+<p class="field-help" id="next-round-description"></p>
+<div class="dialog-actions"><button class="secondary-button" type="button" data-close="next-round-dialog" autofocus>취소</button><button class="primary-button" id="confirm-next-round" type="button">시작</button></div>
+</dialog>
+<dialog class="material-dialog progress-dialog" id="round-history-dialog" aria-labelledby="round-history-title">
+<div class="dialog-header"><h2 id="round-history-title">회독 기록</h2><button class="icon-button" type="button" data-close="round-history-dialog" aria-label="닫기"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg></button></div>
+<p class="record-material-name" id="round-history-material"></p>
+<div class="form-field"><label for="history-round">완료한 회독</label><select id="history-round"></select></div>
+<p class="field-help" id="round-history-summary"></p>
+<div class="history-section"><h3>기록 내역</h3><ul class="record-list" id="round-history-list"></ul></div>
+</dialog>
 </body>
 </html>

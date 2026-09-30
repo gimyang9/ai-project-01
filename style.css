@@ -62,3 +62,6 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid 
 
 .study-card h3{border-bottom:1px solid #edf0ed;padding-bottom:8px;margin-bottom:9px}
 @media(max-width:600px){.study-card h3{margin-bottom:7px}}
+
+.round-actions{display:flex;align-items:center;justify-content:flex-end;gap:8px;flex-wrap:wrap;margin-top:8px}
+.round-actions .secondary-button{font-size:.875rem;padding:8px 12px}

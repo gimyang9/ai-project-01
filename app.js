@@ -13,11 +13,16 @@ let deletingId = null;
 let activeMaterialId = null;
 let editingRecordId = null;
 let recordSequence = 0;
+let nextRoundMaterialId = null;
+let historyMaterialId = null;
 const $ = (id) => document.getElementById(id);
 const dialog = $('material-dialog');
 const deleteDialog = $('delete-dialog');
 const form = $('material-form');
 const progressDialog = $('progress-dialog');
+const nextRoundDialog = $('next-round-dialog');
+const roundHistoryDialog = $('round-history-dialog');
+const completedIcon = $('material-cards').lastElementChild.querySelector('.state svg').cloneNode(true);
 const format = (number) => number.toLocaleString('ko-KR');
 const template = $('material-cards').firstElementChild.cloneNode(true);
 const lectureIcon = $('material-cards').lastElementChild.querySelector('.type-icon').cloneNode(true);
@@ -57,6 +62,12 @@ function render() {
     track.setAttribute('aria-label', `${material.name} 진행률`);
     track.setAttribute('aria-valuenow', String(percent));
     track.firstElementChild.style.width = `${percent}%`;
+    const completed = material.current === material.total;
+    card.classList.toggle('completed', completed);
+    const state = card.querySelector('.state');
+    state.replaceChildren();
+    if (completed) state.append(completedIcon.cloneNode(true));
+    state.append(document.createTextNode(completed ? '회독 완료' : '학습 중'));
     const remaining = card.querySelector('.card-bottom b');
     remaining.replaceChildren(document.createTextNode(format(material.total - material.current)), node('span', 'remaining-unit', material.unit));
     const actions = node('div', 'card-actions');
@@ -78,6 +89,27 @@ function render() {
     });
     actions.append(record, edit, remove);
     card.append(actions);
+    if (completed || material.roundHistory.length) {
+      const roundActions = node('div', 'round-actions');
+      if (material.roundHistory.length) {
+        const history = node('button', 'text-button', '회독 기록');
+        history.type = 'button';
+        history.setAttribute('aria-label', `${material.name} 이전 회독 기록`);
+        history.addEventListener('click', () => openRoundHistory(material));
+        roundActions.append(history);
+      }
+      if (completed) {
+        const next = node('button', 'secondary-button', '다음 회독 시작');
+        next.type = 'button';
+        next.addEventListener('click', () => {
+          nextRoundMaterialId = material.id;
+          $('next-round-description').textContent = `${material.round}회독 기록을 보관하고 ${material.round + 1}회독을 0부터 시작합니다.`;
+          nextRoundDialog.showModal();
+        });
+        roundActions.append(next);
+      }
+      card.append(roundActions);
+    }
     cards.append(card);
   });
 }
@@ -134,7 +166,7 @@ $('custom-unit').addEventListener('input', updateTotalUnit);
 document.querySelectorAll('[data-close]').forEach((button) => {
   button.addEventListener('click', () => $(button.dataset.close).close());
 });
-[dialog, deleteDialog, progressDialog].forEach((modal) => {
+[dialog, deleteDialog, progressDialog, nextRoundDialog, roundHistoryDialog].forEach((modal) => {
   modal.addEventListener('click', (event) => {
     if (event.target !== modal) return;
     const bounds = modal.getBoundingClientRect();
@@ -153,7 +185,7 @@ form.addEventListener('submit', (event) => {
   const existing = materials.find((material) => material.id === editingId);
   if (existing && total < existing.current) return error('전체 분량은 현재 진도보다 작을 수 없어요.', $('material-total'));
   if (existing) Object.assign(existing, { name, type, unit, total });
-  else materials.push({ id: crypto.randomUUID(), name, type, unit, total, current: 0, round: 1, records: [] });
+  else materials.push({ id: crypto.randomUUID(), name, type, unit, total, current: 0, round: 1, records: [], roundHistory: [] });
   showingExamples = false;
   dialog.close();
   render();
@@ -314,3 +346,72 @@ $('record-form').addEventListener('submit', (event) => {
   render();
   $('status').textContent = existing ? '기록을 수정했습니다.' : '진도를 기록했습니다.';
 });
+
+function startNextRound(material) {
+  if (material.current !== material.total) return false;
+  material.roundHistory.push({
+    round: material.round,
+    total: material.total,
+    unit: material.unit,
+    completedDate: material.records.at(-1)?.date || today(),
+    records: material.records.map((record) => ({ ...record }))
+  });
+  material.round += 1;
+  material.current = 0;
+  material.records = [];
+  return true;
+}
+
+$('confirm-next-round').addEventListener('click', () => {
+  const material = materials.find((entry) => entry.id === nextRoundMaterialId);
+  if (!material || !startNextRound(material)) return;
+  nextRoundDialog.close();
+  nextRoundMaterialId = null;
+  render();
+  $('status').textContent = `${material.round}회독을 시작했습니다. 이전 회독 기록은 회독 기록에서 확인할 수 있어요.`;
+  openRecords(material);
+});
+
+function openRoundHistory(material) {
+  historyMaterialId = material.id;
+  $('round-history-material').textContent = material.name;
+  const select = $('history-round');
+  select.replaceChildren();
+  [...material.roundHistory].reverse().forEach((round) => {
+    const option = node('option', '', `${round.round}회독`);
+    option.value = String(round.round);
+    select.append(option);
+  });
+  select.value = String(material.roundHistory.at(-1).round);
+  renderRoundHistory();
+  roundHistoryDialog.showModal();
+}
+
+function renderRoundHistory() {
+  const material = materials.find((entry) => entry.id === historyMaterialId);
+  const round = material?.roundHistory.find((entry) => entry.round === Number($('history-round').value));
+  if (!round) return;
+  $('round-history-summary').textContent = `${round.completedDate} 완료 · ${format(round.total)} ${round.unit} · 100%`;
+  const list = $('round-history-list');
+  list.replaceChildren();
+  [...round.records].reverse().forEach((record) => {
+    const item = node('li', 'record-item');
+    const date = node('time', 'record-date', record.date);
+    date.setAttribute('datetime', record.date);
+    const detail = node('div', 'record-detail');
+    for (const [label, value] of [
+      ['학습량', `${record.amount > 0 ? '+' : ''}${format(record.amount)}`],
+      ['현재 위치', format(record.position)]
+    ]) {
+      const metric = node('span', 'record-metric');
+      const quantity = node('span', 'record-metric-value');
+      quantity.append(node('strong', '', value), node('span', 'remaining-unit', round.unit));
+      metric.append(node('span', 'record-metric-label', label), quantity);
+      detail.append(metric);
+    }
+    item.append(date, detail);
+    list.append(item);
+  });
+}
+
+$('history-round').addEventListener('change', renderRoundHistory);
