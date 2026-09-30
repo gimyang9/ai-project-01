@@ -15,6 +15,11 @@ let editingRecordId = null;
 let recordSequence = 0;
 let nextRoundMaterialId = null;
 let historyMaterialId = null;
+let reviewMaterialId = null;
+let editingReviewId = null;
+let noteMaterialId = null;
+const storageKey = 'study-progress-data-v1';
+let storageBlocked = false;
 const $ = (id) => document.getElementById(id);
 const dialog = $('material-dialog');
 const deleteDialog = $('delete-dialog');
@@ -22,6 +27,8 @@ const form = $('material-form');
 const progressDialog = $('progress-dialog');
 const nextRoundDialog = $('next-round-dialog');
 const roundHistoryDialog = $('round-history-dialog');
+const reviewDialog = $('review-dialog');
+const noteDialog = $('note-dialog');
 const completedIcon = $('material-cards').lastElementChild.querySelector('.state svg').cloneNode(true);
 const format = (number) => number.toLocaleString('ko-KR');
 const template = $('material-cards').firstElementChild.cloneNode(true);
@@ -75,6 +82,10 @@ function render() {
     record.type = 'button';
     record.setAttribute('aria-label', `${material.name} 진도 기록`);
     record.addEventListener('click', () => openRecords(material));
+    const memo = node('button', 'text-button', '메모');
+    memo.type = 'button';
+    memo.setAttribute('aria-label', `${material.name} 메모`);
+    memo.addEventListener('click', () => openNote(material));
     const edit = node('button', 'text-button', '수정');
     edit.type = 'button';
     edit.setAttribute('aria-label', `${material.name} 수정`);
@@ -87,10 +98,15 @@ function render() {
       $('delete-description').textContent = `‘${material.name}’ 자료가 목록에서 삭제됩니다.`;
       deleteDialog.showModal();
     });
-    actions.append(record, edit, remove);
+    actions.append(record, memo, edit, remove);
     card.append(actions);
-    if (completed || material.roundHistory.length) {
+    {
       const roundActions = node('div', 'round-actions');
+      const review = node('button', 'text-button', '부분 복습');
+      review.type = 'button';
+      review.setAttribute('aria-label', `${material.name} 부분 복습 기록`);
+      review.addEventListener('click', () => openReviews(material));
+      roundActions.append(review);
       if (material.roundHistory.length) {
         const history = node('button', 'text-button', '회독 기록');
         history.type = 'button';
@@ -112,6 +128,7 @@ function render() {
     }
     cards.append(card);
   });
+  saveData();
 }
 
 function updateTotalUnit() {
@@ -166,7 +183,7 @@ $('custom-unit').addEventListener('input', updateTotalUnit);
 document.querySelectorAll('[data-close]').forEach((button) => {
   button.addEventListener('click', () => $(button.dataset.close).close());
 });
-[dialog, deleteDialog, progressDialog, nextRoundDialog, roundHistoryDialog].forEach((modal) => {
+[dialog, deleteDialog, progressDialog, nextRoundDialog, roundHistoryDialog, reviewDialog, noteDialog].forEach((modal) => {
   modal.addEventListener('click', (event) => {
     if (event.target !== modal) return;
     const bounds = modal.getBoundingClientRect();
@@ -185,7 +202,7 @@ form.addEventListener('submit', (event) => {
   const existing = materials.find((material) => material.id === editingId);
   if (existing && total < existing.current) return error('전체 분량은 현재 진도보다 작을 수 없어요.', $('material-total'));
   if (existing) Object.assign(existing, { name, type, unit, total });
-  else materials.push({ id: crypto.randomUUID(), name, type, unit, total, current: 0, round: 1, records: [], roundHistory: [] });
+  else materials.push({ id: crypto.randomUUID(), name, type, unit, total, current: 0, round: 1, records: [], roundHistory: [], reviews: [], note: '' });
   showingExamples = false;
   dialog.close();
   render();
@@ -415,3 +432,191 @@ function renderRoundHistory() {
 }
 
 $('history-round').addEventListener('change', renderRoundHistory);
+
+function reviewMaterial() {
+  return materials.find((material) => material.id === reviewMaterialId);
+}
+
+function resetReviewForm() {
+  const material = reviewMaterial();
+  editingReviewId = null;
+  $('review-form').reset();
+  $('review-date').value = today();
+  $('review-start').value = '';
+  $('review-end').value = '';
+  $('review-start').max = $('review-end').max = String(material.total);
+  $('review-start-unit').textContent = $('review-end-unit').textContent = material.unit;
+  $('save-review').textContent = '기록';
+  $('cancel-review-edit').hidden = true;
+  $('review-error').hidden = true;
+}
+
+function openReviews(material) {
+  reviewMaterialId = material.id;
+  $('review-material-name').textContent = material.name;
+  resetReviewForm();
+  renderReviews();
+  reviewDialog.showModal();
+  $('review-start').focus();
+}
+
+function renderReviews() {
+  const material = reviewMaterial();
+  $('review-empty').hidden = material.reviews.length !== 0;
+  const list = $('review-list');
+  list.replaceChildren();
+  [...material.reviews].sort((a, b) => b.date.localeCompare(a.date) || b.sequence - a.sequence).forEach((review) => {
+    const item = node('li', 'record-item');
+    const top = node('div', 'record-top');
+    const date = node('time', 'record-date', review.date);
+    date.setAttribute('datetime', review.date);
+    top.append(date);
+    const detail = node('div', 'record-detail');
+    const range = node('span', 'record-metric');
+    const value = node('span', 'record-metric-value');
+    value.append(node('strong', '', `${format(review.start)}–${format(review.end)}`), node('span', 'remaining-unit', review.unit));
+    range.append(value);
+    detail.append(range);
+    const actions = node('div', 'record-actions');
+    const edit = node('button', 'text-button', '수정');
+    edit.type = 'button';
+    edit.setAttribute('aria-label', `${review.date} 복습 기록 수정`);
+    edit.addEventListener('click', () => {
+      editingReviewId = review.id;
+      $('review-date').value = review.date;
+      $('review-start').value = review.start;
+      $('review-end').value = review.end;
+      $('review-start').max = $('review-end').max = String(review.total);
+      $('review-start-unit').textContent = $('review-end-unit').textContent = review.unit;
+      $('save-review').textContent = '저장';
+      $('cancel-review-edit').hidden = false;
+      $('review-error').hidden = true;
+      $('review-start').focus();
+    });
+    const remove = node('button', 'text-button', '삭제');
+    remove.type = 'button';
+    remove.setAttribute('aria-label', `${review.date} 복습 기록 삭제`);
+    remove.addEventListener('click', () => {
+      material.reviews = material.reviews.filter((entry) => entry.id !== review.id);
+      resetReviewForm();
+      renderReviews();
+      render();
+      $('save-review').focus();
+      $('status').textContent = '부분 복습 기록을 삭제했습니다.';
+    });
+    actions.append(edit, remove);
+    top.append(actions);
+    item.append(top, detail);
+    list.append(item);
+  });
+}
+
+$('cancel-review-edit').addEventListener('click', resetReviewForm);
+$('review-form').addEventListener('submit', (event) => {
+  event.preventDefault();
+  const material = reviewMaterial();
+  const existing = material.reviews.find((entry) => entry.id === editingReviewId);
+  const total = existing?.total ?? material.total;
+  const date = $('review-date').value;
+  const start = Number($('review-start').value);
+  const end = Number($('review-end').value);
+  const fail = (message, field) => {
+    $('review-error').textContent = message;
+    $('review-error').hidden = false;
+    field.focus();
+  };
+  if (!validStoredDate(date) || date > today()) return fail('오늘 또는 이전의 복습 날짜를 선택해 주세요.', $('review-date'));
+  if (!$('review-start').value.trim() || !Number.isSafeInteger(start) || start < 1 || start > total) {
+    return fail(`시작 위치는 1부터 ${format(total)} 사이의 정수로 입력해 주세요.`, $('review-start'));
+  }
+  if (!$('review-end').value.trim() || !Number.isSafeInteger(end) || end < start || end > total) {
+    return fail(`끝 위치는 시작 위치부터 ${format(total)} 사이의 정수로 입력해 주세요.`, $('review-end'));
+  }
+  const review = { id: existing?.id || crypto.randomUUID(), date, start, end, total, unit: existing?.unit ?? material.unit, sequence: existing?.sequence ?? recordSequence };
+  if (existing) material.reviews = material.reviews.map((entry) => entry.id === existing.id ? review : entry);
+  else { material.reviews.push(review); recordSequence += 1; }
+  resetReviewForm();
+  renderReviews();
+  render();
+  $('status').textContent = existing ? '부분 복습 기록을 수정했습니다.' : '부분 복습을 기록했습니다.';
+});
+
+function saveData() {
+  if (storageBlocked) return;
+  try {
+    localStorage.setItem(storageKey, JSON.stringify({ version: 1, materials, recordSequence }));
+    $('storage-note').textContent = '자료와 기록이 자동으로 저장됩니다.';
+  } catch {
+    $('storage-note').textContent = '기록을 저장하지 못했어요. 저장 공간과 브라우저 설정을 확인해 주세요. 새로고침하면 이번 변경이 사라질 수 있어요.';
+  }
+}
+
+function validStoredDate(date) {
+  return typeof date === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(date) && !Number.isNaN(Date.parse(date)) && new Date(date).toISOString().slice(0, 10) === date;
+}
+
+function loadData() {
+  try {
+    const raw = localStorage.getItem(storageKey);
+    if (raw === null) return;
+    const saved = JSON.parse(raw);
+    const check = (condition) => { if (!condition) throw new Error('Invalid saved data'); };
+    const positive = (value) => Number.isSafeInteger(value) && value > 0;
+    const text = (value) => typeof value === 'string' && value.trim().length > 0;
+    const ids = new Set();
+    let maxSequence = -1;
+    const checkRecord = (entry) => {
+      check(entry && text(entry.id) && !ids.has(entry.id) && validStoredDate(entry.date) && Number.isSafeInteger(entry.sequence) && entry.sequence >= 0);
+      ids.add(entry.id);
+      maxSequence = Math.max(maxSequence, entry.sequence);
+    };
+    check(saved?.version === 1 && Array.isArray(saved.materials));
+    for (const material of saved.materials) {
+      check(material && text(material.id) && !ids.has(material.id) && text(material.name) && Object.hasOwn(types, material.type) && text(material.unit) && positive(material.total) && positive(material.round));
+      ids.add(material.id);
+      if (material.note === undefined) material.note = '';
+      check(typeof material.note === 'string');
+      check(Array.isArray(material.records) && Array.isArray(material.roundHistory) && Array.isArray(material.reviews));
+      material.records.forEach(checkRecord);
+      recalculate(material);
+      check(material.roundHistory.length === material.round - 1);
+      material.roundHistory.forEach((round, index) => {
+        check(round && round.round === index + 1 && positive(round.total) && text(round.unit) && validStoredDate(round.completedDate) && Array.isArray(round.records));
+        round.records.forEach(checkRecord);
+        round.records = calculateRecords(round.records, round.total);
+        check(round.records.at(-1)?.position === round.total);
+      });
+      material.reviews.forEach((review) => {
+        checkRecord(review);
+        check(positive(review.total) && text(review.unit) && positive(review.start) && positive(review.end) && review.start <= review.end && review.end <= review.total);
+      });
+    }
+    materials = saved.materials;
+    recordSequence = maxSequence + 1;
+    showingExamples = false;
+    render();
+  } catch {
+    storageBlocked = true;
+    $('storage-note').textContent = '저장된 기록을 불러오지 못했어요. 기존 데이터를 보호하기 위해 자동 저장을 멈췄습니다.';
+  }
+}
+
+function openNote(material) {
+  noteMaterialId = material.id;
+  $('note-material-name').textContent = material.name;
+  $('material-note').value = material.note || '';
+  noteDialog.showModal();
+  $('material-note').focus();
+}
+
+$('note-form').addEventListener('submit', (event) => {
+  event.preventDefault();
+  const material = materials.find((entry) => entry.id === noteMaterialId);
+  if (!material) return;
+  material.note = $('material-note').value;
+  render();
+  noteDialog.close();
+  $('status').textContent = '메모를 저장했습니다.';
+});
+
+loadData();
