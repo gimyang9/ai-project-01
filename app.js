@@ -10,10 +10,14 @@ let materials = [];
 let showingExamples = true;
 let editingId = null;
 let deletingId = null;
+let activeMaterialId = null;
+let editingRecordId = null;
+let recordSequence = 0;
 const $ = (id) => document.getElementById(id);
 const dialog = $('material-dialog');
 const deleteDialog = $('delete-dialog');
 const form = $('material-form');
+const progressDialog = $('progress-dialog');
 const format = (number) => number.toLocaleString('ko-KR');
 const template = $('material-cards').firstElementChild.cloneNode(true);
 const lectureIcon = $('material-cards').lastElementChild.querySelector('.type-icon').cloneNode(true);
@@ -56,6 +60,10 @@ function render() {
     const remaining = card.querySelector('.card-bottom b');
     remaining.replaceChildren(document.createTextNode(format(material.total - material.current)), node('span', 'remaining-unit', material.unit));
     const actions = node('div', 'card-actions');
+    const record = node('button', 'record-button', '진도 기록');
+    record.type = 'button';
+    record.setAttribute('aria-label', `${material.name} 진도 기록`);
+    record.addEventListener('click', () => openRecords(material));
     const edit = node('button', 'text-button', '수정');
     edit.type = 'button';
     edit.setAttribute('aria-label', `${material.name} 수정`);
@@ -68,7 +76,7 @@ function render() {
       $('delete-description').textContent = `‘${material.name}’ 자료가 목록에서 삭제됩니다.`;
       deleteDialog.showModal();
     });
-    actions.append(edit, remove);
+    actions.append(record, edit, remove);
     card.append(actions);
     cards.append(card);
   });
@@ -126,7 +134,7 @@ $('custom-unit').addEventListener('input', updateTotalUnit);
 document.querySelectorAll('[data-close]').forEach((button) => {
   button.addEventListener('click', () => $(button.dataset.close).close());
 });
-[dialog, deleteDialog].forEach((modal) => {
+[dialog, deleteDialog, progressDialog].forEach((modal) => {
   modal.addEventListener('click', (event) => {
     if (event.target !== modal) return;
     const bounds = modal.getBoundingClientRect();
@@ -145,7 +153,7 @@ form.addEventListener('submit', (event) => {
   const existing = materials.find((material) => material.id === editingId);
   if (existing && total < existing.current) return error('전체 분량은 현재 진도보다 작을 수 없어요.', $('material-total'));
   if (existing) Object.assign(existing, { name, type, unit, total });
-  else materials.push({ id: crypto.randomUUID(), name, type, unit, total, current: 0, round: 1 });
+  else materials.push({ id: crypto.randomUUID(), name, type, unit, total, current: 0, round: 1, records: [] });
   showingExamples = false;
   dialog.close();
   render();
@@ -159,4 +167,150 @@ $('confirm-delete').addEventListener('click', () => {
   deletingId = null;
   $('add-material').focus();
   $('status').textContent = '자료를 삭제했습니다.';
+});
+
+function today() {
+  const date = new Date();
+  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+}
+
+function sortedRecords(records) {
+  return [...records].sort((a, b) => a.date.localeCompare(b.date) || a.sequence - b.sequence);
+}
+
+function calculateRecords(records, total) {
+  let previous = 0;
+  return sortedRecords(records).map((record) => {
+    if (!Number.isSafeInteger(record.position) || record.position < 0 || record.position > total) {
+      throw new Error(`현재 위치는 0부터 ${format(total)} 사이의 정수로 입력해 주세요.`);
+    }
+    if (record.position < previous) {
+      throw new Error('날짜순으로 공부 위치가 줄어들 수 없어요. 앞뒤 기록의 날짜와 위치를 확인해 주세요.');
+    }
+    const calculated = { ...record, amount: record.position - previous };
+    previous = record.position;
+    return calculated;
+  });
+}
+
+function recalculate(material) {
+  material.records = calculateRecords(material.records, material.total);
+  material.current = material.records.at(-1)?.position || 0;
+}
+
+function activeMaterial() {
+  return materials.find((material) => material.id === activeMaterialId);
+}
+
+function resetRecordForm() {
+  const material = activeMaterial();
+  editingRecordId = null;
+  $('record-form').reset();
+  $('record-date').value = today();
+  $('record-position').value = '';
+  $('record-position').removeAttribute('placeholder');
+  $('record-position').max = String(material.total);
+  $('record-unit').textContent = material.unit;
+  $('record-total').textContent = format(material.total);
+  $('save-record').textContent = '기록';
+  $('cancel-record-edit').hidden = true;
+  $('record-error').hidden = true;
+}
+
+function openRecords(material) {
+  activeMaterialId = material.id;
+  resetRecordForm();
+  renderRecords();
+  progressDialog.showModal();
+  $('record-position').focus();
+}
+
+function renderRecords() {
+  const material = activeMaterial();
+  $('record-material-name').textContent = material.name;
+  $('history-empty').hidden = material.records.length !== 0;
+  const list = $('record-list');
+  list.replaceChildren();
+  [...material.records].reverse().forEach((record) => {
+    const item = node('li', 'record-item');
+    const top = node('div', 'record-top');
+    const date = node('time', 'record-date', record.date);
+    date.setAttribute('datetime', record.date);
+    top.append(date);
+    const detail = node('div', 'record-detail');
+    const position = node('span', 'record-metric');
+    const positionValue = node('span', 'record-metric-value');
+    positionValue.append(node('strong', '', format(record.position)), node('span', 'remaining-unit', material.unit));
+    position.append(node('span', 'record-metric-label', '현재 위치'), positionValue);
+    const amount = node('span', 'record-metric');
+    const amountValue = node('span', 'record-metric-value');
+    amountValue.append(node('strong', '', `${record.amount > 0 ? '+' : ''}${format(record.amount)}`), node('span', 'remaining-unit', material.unit));
+    amount.append(node('span', 'record-metric-label', '학습량'), amountValue);
+    detail.append(amount, position);
+    const actions = node('div', 'record-actions');
+    const edit = node('button', 'text-button', '수정');
+    edit.type = 'button';
+    edit.setAttribute('aria-label', `${record.date} ${record.position}${material.unit} 기록 수정`);
+    edit.addEventListener('click', () => {
+      editingRecordId = record.id;
+      $('record-date').value = record.date;
+      $('record-position').value = record.position;
+      $('save-record').textContent = '저장';
+      $('cancel-record-edit').hidden = false;
+      $('record-error').hidden = true;
+      $('record-position').focus();
+    });
+    const remove = node('button', 'text-button', '삭제');
+    remove.type = 'button';
+    remove.setAttribute('aria-label', `${record.date} ${record.position}${material.unit} 기록 삭제`);
+    remove.addEventListener('click', () => {
+      material.records = material.records.filter((entry) => entry.id !== record.id);
+      recalculate(material);
+      resetRecordForm();
+      renderRecords();
+      render();
+      $('save-record').focus();
+      $('status').textContent = '기록을 삭제하고 진도를 다시 계산했습니다.';
+    });
+    actions.append(edit, remove);
+    top.append(actions);
+    item.append(top, detail);
+    list.append(item);
+  });
+}
+
+$('cancel-record-edit').addEventListener('click', resetRecordForm);
+$('record-form').addEventListener('submit', (event) => {
+  event.preventDefault();
+  const material = activeMaterial();
+  const date = $('record-date').value;
+  const rawPosition = $('record-position').value;
+  const position = Number(rawPosition);
+  const fail = (message, field) => {
+    $('record-error').textContent = message;
+    $('record-error').hidden = false;
+    field.focus();
+  };
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(date) || Number.isNaN(Date.parse(date)) || new Date(date).toISOString().slice(0, 10) !== date || date > today()) {
+    return fail('오늘 또는 이전의 공부 날짜를 선택해 주세요.', $('record-date'));
+  }
+  if (!rawPosition.trim() || !Number.isSafeInteger(position) || position < 0 || position > material.total) {
+    return fail(`현재 위치는 0부터 ${format(material.total)} 사이의 정수로 입력해 주세요.`, $('record-position'));
+  }
+  const existing = material.records.find((record) => record.id === editingRecordId);
+  const record = { id: existing?.id || crypto.randomUUID(), date, position, sequence: existing?.sequence ?? recordSequence };
+  const nextRecords = existing
+    ? material.records.map((entry) => entry.id === existing.id ? record : entry)
+    : [...material.records, record];
+  try {
+    material.records = calculateRecords(nextRecords, material.total);
+  } catch (cause) {
+    return fail(cause.message, $('record-position'));
+  }
+  if (!existing) recordSequence += 1;
+  recalculate(material);
+  resetRecordForm();
+  renderRecords();
+  render();
+  $('status').textContent = existing ? '기록을 수정했습니다.' : '진도를 기록했습니다.';
 });
