@@ -7,7 +7,6 @@ const types = {
   other: { label: '기타', units: [] }
 };
 let materials = [];
-let showingExamples = true;
 let editingId = null;
 let deletingId = null;
 let activeMaterialId = null;
@@ -29,10 +28,10 @@ const nextRoundDialog = $('next-round-dialog');
 const roundHistoryDialog = $('round-history-dialog');
 const reviewDialog = $('review-dialog');
 const noteDialog = $('note-dialog');
-const completedIcon = $('material-cards').lastElementChild.querySelector('.state svg').cloneNode(true);
+const completedIcon = $('completed-icon-template').content.firstElementChild;
 const format = (number) => number.toLocaleString('ko-KR');
-const template = $('material-cards').firstElementChild.cloneNode(true);
-const lectureIcon = $('material-cards').lastElementChild.querySelector('.type-icon').cloneNode(true);
+const template = $('material-card-template').content.firstElementChild;
+const lectureIcon = $('lecture-icon-template').content.firstElementChild;
 
 function node(tag, className, text) {
   const result = document.createElement(tag);
@@ -42,10 +41,7 @@ function node(tag, className, text) {
 }
 
 function render(persist = true) {
-  if (showingExamples) return;
   $('material-count').textContent = format(materials.length);
-  $('example-label').hidden = true;
-  $('preview-note').hidden = true;
   $('empty-state').hidden = materials.length !== 0;
   const cards = $('material-cards');
   cards.replaceChildren();
@@ -75,10 +71,9 @@ function render(persist = true) {
     state.replaceChildren();
     if (completed) state.append(completedIcon.cloneNode(true));
     state.append(document.createTextNode(completed ? '회독 완료' : '학습 중'));
-    const remaining = card.querySelector('.card-bottom b');
-    remaining.replaceChildren(document.createTextNode(format(material.total - material.current)), node('span', 'remaining-unit', material.unit));
+    const studyActions = node('div', 'study-actions');
     const actions = node('div', 'card-actions');
-    const record = node('button', 'record-button', '진도 기록');
+    const record = node('button', 'record-button study-action-button', '진도 기록');
     record.type = 'button';
     record.setAttribute('aria-label', `${material.name} 진도 기록`);
     record.addEventListener('click', () => openRecords(material));
@@ -98,15 +93,16 @@ function render(persist = true) {
       $('delete-description').textContent = `‘${material.name}’ 자료가 목록에서 삭제됩니다.`;
       deleteDialog.showModal();
     });
-    actions.append(record, memo, edit, remove);
-    card.append(actions);
+    studyActions.append(record);
+    actions.append(memo, edit, remove);
+    card.append(studyActions, actions);
     {
       const roundActions = node('div', 'round-actions');
-      const review = node('button', 'text-button', '부분 복습');
+      const review = node('button', 'study-action-button', '복습');
       review.type = 'button';
-      review.setAttribute('aria-label', `${material.name} 부분 복습 기록`);
+      review.setAttribute('aria-label', `${material.name} 복습 기록`);
       review.addEventListener('click', () => openReviews(material));
-      roundActions.append(review);
+      studyActions.append(review);
       if (material.roundHistory.length) {
         const history = node('button', 'text-button', '회독 기록');
         history.type = 'button';
@@ -124,7 +120,7 @@ function render(persist = true) {
         });
         roundActions.append(next);
       }
-      card.append(roundActions);
+      if (roundActions.childElementCount) card.append(roundActions);
     }
     cards.append(card);
   });
@@ -203,7 +199,6 @@ form.addEventListener('submit', (event) => {
   if (existing && total < existing.current) return error('전체 분량은 현재 진도보다 작을 수 없어요.', $('material-total'));
   if (existing) Object.assign(existing, { name, type, unit, total });
   else materials.push({ id: crypto.randomUUID(), name, type, unit, total, current: 0, round: 1, records: [], roundHistory: [], reviews: [], note: '' });
-  showingExamples = false;
   dialog.close();
   render();
   $('status').textContent = existing ? '자료를 수정했습니다.' : '자료를 추가했습니다.';
@@ -545,7 +540,7 @@ function saveData() {
   if (storageBlocked) return;
   try {
     localStorage.setItem(storageKey, JSON.stringify({ version: 1, materials, recordSequence }));
-    $('storage-note').textContent = '자료와 기록이 자동으로 저장됩니다.';
+    $('storage-note').textContent = '';
   } catch {
     $('storage-note').textContent = '기록을 저장하지 못했어요. 저장 공간과 브라우저 설정을 확인해 주세요. 새로고침하면 이번 변경이 사라질 수 있어요.';
   }
@@ -591,6 +586,7 @@ function validateSavedData(saved) {
 }
 
 function loadData() {
+  render(false);
   try {
     const raw = localStorage.getItem(storageKey);
     if (raw === null) return;
@@ -598,7 +594,6 @@ function loadData() {
     const validated = validateSavedData(saved);
     materials = validated.materials;
     recordSequence = validated.recordSequence;
-    showingExamples = false;
     render();
   } catch {
     storageBlocked = true;
@@ -723,7 +718,6 @@ $('confirm-data-action').addEventListener('click', () => {
   }
   materials = pendingData.materials;
   recordSequence = pendingData.recordSequence;
-  showingExamples = false;
   storageBlocked = false;
   render(false);
   $('storage-note').textContent = '자료와 기록이 자동으로 저장됩니다.';
