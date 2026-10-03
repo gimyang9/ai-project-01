@@ -98,20 +98,25 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid 
 .settings-card{padding:16px 18px;border:1px solid var(--line);border-radius:16px;background:#fff}
 .settings-card h3{font-size:1rem;line-height:1.5;font-weight:700;color:#263b30;margin:0 0 12px;letter-spacing:-.025em}
 .settings-file-button{font:inherit;font-size:.9375rem;font-weight:600;display:block;width:100%;min-height:44px;border:0;border-radius:10px;background:#eef4ee;color:var(--green);padding:10px 14px;cursor:pointer}
-.settings-reset{background:#fcf7f5;border-color:#f1e7e2}
-.settings-reset .text-button{
-  display:block;
+.settings-reset{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
   width:100%;
   min-height:44px;
   margin:0;
   padding:10px 14px;
-  border-radius:10px;
-  background:#f7eeea;
+  border:1px solid #f1e7e2;
+  border-radius:16px;
+  background:#fcf7f5;
   color:#9a463b;
+  font:inherit;
+  font-size:.875rem;
   font-weight:700;
+  cursor:pointer;
 }
 
-.settings-reset .text-button:hover{
+.settings-reset:hover{
   background:#f3e6e1;
 }
 .settings-feedback:empty{display:none}
