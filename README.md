@@ -15,6 +15,22 @@
 - **진행 현황 확인:** 자료별 진행량·진행률·회독을 카드와 진행률 막대로 표시
 - **로컬 저장:** 브라우저 LocalStorage를 활용한 기록 유지
 
+
+### 앱 실행 화면
+
+<table>
+  <tr>
+    <th>메인 화면</th>
+    <th>학습 진도 기록</th>
+    <th>부분 복습 기록</th>
+  </tr>
+  <tr>
+    <td><img src="images/main.png" width="250"></td>
+    <td><img src="images/progress.png" width="250"></td>
+    <td><img src="images/review.png" width="250"></td>
+  </tr>
+</table>
+
 ---
 
 ## 2. PRD — 프로젝트 요구사항 정의서
