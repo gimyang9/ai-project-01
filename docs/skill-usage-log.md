@@ -327,3 +327,29 @@
 - 실행: powershell -NoProfile -ExecutionPolicy Bypass -File skills/chagok-data-guard/scripts/inspect-boundary.ps1. 기본 정책에서 파일 실행이 거절돼 프로세스 한정 옵션으로 재실행했다. 시스템 정책 변경 없음.
 - 한계: 정적 검색은 간접 접근을 놓칠 수 있다. 해시는 현재 기준선이며 과거 원본과 대조하지 않았다. Python/py가 없어 quick_validate.py 미실행, 필수 frontmatter와 출력 구조만 별도 확인했다. Node 앱 테스트·브라우저·마이그레이션·백업 왕복은 이번에 실행하지 않았다. 전역 설치 없이 AGENTS의 프로젝트 경로로 사용한다.
 - 생성과 사용 구분: 작성 후 수행한 소스 검토만 이번 적용이다. 과거 CG-SKILL-001~012나 생성 전 앱 구현을 새 스킬의 사용으로 소급하지 않는다. Git 커밋은 사용자가 직접 수행한다.
+
+## CG-SKILL-014: 1단계 TODO 완료 여부 문서 확인
+
+- date: 2026-10-24
+- skill: chagok-data-guard
+- skill_source: skills/chagok-data-guard/SKILL.md
+- task: 1단계 TODO 완료 여부 문서 확인
+- todo_refs: 1-1~1-10
+- actions: 스킬 원문과 TODO·PROGRESS·요구사항 인덱스·최근 사용 로그 대조.
+- evidence: docs/TODO.md의 1단계 10개 체크와 화면 구성 기준, PROGRESS.md의 완료 목록과 실제 저장 미연결 설명, docs/requirements-index.md의 구현 보고 완료·사용자 확인 대기.
+- result: limited
+- outcome: 문서 기준 화면 구성 10/10 완료. 실제 데이터 연결과 최종 검증 완료를 뜻하지 않음.
+- limitations: 문서 검토만 수행. 앱 소스·브라우저·테스트 재검증 미실행. 기존 구현에 새 스킬 사용을 소급하지 않음.
+
+## CG-SKILL-015: 사용자 승인 2단계 데이터 연결 구현
+
+- date: 2026-10-24
+- skill: chagok-data-guard
+- skill_source: skills/chagok-data-guard/SKILL.md
+- task: 사용자 승인 2단계 데이터 전환·학습 관리·통합 백업 구현
+- todo_refs: 2-1~2-14
+- actions: 스킬 원문과 TODO·PROGRESS·PRD 후속 결정 및 1.0 소스를 확인했다. 통합 study-data.js와 실제 자료/기록/회독/메모/목표일/중단/보관/백업 폼을 연결했다. 원본 키와 알 수 없는 필드를 보존하고 기록 있는 자료의 단위 변경을 거부했다. 오류 후 복원/초기화는 읽지 못한 원문을 보존한 뒤 교체한다. 루트/dist를 동기화하고 문서 완료 표현을 갱신했다.
+- evidence: docs/stage2-validation.md, docs/evidence/stage2-tests.tap, stage2-boundary-before.json·stage2-boundary-after.json, skill-use-entry-015.json. Codex 런타임 node.exe로 테스트 실행. 56개 중 56개 통과(기존 35 + 합성 저장/데이터 16 + 모의 DOM 앱 5), 구문 검사 통과, reference/v1 파일 6개 해시 전후 동일.
+- result: limited
+- outcome: 2-1~2-14 구현·합성 자동 검증 완료. 실제 브라우저·사용자 1.0 백업 복사본 검증·사용자 최종 확인 대기. 3단계 미착수.
+- limitations: 사용자 실제 저장값 접근 없음. 모의 DOM은 실제 브라우저·모바일/PC 레이아웃·파일 다운로드·Safari/PWA 검증을 대체하지 않는다. computer-use 스킬 원문을 읽고 cua 브라우저 검증을 시도했으나 apps/browsers 모두 없고 iab unavailable이었다. 경계 도구는 프로세스 한정 ExecutionPolicy 옵션으로 실행했으며 시스템 정책 변경 없음. 해시는 파일 보존 근거이며 사용자 데이터 전환 성공을 뜻하지 않는다. 배포·Git 커밋·Push 없음. 생성 전 구현 소급 기록 없음.
