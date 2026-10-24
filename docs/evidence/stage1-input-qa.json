@@ -1,0 +1,35 @@
+{
+  "date": "2026-10-24",
+  "scope": "1단계 화면·입력 정리",
+  "checks": {
+    "streak_unit_tests": "9 passed",
+    "mobile_widths": [
+      320,
+      390
+    ],
+    "desktop_width": 1348,
+    "horizontal_overflow": "none in checked screens",
+    "material_select": "5 types; lecture changes unit to 강; other shows required custom unit",
+    "exam_date": "blank allowed; importance/state inputs removed; preview submission succeeded",
+    "review_labels": [
+      "복습 예정",
+      "복습 지연",
+      "시험 전 복습"
+    ],
+    "review_unit": "history material uses 강 for start/end",
+    "date_input": {
+      "height": 44,
+      "font_size": 16,
+      "line_height": 44
+    },
+    "home": "forest plus overlapping date/streak; learning excludes review; review summary opens list",
+    "buttons": "filter height preserved, bold; add 44px/15px/700",
+    "protected_v1": "6 files match baseline",
+    "storage_access": 0
+  },
+  "limitations": [
+    "2.0 is a UI prototype with explicit fixture notice; no persistent CRUD or recommendations connected",
+    "Mobile Safari/PWA hardware not tested",
+    "Streak UI uses existing demo records until data integration"
+  ]
+}

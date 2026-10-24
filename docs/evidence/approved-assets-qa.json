@@ -1,0 +1,20 @@
+{
+  "date": "2026-10-24T10:15:58+09:00",
+  "scope": "승인된 배너 통합·중앙 헤더·5단계 식물·카드 간격 UI",
+  "checks": {
+    "mobile_iframe_320_and_390_all_four_tabs_no_horizontal_overflow": true,
+    "goals_header_center_px": 187.5,
+    "goals_title_center_px": 187.5,
+    "all_twenty_sprite_cells_visually_inspected": true,
+    "goal_add_modal_opens": true,
+    "growth_boundaries_and_completion_cases_passed": 37,
+    "v1_protected_files_unchanged": 6,
+    "literal_storage_access_count": 0,
+    "javascript_syntax": "passed"
+  },
+  "limitations": [
+    "실제 iPhone Safari·PWA·가상 키보드 미검증.",
+    "현재 2.0은 저장·스마트 복습 계산 미연결인 화면 미리보기.",
+    "정적 검사로 모든 동적 저장 접근이나 실제 데이터 호환성을 증명하지 않음."
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "id": "CG-SKILL-012",
+  "date": "2026-10-24T22:00:32.407963+09:00",
+  "skill": "chagok-data-guard",
+  "task": "승인된 더보기 두 메뉴·숫자 배지 UI 개선",
+  "todo_refs": [
+    "더보기 탭 메뉴 구성·UI 개선 #1~#8",
+    "UI만 우선 진행 사용자 승인 어"
+  ],
+  "actions": [
+    "앱 정보 메뉴 및 전용 모달 분기 제거, 홈 버전 및 공통 개발 안내 유지",
+    "자료 보관함 명칭으로 변경하고 기존 보관 모달/복원 미연결 안내 유지",
+    "배지와 보관 화면을 동일 예시 목록 기준으로 표시, 저장 구조 변경 없음",
+    "더보기 전용 CSS로 행54px·카드114px·오른쪽배지와화살표8px간격 적용",
+    "35개 기존 테스트와1.0파일6개 보존 검사,320px의0/12개 및390px 화면 확인"
+  ],
+  "evidence": [
+    "docs/evidence/more-menu-qa.json",
+    "docs/evidence/more-menu-boundary.json"
+  ],
+  "result": "limited",
+  "outcome": "승인된 UI 적용. 실제 저장된 보관 자료 집계/복원 기능은 미연결 상태로 유지하며 완료로 주장하지 않음.",
+  "limitations": [
+    "Actual persistent archive/restore remains unconnected; displayed archive is a fixture, not real user data",
+    "Chrome simulated mobile widths, no physical Safari/PWA validation",
+    "0/12 count cases used isolated QA-only fixture copies",
+    "Static audit misses indirect storage access; storage/calculation modules unchanged"
+  ]
+}

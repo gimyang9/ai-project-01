@@ -1,0 +1,30 @@
+{
+  "id": "CG-SKILL-010",
+  "date": "2026-10-24T21:07:14.274568+09:00",
+  "skill": "chagok-data-guard",
+  "task": "승인된 배너 높이·작은 UI 글자 및 관리 메뉴 여백 개선",
+  "todo_refs": [
+    "홈 배너 높이 및 UI 가독성 요청 #1~#6",
+    "표시 영역 확인 후 추가 승인",
+    "관리 메뉴는 글자 확대만큼 기존 여백 축소"
+  ],
+  "actions": [
+    "CSS만 수정하고 이미지 원본·JS·데이터·계산 모듈 유지",
+    "모바일 배너 aspect-ratio를 기존의92% 높이로 변경, 이미지 배율·제목 절대위치 유지",
+    "작은 글씨 선별 확대, 주요 제목·수치·진행률 라벨 유지",
+    "관리 메뉴 행59→56px로 축소해 글씨13→13.8px를 기존 공간에 수용",
+    "기존35개 테스트와1.0파일 보존 점검 및320/390px·PC 브라우저 검사"
+  ],
+  "evidence": [
+    "docs/evidence/readability-qa.json",
+    "docs/evidence/readability-boundary.json"
+  ],
+  "result": "limited",
+  "outcome": "승인된 UI 적용 및 관련 검증 통과. 자료 관리 모달15px, 시험 관리 모달18px 축소.",
+  "limitations": [
+    "Simulated Chrome viewport, not physical Safari/PWA",
+    "QA used identical application CSS in a copy with in-memory fixture storage",
+    "Static audit misses indirect storage access; JS modules unchanged",
+    "Existing app remains preview; actual1.0 migration and full backup integration pending"
+  ]
+}

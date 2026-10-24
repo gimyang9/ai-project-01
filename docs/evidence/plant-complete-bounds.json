@@ -1,0 +1,348 @@
+{
+  "source": "(1402, 1122)",
+  "cases": [
+    {
+      "family": "flower",
+      "stage": 1,
+      "bounds": [
+        48,
+        198,
+        270,
+        285
+      ],
+      "viewport": [
+        10,
+        -7,
+        310,
+        293
+      ],
+      "all_visible_pixels_inside": true
+    },
+    {
+      "family": "flower",
+      "stage": 2,
+      "bounds": [
+        321,
+        156,
+        545,
+        285
+      ],
+      "viewport": [
+        283,
+        -7,
+        583,
+        293
+      ],
+      "all_visible_pixels_inside": true
+    },
+    {
+      "family": "flower",
+      "stage": 3,
+      "bounds": [
+        591,
+        98,
+        814,
+        285
+      ],
+      "viewport": [
+        552,
+        -7,
+        852,
+        293
+      ],
+      "all_visible_pixels_inside": true
+    },
+    {
+      "family": "flower",
+      "stage": 4,
+      "bounds": [
+        860,
+        67,
+        1098,
+        285
+      ],
+      "viewport": [
+        828,
+        -7,
+        1128,
+        293
+      ],
+      "all_visible_pixels_inside": true
+    },
+    {
+      "family": "flower",
+      "stage": 5,
+      "bounds": [
+        1136,
+        66,
+        1370,
+        285
+      ],
+      "viewport": [
+        1103,
+        -7,
+        1403,
+        293
+      ],
+      "all_visible_pixels_inside": true
+    },
+    {
+      "family": "tree",
+      "stage": 1,
+      "bounds": [
+        48,
+        478,
+        275,
+        575
+      ],
+      "viewport": [
+        10,
+        283,
+        310,
+        583
+      ],
+      "all_visible_pixels_inside": true
+    },
+    {
+      "family": "tree",
+      "stage": 2,
+      "bounds": [
+        321,
+        393,
+        543,
+        575
+      ],
+      "viewport": [
+        283,
+        283,
+        583,
+        583
+      ],
+      "all_visible_pixels_inside": true
+    },
+    {
+      "family": "tree",
+      "stage": 3,
+      "bounds": [
+        590,
+        327,
+        814,
+        575
+      ],
+      "viewport": [
+        552,
+        283,
+        852,
+        583
+      ],
+      "all_visible_pixels_inside": true
+    },
+    {
+      "family": "tree",
+      "stage": 4,
+      "bounds": [
+        859,
+        317,
+        1091,
+        575
+      ],
+      "viewport": [
+        828,
+        283,
+        1128,
+        583
+      ],
+      "all_visible_pixels_inside": true
+    },
+    {
+      "family": "tree",
+      "stage": 5,
+      "bounds": [
+        1119,
+        296,
+        1387,
+        575
+      ],
+      "viewport": [
+        1103,
+        283,
+        1403,
+        583
+      ],
+      "all_visible_pixels_inside": true
+    },
+    {
+      "family": "cactus",
+      "stage": 1,
+      "bounds": [
+        46,
+        736,
+        273,
+        821
+      ],
+      "viewport": [
+        10,
+        529,
+        310,
+        829
+      ],
+      "all_visible_pixels_inside": true
+    },
+    {
+      "family": "cactus",
+      "stage": 2,
+      "bounds": [
+        319,
+        692,
+        546,
+        821
+      ],
+      "viewport": [
+        283,
+        529,
+        583,
+        829
+      ],
+      "all_visible_pixels_inside": true
+    },
+    {
+      "family": "cactus",
+      "stage": 3,
+      "bounds": [
+        590,
+        627,
+        814,
+        821
+      ],
+      "viewport": [
+        552,
+        529,
+        852,
+        829
+      ],
+      "all_visible_pixels_inside": true
+    },
+    {
+      "family": "cactus",
+      "stage": 4,
+      "bounds": [
+        859,
+        606,
+        1096,
+        821
+      ],
+      "viewport": [
+        828,
+        529,
+        1128,
+        829
+      ],
+      "all_visible_pixels_inside": true
+    },
+    {
+      "family": "cactus",
+      "stage": 5,
+      "bounds": [
+        1135,
+        587,
+        1377,
+        821
+      ],
+      "viewport": [
+        1103,
+        529,
+        1403,
+        829
+      ],
+      "all_visible_pixels_inside": true
+    },
+    {
+      "family": "mushroom",
+      "stage": 1,
+      "bounds": [
+        46,
+        966,
+        275,
+        1060
+      ],
+      "viewport": [
+        10,
+        768,
+        310,
+        1068
+      ],
+      "all_visible_pixels_inside": true
+    },
+    {
+      "family": "mushroom",
+      "stage": 2,
+      "bounds": [
+        319,
+        921,
+        547,
+        1060
+      ],
+      "viewport": [
+        283,
+        768,
+        583,
+        1068
+      ],
+      "all_visible_pixels_inside": true
+    },
+    {
+      "family": "mushroom",
+      "stage": 3,
+      "bounds": [
+        587,
+        890,
+        819,
+        1060
+      ],
+      "viewport": [
+        552,
+        768,
+        852,
+        1068
+      ],
+      "all_visible_pixels_inside": true
+    },
+    {
+      "family": "mushroom",
+      "stage": 4,
+      "bounds": [
+        853,
+        859,
+        1098,
+        1060
+      ],
+      "viewport": [
+        828,
+        768,
+        1128,
+        1068
+      ],
+      "all_visible_pixels_inside": true
+    },
+    {
+      "family": "mushroom",
+      "stage": 5,
+      "bounds": [
+        1135,
+        843,
+        1379,
+        1060
+      ],
+      "viewport": [
+        1103,
+        768,
+        1403,
+        1068
+      ],
+      "all_visible_pixels_inside": true
+    }
+  ],
+  "checked_alpha_threshold": 128,
+  "padding_source_pixels": 3,
+  "result": "20/20 complete silhouettes inside display windows"
+}

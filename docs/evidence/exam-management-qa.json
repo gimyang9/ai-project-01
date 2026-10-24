@@ -1,0 +1,39 @@
+{
+  "date": "2026-10-24",
+  "scope": "추가 UI/UX 요청의 시험 관리 단계",
+  "tests": {
+    "domain": 13,
+    "streak_regression": 9,
+    "result": "22 passed"
+  },
+  "browser": {
+    "engine": "Chrome",
+    "widths": [
+      320,
+      390,
+      1348
+    ],
+    "goal_filters": "700 font weight, existing height preserved",
+    "menu": "memo/edit/priority/archive/pause/delete available; status-dependent labels",
+    "priority": "first card after selection and page reload",
+    "memo": "saved text including angle brackets restored as plain text after reload",
+    "pause": "cancel preserves state; confirmation lists affected material; paused material excluded from today learning/review",
+    "resume": "affected material shown in confirmation; automatic pause released",
+    "date": "blank exam registered; later date displayed D-9 at test date",
+    "manual_plan": "focus date retained after edit/reopening",
+    "layout": "320px document 305/305 client/scroll; menu 284/284; 390px menu screenshot saved"
+  },
+  "storage": {
+    "key": "chagok-v2-preview-exams-v1",
+    "scope": "preview exam state and per-material management flags only",
+    "protected_legacy_key": "study-progress-data-v1; never accessed",
+    "validation": "malformed JSON and future versions block writes; failed setItem does not commit UI state",
+    "manual_source_review": "LocalStorage is accessed through API parameters; static audit storage count zero is a detection limitation, not absence of storage access"
+  },
+  "limitations": [
+    "Study material and record data are still fixtures; no 1.0 migration or real study CRUD connected",
+    "Backup/restore/reset integration for this new preview store is not implemented in this scope",
+    "No physical Safari or installed PWA testing",
+    "Automatic learning quantity and review calculations remain later work; displayed quantities are fixtures"
+  ]
+}

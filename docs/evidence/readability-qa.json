@@ -1,0 +1,86 @@
+{
+  "scope": "approved banner minus8percent and selective small text; management menu whitespace reused",
+  "browser": "Chrome simulated widths 320/390 and PC1363",
+  "home390": {
+    "bannerBefore": 260,
+    "bannerAfter": 239.1875,
+    "specifiedRatio": 0.92,
+    "titleTopBefore": 41.59375,
+    "titleTopAfter": 41.59375,
+    "titleFontBeforeAfter": 33.54,
+    "welcomeTopBefore": 218,
+    "welcomeTopAfter": 197.1875,
+    "progressLabelBeforeAfter": 10.5,
+    "mainNumberBeforeAfter": 24,
+    "documentClientScroll": [
+      390,
+      390
+    ]
+  },
+  "materialMenu390": {
+    "font": [
+      13,
+      13.8
+    ],
+    "rowHeight": [
+      59,
+      56
+    ],
+    "dialogHeight": [
+      402,
+      387
+    ]
+  },
+  "examMenu320": {
+    "font": [
+      13,
+      13.8
+    ],
+    "rowHeight": [
+      59,
+      56
+    ],
+    "dialogHeight": [
+      520.59375,
+      502.59375
+    ],
+    "dialogClientScroll": [
+      284,
+      284
+    ],
+    "rowClientScroll": [
+      210,
+      210
+    ],
+    "allMenuLabelsSingleLine": true
+  },
+  "filters320": {
+    "examAndStatsFont": 12.8,
+    "weight": 700,
+    "height": 39,
+    "documentClientScroll": [
+      320,
+      320
+    ]
+  },
+  "stats320": {
+    "smallLabelFont": 10.7,
+    "listPercentageFont": 11.8,
+    "mainNumberUnchanged": 24
+  },
+  "pc": {
+    "documentClientScroll": [
+      1363,
+      1363
+    ],
+    "filterFont": 13.8,
+    "weight": 700
+  },
+  "testsPassed": 35,
+  "limitations": [
+    "Simulated Chrome viewport, not physical Safari/PWA",
+    "QA used identical application CSS in a copy with in-memory fixture storage",
+    "Static audit misses indirect storage access; JS modules unchanged",
+    "Existing app remains preview; actual1.0 migration and full backup integration pending"
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "id": "CG-SKILL-006",
+  "date": "2026-10-24T14:25:00+09:00",
+  "skill": "chagok-data-guard",
+  "task": "1단계 화면·입력 정리 및 저장 경계 검증",
+  "todo_refs": [
+    "1단계 화면·입력 정리"
+  ],
+  "actions": [
+    "유형별 저장 단위를 참조하는 UI 및 시험 날짜 선택 입력 검증",
+    "연속 학습일 계산을 저장과 분리하고 날짜 경계 9개 사례 검사",
+    "원본 1.0 파일 6개와 LocalStorage 미접근 경계 감사",
+    "화면 미리보기와 미연결 실제 저장 기능 구분 유지"
+  ],
+  "evidence": [
+    "docs/evidence/stage1-input-qa.json",
+    "docs/evidence/stage1-input-boundary.json",
+    "tests/streak.test.cjs"
+  ],
+  "result": "limited",
+  "outcome": "화면 정리와 검증 완료. 원본1.0 및 사용자 저장 데이터 변경 없음.",
+  "limitations": [
+    "2.0 is a UI prototype with explicit fixture notice; no persistent CRUD or recommendations connected",
+    "Mobile Safari/PWA hardware not tested",
+    "Streak UI uses existing demo records until data integration"
+  ]
+}

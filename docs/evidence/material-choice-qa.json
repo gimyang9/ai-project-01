@@ -1,0 +1,52 @@
+{
+  "date": "2026-10-24",
+  "scope": "시험 중단/마무리 시 자료별 학습 유지 선택",
+  "checks": {
+    "automated_tests": 35,
+    "model_tests": 26,
+    "streak_tests": 9,
+    "browser": "Chrome",
+    "default_checkboxes": "all unchecked, including second pause after resume",
+    "keep_choice": "selected material stays in today learning/general review; paused exam specific review excluded",
+    "no_choice": "unselected exclusive material excluded from learning recommendations",
+    "shared_active": "linking paused material to another active exam restores recommendation",
+    "old_setting_ui": "removed from material management menu; no preconfiguration remains",
+    "empty_exam": "confirmation without checkbox list",
+    "stress_mobile": {
+      "width": 320,
+      "viewport_height": 700,
+      "synthetic_materials": 27,
+      "dialog_client_scroll_height": [
+        657,
+        657
+      ],
+      "dialog_client_scroll_width": [
+        284,
+        284
+      ],
+      "list_client_scroll_height": [
+        210,
+        1422
+      ],
+      "submit_bottom": 656.36,
+      "dialog_bottom": 679.36
+    },
+    "normal_mobile": 390
+  },
+  "migration": {
+    "source": "exam-preview version1",
+    "target": "version2, same key",
+    "old_flag": "legacyIndependent inert; current inactive keep behavior converted to per-exam snapshot",
+    "old_archive": "existing keep behavior preserved",
+    "raw_preservation_key": "chagok-v2-preview-exams-v1.before-choice-v2",
+    "failure": "original key not overwritten when preservation or save fails",
+    "records": "IDs, links, unknown history fields, study records preserved; legacy storage untouched"
+  },
+  "limitations": [
+    "Actual1.0 migration and real study record CRUD are not connected in this preview",
+    "Backup/restore/reset UI remains previously unconnected; only exam store version1/version2 read compatibility and JSON round trip tested",
+    "No physical Safari or PWA validation",
+    "Static audit misses indirect storage calls; exact keys reviewed in source",
+    "Many-item QA used a separate temporary in-memory fixture harness; removed before publication"
+  ]
+}

@@ -1,0 +1,55 @@
+{
+  "date": "2026-10-24T10:13:37+09:00",
+  "skill": "chagok-data-guard",
+  "mode": "prototype",
+  "result": "passed",
+  "checks": [
+    {
+      "name": "v1_reference_matches_archive",
+      "passed": true
+    },
+    {
+      "name": "application_sources_present",
+      "passed": true
+    },
+    {
+      "name": "no_literal_storage_access_in_prototype_js",
+      "passed": true
+    }
+  ],
+  "protected_files": [
+    {
+      "path": "app.js",
+      "matches": true
+    },
+    {
+      "path": "favicon.svg",
+      "matches": true
+    },
+    {
+      "path": "fonts/LINESeedKR-Bd.woff2",
+      "matches": true
+    },
+    {
+      "path": "fonts/LINESeedKR-Rg.woff2",
+      "matches": true
+    },
+    {
+      "path": "index.html",
+      "matches": true
+    },
+    {
+      "path": "style.css",
+      "matches": true
+    }
+  ],
+  "storage_accesses": [],
+  "source_hashes": {
+    "dist/app.js": "bb1ea7fe25f294abcf2f150a63860e86250ee1ef55ab6c5168bdcd59e4b2d7ff"
+  },
+  "limitations": [
+    "정적 탐지는 별칭·동적 코드·HTML 인라인 스크립트·외부 스크립트를 완전히 분석하지 않는다.",
+    "파일 보존 비교는 실제 사용자 LocalStorage나 2.0 마이그레이션 성공을 검증하지 않는다.",
+    "preservation 모드는 저장 호출을 금지하지 않는다. 동작은 별도로 검증해야 한다."
+  ]
+}

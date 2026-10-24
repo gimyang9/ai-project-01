@@ -1,0 +1,29 @@
+{
+  "id": "CG-SKILL-009",
+  "date": "2026-10-24T15:57:18.755486+09:00",
+  "skill": "chagok-data-guard",
+  "task": "사용자 승인 B배너·홈·필터·중단 모달 UI 적용",
+  "todo_refs": [
+    "홈 디자인·필터 개선 #1~#6",
+    "시험 중단 모달 UI 개선 #1~#6",
+    "최종 조합 승인 그래"
+  ],
+  "actions": [
+    "승인된 개별 PNG 에셋 적용 및 원본 배너 보존",
+    "화면 문구와 CSS만 변경하고 상태·저장·연속일 계산 모듈은 유지",
+    "35개 기존 테스트 재실행",
+    "390/320px 및 PC 화면, 전체 선택행 클릭과 긴 목록 스크롤 검증"
+  ],
+  "evidence": [
+    "docs/evidence/approved-home-modal-qa.json",
+    "docs/evidence/approved-home-modal-boundary.json"
+  ],
+  "result": "limited",
+  "outcome": "승인된 디자인 적용 및 검증 완료; 기능 데이터 변경 없음.",
+  "limitations": [
+    "Browser QA in Chrome at simulated mobile widths; physical Safari/PWA not tested",
+    "App remains a preview; real1.0 data/backup integration is still pending",
+    "Many-item layout QA used an isolated temporary in-memory fixture harness removed before packaging",
+    "Static storage audit does not capture indirect storage calls"
+  ]
+}

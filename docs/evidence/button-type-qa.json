@@ -1,0 +1,18 @@
+{
+  "add": {
+    "fontSize": 15,
+    "fontWeight": 700,
+    "height": 44,
+    "iconSize": 18,
+    "gap": 7
+  },
+  "filters": {
+    "fontWeight": 700,
+    "height": 36,
+    "sizeUnchanged": true
+  },
+  "scope": "버튼 타이포그래피만 변경",
+  "limitations": [
+    "PC Chrome에서 계산 스타일 확인, 실기기 모바일 미검증"
+  ]
+}

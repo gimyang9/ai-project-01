@@ -1,0 +1,30 @@
+{
+  "id": "CG-SKILL-008",
+  "date": "2026-10-24T16:00:00+09:00",
+  "skill": "chagok-data-guard",
+  "task": "시험 중단/마무리 시 자료별 학습 유지 선택으로 전환",
+  "todo_refs": [
+    "최신 자료별 선택 요청 #1~#6"
+  ],
+  "actions": [
+    "상시 독립 학습 설정과 이벤트 제거",
+    "시험별 유지 선택과 직접/자동 중단 원인 분리",
+    "기존 미리보기 저장값을 비파괴 전환하며 최초 변경 전 원문 별도 보존",
+    "공유자료/반복재개/연결변경/오류저장 및 JSON 왕복 검사",
+    "27개 합성 자료 목록으로 모바일 내부 스크롤/확인 버튼 위치 검사"
+  ],
+  "evidence": [
+    "docs/evidence/material-choice-qa.json",
+    "docs/evidence/material-choice-boundary.json",
+    "tests/exam-management.test.cjs"
+  ],
+  "result": "limited",
+  "outcome": "35개 테스트 통과. 기존 기록/연결 보존, 자료별 선택 및 기본해제 확인.",
+  "limitations": [
+    "Actual1.0 migration and real study record CRUD are not connected in this preview",
+    "Backup/restore/reset UI remains previously unconnected; only exam store version1/version2 read compatibility and JSON round trip tested",
+    "No physical Safari or PWA validation",
+    "Static audit misses indirect storage calls; exact keys reviewed in source",
+    "Many-item QA used a separate temporary in-memory fixture harness; removed before publication"
+  ]
+}

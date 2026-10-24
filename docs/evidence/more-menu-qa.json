@@ -1,0 +1,39 @@
+{
+  "scope": "더보기 메뉴 구성·개수 배지·여백만 개선",
+  "menuCount": 2,
+  "cardHeight390": 114,
+  "rowHeight": 54,
+  "fontUnchanged": 13.8,
+  "iconSizeUnchanged": 19,
+  "noteUnchanged": "화면 미리보기 · 자료·통계는 예시이며 시험 관리 변경은 이 브라우저에 저장됩니다.",
+  "aboutEntryCount": 0,
+  "previewArchiveCount": 1,
+  "countUsesSameFixtureListAsArchive": true,
+  "mobile320Count12": {
+    "documentClientScroll": [
+      320,
+      320
+    ],
+    "badgeWidth": 23.90625,
+    "arrowRight": [
+      284,
+      284
+    ]
+  },
+  "countZero": {
+    "badge": "0",
+    "archiveContent": "보관한 자료가 없어요."
+  },
+  "interactions": [
+    "설정 버튼은 설정 모달 진입",
+    "자료 보관함 버튼은 기존 보관 자료와 다시 꺼내기 액션 표시",
+    "복원 액션은 기존 미연결 안내를 그대로 표시"
+  ],
+  "testsPassed": 35,
+  "limitations": [
+    "Actual persistent archive/restore remains unconnected; displayed archive is a fixture, not real user data",
+    "Chrome simulated mobile widths, no physical Safari/PWA validation",
+    "0/12 count cases used isolated QA-only fixture copies",
+    "Static audit misses indirect storage access; storage/calculation modules unchanged"
+  ]
+}

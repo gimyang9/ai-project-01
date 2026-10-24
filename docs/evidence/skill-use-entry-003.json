@@ -1,0 +1,27 @@
+{
+  "id": "CG-SKILL-003",
+  "date": "2026-10-24T10:15:58+09:00",
+  "skill": "chagok-data-guard",
+  "task": "승인된 아기 곰 브랜드 헤더와 5단계 식물 UI 적용",
+  "todo_refs": [
+    "1-1~1-10 화면 개선 후속(2단계 데이터 연결 미착수)"
+  ],
+  "actions": [
+    "승인된 텍스트 없는 배너와 식물 아틀라스 재사용",
+    "HTML 브랜드 제목 통합·세부 헤더 중앙 정렬·카드 여백 축소",
+    "자료 데이터 수정 없이 표시 함수의 5단계 경계·과거 완성 상태 유지 검증",
+    "원본 6개 파일 보존 및 저장 경계 검사·모바일 두 폭과 PC 시각 점검"
+  ],
+  "evidence": [
+    "docs/evidence/approved-assets-boundary.json",
+    "docs/evidence/five-stage-boundaries.json",
+    "docs/evidence/approved-assets-qa.json"
+  ],
+  "result": "limited",
+  "outcome": "배너·헤더·식물·카드 UI 적용. 성장 표시 37개 사례 통과. 1.0 원본 6개 동일, 리터럴 저장 접근 0건.",
+  "limitations": [
+    "실제 iPhone Safari·PWA·가상 키보드 미검증.",
+    "현재 2.0은 저장·스마트 복습 계산 미연결인 화면 미리보기.",
+    "정적 검사로 모든 동적 저장 접근이나 실제 데이터 호환성을 증명하지 않음."
+  ]
+}

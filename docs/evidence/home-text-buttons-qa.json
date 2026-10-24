@@ -1,0 +1,89 @@
+{
+  "scope": "홈 학습 목록·시험/복습 요약 및 자료 카드 버튼만 변경",
+  "cssOnly": true,
+  "mobile390": {
+    "taskName": [
+      13,
+      13.8
+    ],
+    "taskSmall": [
+      11.8,
+      12.4
+    ],
+    "taskAction": [
+      11.8,
+      12.4
+    ],
+    "summaryLabel": [
+      9.6,
+      10.3
+    ],
+    "summaryMain": [
+      13,
+      13.8
+    ],
+    "summarySub": [
+      9.6,
+      10.3
+    ],
+    "dDayUnchanged": 18,
+    "buttonFont": [
+      12.8,
+      13.4
+    ],
+    "buttonVerticalPadding": [
+      9,
+      8.2
+    ],
+    "buttonHeightBeforeAfter": 44,
+    "materialCardHeightBeforeAfter": 269.4375,
+    "documentClientScroll": [
+      390,
+      390
+    ]
+  },
+  "mobile320": {
+    "documentClientScroll": [
+      320,
+      320
+    ],
+    "taskName": 12.8,
+    "fixtureTaskNamesClipped": false,
+    "taskRowsClientScroll": [
+      262,
+      262
+    ],
+    "summaryClientScroll": [
+      141,
+      141
+    ],
+    "all6CardButtons": {
+      "font": 13.4,
+      "height": 44,
+      "clientScroll": [
+        127,
+        127
+      ]
+    }
+  },
+  "pc": {
+    "documentClientScroll": [
+      1363,
+      1363
+    ],
+    "taskNameFont": 13.8,
+    "summaryMainFont": 14,
+    "buttonFont": 13.4
+  },
+  "interaction": [
+    "진도 기록과 복습 버튼 각각 기존 모달 진입 확인",
+    "자료 상세 버튼12.8px·패딩9px6px 유지"
+  ],
+  "testsPassed": 35,
+  "limitations": [
+    "Chrome simulated mobile widths; no physical Safari/PWA validation",
+    "QA used copied app with isolated in-memory fixture storage",
+    "Full1.0 migration and actual study-record/backup integration remain pending",
+    "Static audit cannot detect all indirect storage access; JS source unchanged"
+  ]
+}

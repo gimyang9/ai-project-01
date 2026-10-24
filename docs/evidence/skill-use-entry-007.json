@@ -1,0 +1,30 @@
+{
+  "id": "CG-SKILL-007",
+  "date": "2026-10-24T15:00:00+09:00",
+  "skill": "chagok-data-guard",
+  "task": "추가 요청 시험 관리 단계와 필터 볼드",
+  "todo_refs": [
+    "추가 UI/UX #4, #4-1, #4-2",
+    "시험 필터 볼드 추가 지시"
+  ],
+  "actions": [
+    "시험 상태 계산과 LocalStorage 경계를 학습 기록에서 분리",
+    "다중 시험 공유·독립 자료·수동 중단 자료를 구분하는 중단/재개 검증",
+    "JSON 및 버전 검증과 저장 실패 시 UI 불변 검사",
+    "원본1.0 파일6개 대조, 미리보기 저장 범위와 미연결 백업을 명시"
+  ],
+  "evidence": [
+    "tests/exam-management.test.cjs",
+    "docs/evidence/exam-management-boundary.json",
+    "docs/evidence/exam-management-qa.json"
+  ],
+  "result": "limited",
+  "outcome": "시험 관리 동작 및 필터700 적용. 22개 테스트 통과. 기존 기록 변경 없음.",
+  "limitations": [
+    "Study material and record data are still fixtures; no 1.0 migration or real study CRUD connected",
+    "Backup/restore/reset integration for this new preview store is not implemented in this scope",
+    "No physical Safari or installed PWA testing",
+    "Automatic learning quantity and review calculations remain later work; displayed quantities are fixtures",
+    "정적 감사가 간접 LocalStorage 접근을 탐지하지 못하여 실제 저장 키를 수동 확인함"
+  ]
+}

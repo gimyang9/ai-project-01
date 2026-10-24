@@ -1,0 +1,53 @@
+{
+  "date": "2026-10-24T21:48:25+09:00",
+  "skill": "chagok-data-guard",
+  "mode": "preservation",
+  "result": "passed",
+  "checks": [
+    {
+      "name": "v1_reference_matches_archive",
+      "passed": true
+    },
+    {
+      "name": "application_sources_present",
+      "passed": true
+    }
+  ],
+  "protected_files": [
+    {
+      "path": "app.js",
+      "matches": true
+    },
+    {
+      "path": "favicon.svg",
+      "matches": true
+    },
+    {
+      "path": "fonts/LINESeedKR-Bd.woff2",
+      "matches": true
+    },
+    {
+      "path": "fonts/LINESeedKR-Rg.woff2",
+      "matches": true
+    },
+    {
+      "path": "index.html",
+      "matches": true
+    },
+    {
+      "path": "style.css",
+      "matches": true
+    }
+  ],
+  "storage_accesses": [],
+  "source_hashes": {
+    "dist/app.js": "c6228cf4747ef120ef200693398c269c309caa429cc07449908a5ab0236e0d87",
+    "dist/exam-management.js": "0100f9ecd456fbebf6796df6a32fea95580872b1fa2bcb2f55979b8e7f121504",
+    "dist/streak.js": "5990245c2d0f69b80bed51bcdd05d106c2bcb438da4d667d5056f35fee0d47fa"
+  },
+  "limitations": [
+    "정적 탐지는 별칭·동적 코드·HTML 인라인 스크립트·외부 스크립트를 완전히 분석하지 않는다.",
+    "파일 보존 비교는 실제 사용자 LocalStorage나 2.0 마이그레이션 성공을 검증하지 않는다.",
+    "preservation 모드는 저장 호출을 금지하지 않는다. 동작은 별도로 검증해야 한다."
+  ]
+}

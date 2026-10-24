@@ -1,0 +1,64 @@
+{
+  "date": "2026-10-24",
+  "scope": "승인된 B배너·홈·필터·시험 중단 모달 UI 적용",
+  "checks": {
+    "existing_tests": "35 passed",
+    "home_390": {
+      "welcome_total_height": 111.4375,
+      "title_font": 21,
+      "leaf_size": 18,
+      "subtitle": "작은 공부가 자라는 곳",
+      "order": "today learning then exam/review summary"
+    },
+    "pause_390": {
+      "height": 338.265625,
+      "default_checked": false,
+      "whole_row_click": true,
+      "button_height": 44,
+      "button_width": 153
+    },
+    "many_320": {
+      "fixture_material_count": 12,
+      "dialog_client_scroll_width": [
+        284,
+        284
+      ],
+      "dialog_height": 548.65625,
+      "list_client_scroll_height": [
+        258,
+        678
+      ],
+      "submit_bottom": 631.328125,
+      "viewport": 760
+    },
+    "filters_320": {
+      "exam_and_stats_font": "12px 700",
+      "height": 39,
+      "row_client_scroll_width": [
+        281,
+        281
+      ]
+    },
+    "pc": {
+      "width_client_scroll": [
+        1348,
+        1348
+      ],
+      "home_title": "BM JUA 48px",
+      "filter_font_css": "13px 700"
+    }
+  },
+  "preservation": [
+    "exam-management.js unchanged",
+    "streak.js unchanged",
+    "reference/v1 six protected files unchanged",
+    "existing storage and submit handlers unchanged",
+    "plant asset connections unchanged"
+  ],
+  "limitations": [
+    "Browser QA in Chrome at simulated mobile widths; physical Safari/PWA not tested",
+    "App remains a preview; real1.0 data/backup integration is still pending",
+    "Many-item layout QA used an isolated temporary in-memory fixture harness removed before packaging",
+    "Static storage audit does not capture indirect storage calls"
+  ]
+}

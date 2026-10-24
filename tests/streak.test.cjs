@@ -1,0 +1,15 @@
+const {test}=require('node:test');
+const assert=require('node:assert/strict');
+const vm=require('node:vm');
+const fs=require('node:fs');
+const ctx={};vm.createContext(ctx);vm.runInContext(fs.readFileSync('dist/streak.js','utf8'),ctx);
+const count=(dates,y,m,d)=>ctx.countStudyStreak(dates,new Date(y,m-1,d));
+test('same-day duplicates count once',()=>assert.equal(count(['2026-10-24','2026-10-24','2026-10-23'],2026,10,24).count,2));
+test('streak remains available before today is recorded',()=>{const r=count(['2026-10-23','2026-10-22'],2026,10,24);assert.equal(r.count,2);assert.equal(r.studiedToday,false)});
+test('a missing yesterday breaks the current streak',()=>assert.equal(count(['2026-10-22'],2026,10,24).count,0));
+test('a gap stops traversal',()=>assert.equal(count(['2026-10-24','2026-10-23','2026-10-21'],2026,10,24).count,2));
+test('future and invalid calendar dates are ignored',()=>assert.equal(count(['2026-10-25','2026-02-30','invalid'],2026,10,24).count,0));
+test('year boundary remains consecutive',()=>assert.equal(count(['2027-01-01','2026-12-31','2026-12-30'],2027,1,1).count,3));
+test('leap day remains consecutive',()=>assert.equal(count(['2024-03-01','2024-02-29','2024-02-28'],2024,3,1).count,3));
+test('calendar days across daylight-saving change remain consecutive',()=>assert.equal(count(['2026-03-09','2026-03-08','2026-03-07'],2026,3,9).count,3));
+test('empty data returns zero',()=>assert.equal(count([],2026,10,24).count,0));

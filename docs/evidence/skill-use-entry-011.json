@@ -1,0 +1,29 @@
+{
+  "id": "CG-SKILL-011",
+  "date": "2026-10-24T21:51:22.555642+09:00",
+  "skill": "chagok-data-guard",
+  "task": "승인된 홈 작은 글씨 및 자료 카드 버튼 개선",
+  "todo_refs": [
+    "홈 텍스트·학습 자료 카드 버튼 개선 #1~#4",
+    "제안 수치 사용자 승인 어"
+  ],
+  "actions": [
+    "현재 적용 수치를 기준으로 홈 전용 선택자만 추가",
+    "자료명·상태·권장 분량·요약 보조 글씨 선별 확대",
+    "메인 카드 버튼12.8→13.4px, 상하패딩9→8.2px, 최소높이44px 유지",
+    "D-Day·주요 제목·이미지·계산·저장·이벤트 소스 유지",
+    "35개 테스트 및1.0파일6개 보존 점검,320/390px·PC 화면과 기존 모달 진입 검증"
+  ],
+  "evidence": [
+    "docs/evidence/home-text-buttons-qa.json",
+    "docs/evidence/home-text-buttons-boundary.json"
+  ],
+  "result": "limited",
+  "outcome": "승인된 홈 UI 수정 및 관련 검증 통과. 버튼·카드 높이는 유지하고 글씨가 내부 여백을 채우도록 개선.",
+  "limitations": [
+    "Chrome simulated mobile widths; no physical Safari/PWA validation",
+    "QA used copied app with isolated in-memory fixture storage",
+    "Full1.0 migration and actual study-record/backup integration remain pending",
+    "Static audit cannot detect all indirect storage access; JS source unchanged"
+  ]
+}

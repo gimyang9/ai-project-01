@@ -1,0 +1,22 @@
+{
+  "id": "CG-SKILL-004",
+  "date": "2026-10-24T14:02:40+09:00",
+  "skill": "chagok-data-guard",
+  "task": "추가 버튼 글자 확대 및 필터 볼드 적용",
+  "todo_refs": [
+    "1단계 UI 미세 조정"
+  ],
+  "actions": [
+    "미완료 홈 작업을 보존하고 요청된 CSS만 분리 수정",
+    "브라우저 계산 스타일로 추가 높이44·글자15·굵기700·아이콘18 확인",
+    "필터 높이36 유지·굵기700 확인"
+  ],
+  "evidence": [
+    "docs/evidence/button-type-qa.json"
+  ],
+  "result": "limited",
+  "outcome": "버튼 크기와 동작을 유지하면서 글자 강조 적용. 저장 코드 변경 없음.",
+  "limitations": [
+    "실기기 모바일 미검증"
+  ]
+}
