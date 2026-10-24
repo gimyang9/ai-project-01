@@ -2,7 +2,7 @@
 
 학습 자료의 진도와 시험 목표를 관리하고 이해도 기반 복습을 돕기 위한 개인 학습 관리 웹앱입니다. 대학생과 여러 시험을 병행하는 학습자를 대상으로 합니다.
 
-> 2026-10-24 최신 상태: **2단계 자료·기록 저장과 데이터 전환 기능 구현**을 마쳤습니다. 합성 데이터/모의 DOM 자동 테스트 56개 통과. 실제 브라우저·사용자 1.0 백업 복사본 검증은 대기입니다. 자동 권장량·스마트 복습·실제 통계·PWA는 후속 단계입니다. [2단계 검증 보고](docs/stage2-validation.md)를 확인하세요.
+> 2026-10-25 최신 상태: **3단계 시험 관리·권장량·예상 완료일 구현**을 마쳤습니다. 자료별 기록 기간에 따른 최근 7/14/28일 평균과 시험 당일 제외 권장량을 분리해 안내합니다. 자동 테스트 90개 통과. 실제 브라우저·사용자 1.0 백업 복사본 검증은 대기입니다. 스마트 복습·실제 통계·PWA는 후속 단계입니다. [3단계 검증 기록](docs/stage3-validation.md)을 확인하세요.
 
 ## 1. 제작한 것 소개
 
@@ -13,9 +13,9 @@
 ### 기술과 실행
 
 - HTML, CSS, 일반 JavaScript. 프레임워크와 빌드 단계 없이 `dist`의 정적 파일을 제공합니다.
-- 주요 코드: [app.js](dist/app.js), [시험 관리 모듈](dist/exam-management.js), [연속 학습 계산](dist/streak.js).
+- 주요 코드: [app.js](dist/app.js), [시험 관리 모듈](dist/exam-management.js), [연속 학습 계산](dist/streak.js), [권장량·적응형 평균 예상일](dist/learning-plan.js).
 - 이미지·폰트는 로컬 에셋이며 출처는 [ASSETS.md](ASSETS.md), [폰트 출처와 라이선스](dist/assets/fonts/licenses/SOURCES.md)를 확인합니다.
-- 시험 미리보기 저장 키: `chagok-v2-preview-exams-v1`. 실제 학습 기록 저장소와 통합되지 않았습니다.
+- 통합 저장 키: `chagok-v2-data-v1`. 자료·기록·시험·수동 계획을 함께 저장합니다. 기존 1.0과 시험 미리보기 키는 읽기만 하여 보존합니다.
 
 Python이 설치된 환경에서는 프로젝트 루트에서 다음 명령으로 실행할 수 있습니다. 이 명령의 이번 환경 실행 및 브라우저 검증은 아직 하지 않았습니다.
 
@@ -33,7 +33,7 @@ python -m http.server 8000 --directory dist
 - [상세 TODO](docs/TODO.md): 화면 → 데이터 연결 → 시험/권장량 → 복습 → 통계/PWA → 최종 검증.
 - [현재 진행 상태](PROGRESS.md), [기존 QA 기록](QA.md).
 
-상세 TODO는 과거 원문이 아닌 복원·현행화 문서입니다. 원래 문구와 일대일 대응하거나 과거 개발 날짜를 증명하지 않습니다. 1단계는 화면 구성 완료, 2단계는 구현·합성 자동 검증 완료이며 실제 브라우저·1.0 복사본 검증은 대기입니다. 3~6단계는 미착수입니다.
+상세 TODO는 과거 원문이 아닌 복원·현행화 문서입니다. 원래 문구와 일대일 대응하거나 과거 개발 날짜를 증명하지 않습니다. 1단계는 화면 구성 완료, 2단계는 구현·합성 자동 검증 완료이며 실제 브라우저·1.0 복사본 검증은 대기입니다. 3단계도 구현·합성 검증 완료이며 4~6단계는 미착수입니다.
 
 ## 3. TODO 변경 내역
 
@@ -52,10 +52,10 @@ python -m http.server 8000 --directory dist
 기존 테스트는 Node.js의 내장 테스트 러너를 사용합니다.
 
 ```powershell
-node --test tests/streak.test.cjs tests/exam-management.test.cjs tests/study-data.test.cjs tests/study-app.test.cjs
+node --test tests/streak.test.cjs tests/exam-management.test.cjs tests/study-data.test.cjs tests/study-app.test.cjs tests/learning-plan.test.cjs
 ```
 
-PATH의 node는 없지만 Codex 런타임의 node.exe를 찾아 56개 테스트를 실행해 모두 통과했습니다. 실제 실행 경로와 결과는 2단계 검증 보고와 docs/evidence/stage2-tests.tap에 있습니다. 브라우저 연결이 없어 화면·파일 선택/다운로드·실기기 검증은 미실시입니다.
+PATH의 node는 없지만 Codex 런타임의 node.exe를 찾아 90개 테스트를 실행해 모두 통과했습니다. 실제 실행 경로와 결과는 3단계 검증 기록과 docs/evidence/stage3-plan-tests.tap에 있습니다. 브라우저 연결이 없어 화면·파일 선택/다운로드·실기기 검증은 미실시입니다.
 
 [제출 점검표](docs/submission-checklist.md)에 완료·미완료·확인 필요를 구분했습니다. 현재 폴더에는 `.git`이 없어 기존 커밋 이력과 원격 저장소, Public 여부를 확인할 수 없고 커밋·Push도 수행하지 않았습니다. 기존 Git 저장소를 먼저 확보해 이력을 유지해야 합니다.
 

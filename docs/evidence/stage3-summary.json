@@ -1,0 +1,11 @@
+﻿{
+    "date":  "2026-10-25",
+    "tests":  60,
+    "passed":  60,
+    "failed":  0,
+    "legacyUnchanged":  true,
+    "rootDistAppEqual":  true,
+    "rootDistExamEqual":  true,
+    "planningRules":  "Awaiting user response; no unapproved formula implemented",
+    "browserVerified":  false
+}

@@ -1,0 +1,39 @@
+﻿{
+    "date":  "2026-10-25",
+    "legacyUnchanged":  true,
+    "tests":  90,
+    "passed":  90,
+    "failed":  0,
+    "rootDist":  [
+                     {
+                         "file":  "app.js",
+                         "equal":  true
+                     },
+                     {
+                         "file":  "study-data.js",
+                         "equal":  true
+                     },
+                     {
+                         "file":  "learning-plan.js",
+                         "equal":  true
+                     },
+                     {
+                         "file":  "exam-management.js",
+                         "equal":  true
+                     },
+                     {
+                         "file":  "style.css",
+                         "equal":  true
+                     },
+                     {
+                         "file":  "index.html",
+                         "equal":  true
+                     }
+                 ],
+    "browserVerified":  false,
+    "limitations":  [
+                        "No connected browser: cua.getState apps=[] browsers=[]",
+                        "Synthetic data and mocked DOM only; no physical Safari/PWA QA",
+                        "No user browser data accessed"
+                    ]
+}

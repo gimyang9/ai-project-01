@@ -379,3 +379,30 @@
 - result: limited
 - outcome: 실제 앱 최종안 적용 완료, 기능 테스트 56개 통과. 기존 이미지 원본/앱 기능 보존.
 - limitations: cua.getState apps=[] browsers=[]이므로 데스크톱 홈/모바일/낮은 창 시각 검증 미수행. 정적 간격 검토를 실제 화면 QA로 주장하지 않는다. 이미지 생성/편집 없음. Git 커밋·배포 없음.
+
+## CG-SKILL-018: 3단계 시험 관리·쉬는 날짜·재응시 구현
+
+- date: 2026-10-25
+- skill: chagok-data-guard
+- skill_source: skills/chagok-data-guard/SKILL.md
+- task: 승인된 다음 단계 착수, 시험 관리 구현 및 미확정 계산 기준 확인
+- todo_refs: 3-1~3-6, 3-8, 3-14~3-17 구현 확인; 3-7, 3-9~3-13 계산 기준 응답 대기
+- actions: 원문/현재 진행/PRD 후속 결정과 실제 저장 코드를 확인했다. 쉬는 날짜의 검증/저장, 기존 자료와 기록을 공유하는 새 재응시 시험, 보관 자료의 기존 연결 유지 UI를 구현했다. 원래 시험/수동 일정/직접 중단/보관 상태를 보존한다. 미확정 날짜 경계와 속도 산정 기간은 사례로 사용자에게 질문하고 답변 전 계산을 확정 구현하지 않았다.
+- evidence: docs/stage3-validation.md, docs/evidence/stage3-tests.tap (60/60 pass), stage3-before.json, stage3-after.json, stage3-summary.json. 원본 1.0 6개 전후 동일, 루트/dist 일치.
+- result: limited
+- outcome: 시험 관리 부분 구현·60개 자동 테스트 완료. 권장량/예상일 계산 기준 응답 대기로 3단계 전체 미완료.
+- limitations: 실제 브라우저·Safari/PWA 미검증, 합성/모의 DOM만 검증. 사용자 실제 데이터 접근 없음. Git 커밋·배포 없음.
+
+
+## CG-SKILL-019: 3단계 권장량·자료별 적응형 평균 예상일
+
+- date: 2026-10-25
+- skill: chagok-data-guard
+- skill_source: skills/chagok-data-guard/SKILL.md
+- task: 사용자 확정 기준으로 3단계 권장량/예상일과 수동 계획 연결
+- todo_refs: 3-7, 3-9~3-13, 3단계 전체 구현 완료
+- actions: 원문/현재 상태/사용자 확정 규칙을 확인했다. learning-plan.js 순수 계산 모듈로 권장량과 자료별7/14/28일 평균 예상일을 분리하고 원본/복습/회독 이력을 보존했다. 목표일 우선/요일/쉬는 날/자료당 중복 방지, 수동 하루 분량 저장/복귀와 홈·시험·자료 상세/계획 UI를 연결했다.
+- evidence: docs/stage3-validation.md, docs/evidence/stage3-plan-tests.tap(90/90 pass), stage3-plan-before.json, stage3-plan-after.json, stage3-plan-summary.json. 원본1.0 6개 동일, 루트/dist 동기화.
+- result: limited
+- outcome: 3-1~3-17 구현·합성 자동 검증 완료. 실제 브라우저/사용자 확인 대기.
+- limitations: cua.getState apps=[] browsers=[]로 실제 모바일/PC/Safari/PWA 미검증. 모의 DOM/합성 테스트만 실행, 사용자 실제 저장값 접근 없음. 최초 쉬는 날0/null 테스트 기대값 오류 수정 후 최종90개 통과. 4단계·Git 커밋·배포 없음.

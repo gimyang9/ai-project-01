@@ -1,0 +1,35 @@
+{
+  "id": "CG-SKILL-019",
+  "date": "2026-10-25",
+  "skill": "chagok-data-guard",
+  "skill_source": "skills/chagok-data-guard/SKILL.md",
+  "task": "사용자 확정 기준으로 3단계 권장량·자료별 적응형 평균 예상 완료일 연결",
+  "todo_refs": [
+    "3-7",
+    "3-9~3-13",
+    "3-1~3-17 단계 구현 완료"
+  ],
+  "actions": [
+    "원문과 현재 상태/사용자 확정 규칙 확인",
+    "learning-plan.js 순수 계산 모듈 구현: 목표일 우선·시험 당일 제외·요일/쉬는 날짜·자료당 비중복",
+    "자료의 학습 기록 기간별 최근7/14/28일 평균, 빈 날 포함·최근0 예상일 없음·복습 제외",
+    "자료 수동 하루 분량 저장/복원 및 자동 계획 복귀, 원본과 수동 시험 일정 보존",
+    "홈·시험 연결 자료·상세/학습 계획 UI 연결과 90개 테스트 실행",
+    "전후 경계·원본6개·루트/dist 동기화 확인"
+  ],
+  "evidence": [
+    "docs/stage3-validation.md",
+    "docs/evidence/stage3-plan-tests.tap",
+    "docs/evidence/stage3-plan-before.json",
+    "docs/evidence/stage3-plan-after.json",
+    "docs/evidence/stage3-plan-summary.json"
+  ],
+  "result": "limited",
+  "outcome": "3-1~3-17 구현 및 합성 자동 검증 완료. 90개 통과. 실제 브라우저·사용자 최종 확인 대기.",
+  "limitations": [
+    "cua.getState apps=[] browsers=[]: 실제 모바일/PC/Safari/PWA 미검증",
+    "모의 DOM/합성 데이터 검사이며 실제 사용자 저장값 접근 없음",
+    "최초 테스트의 쉬는 날 0/null 기대값 오류를 수정한 뒤 최종90개 통과",
+    "4단계·Git 커밋·배포 미진행"
+  ]
+}

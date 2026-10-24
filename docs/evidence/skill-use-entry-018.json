@@ -1,0 +1,35 @@
+﻿{
+    "id":  "CG-SKILL-018",
+    "date":  "2026-10-25",
+    "skill":  "chagok-data-guard",
+    "skill_source":  "skills/chagok-data-guard/SKILL.md",
+    "task":  "3단계 시험 관리·쉬는 날짜·재응시 구현 및 계산 기준 확인",
+    "todo_refs":  [
+                      "3-1~3-6",
+                      "3-8",
+                      "3-14~3-17",
+                      "3-7 및 3-9~3-13 사용자 답변 대기"
+                  ],
+    "actions":  [
+                    "원문·TODO·PRD/후속 결정·실제 앱 저장 코드 확인",
+                    "쉬는 날짜 검증/저장과 재응시 새 시험/기존 자료 ID 연결 구현",
+                    "기존 보관 자료의 시험 연결 누락 방지",
+                    "60개 자동 테스트 실행, 원본 보존/루트-dist 점검",
+                    "미확정 날짜 경계와 속도 산정 기간을 사용자에게 사례로 질문; 답변 전 계산 미구현"
+                ],
+    "evidence":  [
+                     "docs/stage3-validation.md",
+                     "docs/evidence/stage3-tests.tap",
+                     "docs/evidence/stage3-before.json",
+                     "docs/evidence/stage3-after.json",
+                     "docs/evidence/stage3-summary.json"
+                 ],
+    "result":  "limited",
+    "outcome":  "시험 관리 부분 구현과 60개 테스트 통과. 원래 시험/학습 이력 보존. 자동 권장량 및 예상 완료일 기준 사용자 답변 대기.",
+    "limitations":  [
+                        "3단계 전체 완료 아님. 미확정 수치를 임의 확정하지 않음",
+                        "실제 브라우저·Safari/PWA 미검증; 모의 DOM은 화면 QA 아님",
+                        "사용자 실제 데이터 접근 없음; 합성 테스트만 수행",
+                        "Git 커밋·배포 미진행"
+                    ]
+}

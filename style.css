@@ -147,6 +147,15 @@ body:has(#view-more:not([hidden])) .preview-note{margin-top:18px}
 
 /* One navigation landmark: mobile tab bar becomes a desktop sidebar. */
 .sidebar-brand,.sidebar-footer,.sidebar-illustration{display:none}
+.learning-plan{margin-top:12px;padding:12px 14px;background:#f4f2e7;border:1px solid #e7e4d4;border-radius:13px;line-height:1.7;overflow-wrap:anywhere}
+.learning-plan p{font-size:11.8px;color:var(--muted);margin:0 0 4px}
+.learning-plan p strong{color:var(--green);font-size:12.8px}
+.learning-plan .subtle-button{min-height:44px;padding:6px 0;color:var(--green)}
+.learning-plan .plan-warning,.task-copy small.plan-warning{color:#a46748}
+.linked-materials>li>.learning-plan{margin:8px 0 12px}
+.today-task{align-items:flex-start}
+.today-task>.task-icon{margin-top:7px}
+@media(max-width:680px){.learning-plan{padding:10px 12px}.learning-plan p{font-size:11px}}
 @media(min-width:1024px){
   html{scroll-padding-bottom:32px}
   .app-shell,body:has(#view-home:not([hidden])) .app-shell{max-width:none;margin:0 0 0 280px;padding:28px 32px 0}

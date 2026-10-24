@@ -25,7 +25,7 @@ function refreshData(){
 }
 function renderStorageNote(){
   const note=document.querySelector('.preview-note');
-  note.textContent=studyLoad.writable?'자료·학습 기록·시험은 이 브라우저에 저장됩니다. 통계는 예시이며 자동 학습·복습 추천은 준비 중입니다.':studyLoad.error+' 설정에서 백업 파일을 복원할 수 있어요.';
+  note.textContent=studyLoad.writable?'자료·학습 기록·시험은 이 브라우저에 저장됩니다. 통계는 예시이며 자동 복습 추천은 준비 중입니다.':studyLoad.error+' 설정에서 백업 파일을 복원할 수 있어요.';
 }
 function persistData(next,message,recovery=false){
   if(!studyLoad.writable&&!recovery){notify(studyLoad.error);return false;}
@@ -143,14 +143,41 @@ function renderHomeWelcome() {
 }
 
 function renderToday() {
-  const order=examAPI.orderedGoals(examState).filter(g=>g.status==='active').flatMap(g=>g.materialIds);
-  const tasks=demoMaterials.filter(m=>examAPI.materialStatus(examState,m.id)==='active'&&m.current<m.total)
-    .sort((a,b)=>(order.indexOf(a.id)<0?Infinity:order.indexOf(a.id))-(order.indexOf(b.id)<0?Infinity:order.indexOf(b.id)));
-  $('today-list').innerHTML=tasks.map(m=>`<div class="today-task"><span class="task-icon">${icon('book')}</span><span class="task-copy"><strong>${escapeHTML(m.name)}</strong><small>남은 분량 ${m.total-m.current}${escapeHTML(m.unit)}</small></span><button class="text-link" data-dialog="record" data-material="${escapeHTML(m.id)}">진도 기록${icon('chevron')}</button></div>`).join('')||'<p class="field-help">학습 자료를 등록하고 공부한 진도를 기록해 보세요.</p>';
+  const tasks=currentPlans().filter(p=>p.isActive&&p.remaining>0);
+  $('today-list').innerHTML=tasks.map(p=>{const m=demoMaterials.find(m=>m.id===p.id);return `<div class="today-task"><span class="task-icon">${icon('book')}</span><span class="task-copy"><strong>${escapeHTML(m.name)}</strong><small>${escapeHTML(dailyPlanLabel(p,m.unit))} · 남은 분량 ${p.remaining}${escapeHTML(m.unit)}</small><small>${escapeHTML(forecastLabel(p))}</small>${planWarning(p,m.unit)?`<small class="plan-warning">${escapeHTML(planWarning(p,m.unit))}</small>`:''}</span><button class="text-link" data-dialog="record" data-material="${escapeHTML(m.id)}">진도 기록${icon('chevron')}</button></div>`;}).join('')||'<p class="field-help">학습 자료를 등록하고 공부한 진도를 기록해 보세요.</p>';
+}
 
+function currentPlans(){return LearningPlan.build(dataState,localToday(),studyAPI,examAPI);}
+function dailyPlanLabel(p,unit){
+  if(!p.remaining)return '이번 회독 완료';
+  if(!p.isActive)return '학습 중단 중';
+  if(!p.todayAllowed)return '오늘은 쉬는 날';
+  if(p.manualDailyAmount)return p.amount?`직접 정한 오늘 분량 ${p.amount}${unit}`:'오늘 정한 분량 완료';
+  if(p.noTime)return '학습 가능한 날이 없어요';
+  if(p.amount===null)return '목표일을 정하면 권장량을 안내해요';
+  return `오늘 권장 ${p.amount}${unit}`;
+}
+function forecastLabel(p){
+  if(!p.isActive)return '학습 재개 후 예상일을 확인해 주세요.';
+  const f=p.forecast;
+  if(f.reason==='completed')return '이번 회독 완료';
+  if(f.reason==='insufficient')return '추정할 기록이 부족해요 (학습 기록 기간 7일 미만)';
+  if(f.reason==='no-recent-study')return `최근 ${f.window}일 학습량이 0이라 예상일을 계산하지 않아요.`;
+  if(f.reason==='out-of-range')return '예상 완료일이 계산 가능한 범위를 넘어요.';
+  return `예상 완료 ${f.date} · 최근 ${f.window}일 평균 기준`;
+}
+function planWarning(p,unit){
+  if(p.noTime)return p.overdue?'목표 기한이 지났어요. 날짜나 학습 가능일을 확인해 주세요.':'기한까지 학습 가능한 날이 없어요.';
+  if(p.manualShortfall)return `직접 정한 분량으로는 기한까지 ${p.manualShortfall}${unit} 부족해요.`;
+  if(p.expectedLate)return '현재 학습 속도라면 목표 기한보다 늦어질 수 있어요.';
+  return '';
+}
+function planMarkup(p,m,action=true){
+  return `<div class="learning-plan"><p><strong>${escapeHTML(dailyPlanLabel(p,m.unit))}</strong></p><p>${escapeHTML(forecastLabel(p))}</p>${p.deadline?`<p>학습 기준일 ${p.deadline} · 남은 학습 가능일 ${p.availableDays}일${p.goalName?` · ${escapeHTML(p.goalName)} 일정`:''}</p>`:'<p>목표일 미정 · 자동 권장량은 기한을 정하면 안내해요.</p>'}${planWarning(p,m.unit)?`<p class="plan-warning">${escapeHTML(planWarning(p,m.unit))}</p>`:''}${action?`<button class="subtle-button" data-dialog="study-plan" data-material="${escapeHTML(m.id)}">학습 계획</button>`:''}</div>`;
 }
 
 function renderGoals(filter = 'all') {
+  const plans=currentPlans();
   goalFilter=filter;
   const goals=examAPI.orderedGoals(examState).filter(g=>filter==='all'||g.status===(filter==='done'?'archived':filter));
   document.querySelectorAll('[data-goal-filter]').forEach(button=>{
@@ -162,7 +189,7 @@ function renderGoals(filter = 'all') {
     const linked=g.materialIds.map(id=>demoMaterials.find(m=>m.id===id)).filter(Boolean);
     const progress=linked.length?Math.round(linked.reduce((sum,m)=>sum+m.current/m.total,0)/linked.length*100):0;
     const days=examAPI.dayDifference(g.date,localToday());
-    return `<article class="goal-card ${g.status==='paused'?'paused':''}"><div class="goal-top"><span class="goal-symbol">${icon(['notes','target','book'].includes(g.icon)?g.icon:'target')}</span><div class="goal-status">${g.id===examState.priorityGoalId?'<span class="badge sage">우선 시험</span>':''}${g.status==='paused'?'<span class="badge neutral">일시 중단</span>':g.status==='archived'?'<span class="badge neutral">보관</span>':''}<button class="icon-button exam-menu-button" data-exam-dialog="menu" data-goal="${escapeHTML(g.id)}" aria-label="${escapeHTML(g.name)} 관리">${icon('more')}</button></div></div><h2>${escapeHTML(g.name)}</h2><p class="goal-date">${icon('calendar')}${examDateLabel(g.date)}${days===null?'':`<b>${ddayLabel(days)}</b>`}</p><div>${progressMarkup(progress,'연결 자료 진행률')}</div><button class="linked-toggle" data-linked="${escapeHTML(g.id)}" aria-expanded="false" aria-controls="linked-${escapeHTML(g.id)}">연결된 자료 ${linked.length}개${icon('chevron')}</button><ul class="linked-materials" id="linked-${escapeHTML(g.id)}" hidden>${linked.map(m=>`<li>${escapeHTML(m.name)}</li>`).join('')}</ul></article>`;
+    return `<article class="goal-card ${g.status==='paused'?'paused':''}"><div class="goal-top"><span class="goal-symbol">${icon(['notes','target','book'].includes(g.icon)?g.icon:'target')}</span><div class="goal-status">${g.id===examState.priorityGoalId?'<span class="badge sage">우선 시험</span>':''}${g.status==='paused'?'<span class="badge neutral">일시 중단</span>':g.status==='archived'?'<span class="badge neutral">보관</span>':''}<button class="icon-button exam-menu-button" data-exam-dialog="menu" data-goal="${escapeHTML(g.id)}" aria-label="${escapeHTML(g.name)} 관리">${icon('more')}</button></div></div><h2>${escapeHTML(g.name)}</h2><p class="goal-date">${icon('calendar')}${examDateLabel(g.date)}${days===null?'':`<b>${ddayLabel(days)}</b>`}</p><div>${progressMarkup(progress,'연결 자료 진행률')}</div><button class="linked-toggle" data-linked="${escapeHTML(g.id)}" aria-expanded="false" aria-controls="linked-${escapeHTML(g.id)}">연결된 자료 ${linked.length}개${icon('chevron')}</button><ul class="linked-materials" id="linked-${escapeHTML(g.id)}" hidden>${linked.map(m=>{const p=plans.find(p=>p.id===m.id);return `<li><strong>${escapeHTML(m.name)}</strong>${g.status==='active'&&p?planMarkup(p,m):''}</li>`;}).join('')}</ul></article>`;
   }).join('');
   $('goal-empty').hidden=goals.length!==0;
   $('goal-empty').querySelector('h3').textContent=filter==='all'?'등록된 시험이 없어요':filter==='done'?'보관한 시험이 없어요':filter==='paused'?'일시 중단한 시험이 없어요':'진행 중인 시험이 없어요';
@@ -212,7 +239,8 @@ function openDetail(id) {
 function renderDetailTab(tab) {
   const m = selectedMaterial;
   if (tab === 'basic') {
-    $('detail-tab-content').innerHTML = `<ul class="basic-list">${[['자료 이름',m.name],['학습 유형',m.type],['전체 분량',`${m.total} ${escapeHTML(m.unit)}`],['현재 회독',`${m.round}회독`],['연결 시험',m.goal],['목표 완료일',m.due]].map(([label,value])=>`<li><span>${label}</span><strong>${escapeHTML(value)}</strong></li>`).join('')}</ul>`;
+    const plan=currentPlans().find(p=>p.id===m.id);
+    $('detail-tab-content').innerHTML = `<ul class="basic-list">${[['자료 이름',m.name],['학습 유형',m.type],['전체 분량',`${m.total} ${escapeHTML(m.unit)}`],['현재 회독',`${m.round}회독`],['연결 시험',m.goal],['목표 완료일',m.due]].map(([label,value])=>`<li><span>${label}</span><strong>${escapeHTML(value)}</strong></li>`).join('')}</ul>${plan?planMarkup(plan,m):''}`;
   } else {
     const source=dataState.study.materials.find(item=>item.id===m.id);
     const review=tab==='review';
@@ -239,6 +267,10 @@ function openDialog(type, materialId, editing = false) {
   if(type==='goal') return openExamDialog('edit');
   if (type === 'next-round') {
     title='다음 회독을 시작할까요?';content=`<p class="dialog-intro">이전 회독의 날짜·단위·기록은 그대로 보관하고 새 회독의 진도를 0부터 시작해요.</p><form data-study-form="next-round" data-material="${escapeHTML(m.id)}">${dialogFooter('다음 회독 시작')}</form>`;
+  } else if (type === 'study-plan') {
+    const p=currentPlans().find(p=>p.id===m.id);if(!p)return;
+    title='학습 계획';
+    content=`<p class="dialog-material-name">${escapeHTML(m.name)}</p>${planMarkup(p,m,false)}<form data-study-form="plan" data-material="${escapeHTML(m.id)}"><div class="form-field"><label for="manual-daily-amount">직접 정할 하루 분량 <small>(선택사항)</small></label><div class="input-unit"><input id="manual-daily-amount" type="number" min="1" step="1" inputmode="numeric" value="${m.manualDailyAmount||''}"><span>${escapeHTML(m.unit)}</span></div><p class="field-help">비워 두면 자동 권장량을 사용해요. 직접 정한 분량은 진도가 바뀌어도 유지하며, 오늘 기록한 학습량은 차감해서 안내해요.</p></div><p class="field-help">자동 권장량은 목표일까지 남은 분량과 가능한 날로 계산해요. 예상 완료일은 이와 별개로 자료의 기록 기간에 따라 최근 7·14·28일 평균(쉬는 날 포함)을 사용한 추정이에요.</p>${dialogFooter('저장')}</form>`;
   } else if (type === 'record') {
     title = '진도 기록';
     content = `<p class="dialog-material-name">${escapeHTML(m.name)}</p><form data-study-form="record" data-material="${escapeHTML(m.id)}"><div class="form-field"><label for="study-date">공부 날짜</label><input id="study-date" type="date" value="${localToday()}" max="${localToday()}" required></div><div class="form-field"><label for="study-position">현재 위치</label><div class="input-unit"><input id="study-position" type="number" min="0" max="${m.total}" step="1" inputmode="numeric" required><span>/ ${m.total} ${escapeHTML(m.unit)}</span></div><p class="field-help">이전 위치 ${m.current}${escapeHTML(m.unit)} · 공부량은 이전 기록과 비교해 계산해요.</p></div>${understanding()}${dialogFooter()}</form>`;
@@ -268,7 +300,7 @@ function openDialog(type, materialId, editing = false) {
     content = `<p class="dialog-intro">‘${escapeHTML(m.name)}’ 자료와 연결된 기록이 삭제됩니다.</p><form data-study-form="delete" data-material="${escapeHTML(m.id)}">${dialogFooter('삭제',true)}</form>`;
   } else if (type === 'material-menu') {
     title = '학습 자료 관리';
-    content = `<div class="more-list"><button data-dialog="memo" data-material="${escapeHTML(m.id)}">${icon('notes')}<span>메모</span></button><button data-dialog="material" data-material="${escapeHTML(m.id)}" data-edit>${icon('edit')}<span>자료 수정</span></button>${m.current===m.total?`<button data-dialog="next-round" data-material="${escapeHTML(m.id)}">${icon('repeat')}<span>다음 회독 시작</span></button>`:''}<button data-archive-material="${escapeHTML(m.id)}">${icon('archive')}<span>학습을 마무리하고 보관하기</span></button><button data-material-status="${examState.materialSettings[m.id].manualStatus==='paused'?'active':'paused'}" data-material="${escapeHTML(m.id)}">${icon('repeat')}<span>${examState.materialSettings[m.id].manualStatus==='paused'?'다시 시작하기':'일시 중단으로 설정'}</span></button><button class="muted-danger" data-dialog="delete-material" data-material="${escapeHTML(m.id)}">${icon('trash')}<span>자료 삭제</span></button></div>`;
+    content = `<div class="more-list"><button data-dialog="study-plan" data-material="${escapeHTML(m.id)}">${icon('calendar')}<span>학습 계획</span></button><button data-dialog="memo" data-material="${escapeHTML(m.id)}">${icon('notes')}<span>메모</span></button><button data-dialog="material" data-material="${escapeHTML(m.id)}" data-edit>${icon('edit')}<span>자료 수정</span></button>${m.current===m.total?`<button data-dialog="next-round" data-material="${escapeHTML(m.id)}">${icon('repeat')}<span>다음 회독 시작</span></button>`:''}<button data-archive-material="${escapeHTML(m.id)}">${icon('archive')}<span>학습을 마무리하고 보관하기</span></button><button data-material-status="${examState.materialSettings[m.id].manualStatus==='paused'?'active':'paused'}" data-material="${escapeHTML(m.id)}">${icon('repeat')}<span>${examState.materialSettings[m.id].manualStatus==='paused'?'다시 시작하기':'일시 중단으로 설정'}</span></button><button class="muted-danger" data-dialog="delete-material" data-material="${escapeHTML(m.id)}">${icon('trash')}<span>자료 삭제</span></button></div>`;
   } else if (type === 'archive') {
     title = '보관한 학습 자료';
     content = demoArchivedMaterials.map(material => `<div class="material-main"><div class="plant-sprite plant-flower" role="img" aria-label="보관된 완성 식물"></div><div><h3>${escapeHTML(material.name)}</h3><p class="field-help">${material.round}회독 완료 · 보관 중</p><button class="text-link" data-unarchive-material="${escapeHTML(material.id)}">다시 꺼내기${icon('chevron')}</button></div></div>`).join('') || '<p class="field-help">보관한 자료가 없어요.</p>';
@@ -304,12 +336,12 @@ function openExamDialog(type,id,status) {
   if(type!=='edit'&&!g)return;
   const safeId=g?escapeHTML(g.id):'';
   if(type==='menu') {
-    presentExamDialog('시험 관리',`<p class="dialog-material-name">${escapeHTML(g.name)}</p><div class="more-list"><button data-exam-dialog="memo" data-goal="${safeId}">${icon('notes')}<span>메모</span></button><button data-exam-dialog="edit" data-goal="${safeId}">${icon('edit')}<span>시험 수정</span></button>${g.status==='active'?`<button data-exam-priority="${safeId}">${icon('target')}<span>${examState.priorityGoalId===g.id?'우선 시험 해제':'우선 시험으로 설정'}</span></button>`:''}<button data-exam-dialog="status" data-goal="${safeId}" data-status="${g.status==='archived'?'active':'archived'}">${icon('archive')}<span>${g.status==='archived'?'보관 해제하고 다시 시작하기':'시험을 마무리하고 보관하기'}</span></button>${g.status!=='archived'?`<button data-exam-dialog="status" data-goal="${safeId}" data-status="${g.status==='paused'?'active':'paused'}">${icon('repeat')}<span>${g.status==='paused'?'다시 시작하기':'일시 중단으로 설정'}</span></button>`:''}<button class="muted-danger" data-exam-dialog="delete" data-goal="${safeId}">${icon('trash')}<span>시험 삭제</span></button></div>`);
+    presentExamDialog('시험 관리',`<p class="dialog-material-name">${escapeHTML(g.name)}</p><div class="more-list"><button data-exam-dialog="memo" data-goal="${safeId}">${icon('notes')}<span>메모</span></button><button data-exam-dialog="edit" data-goal="${safeId}">${icon('edit')}<span>시험 수정</span></button>${g.status==='active'?`<button data-exam-priority="${safeId}">${icon('target')}<span>${examState.priorityGoalId===g.id?'우선 시험 해제':'우선 시험으로 설정'}</span></button>`:''}<button data-exam-dialog="status" data-goal="${safeId}" data-status="${g.status==='archived'?'active':'archived'}">${icon('archive')}<span>${g.status==='archived'?'보관 해제하고 다시 시작하기':'시험을 마무리하고 보관하기'}</span></button>${g.status!=='archived'?`<button data-exam-dialog="status" data-goal="${safeId}" data-status="${g.status==='paused'?'active':'paused'}">${icon('repeat')}<span>${g.status==='paused'?'다시 시작하기':'일시 중단으로 설정'}</span></button>`:''}<button data-exam-dialog="resit" data-goal="${safeId}">${icon('repeat')}<span>다시 준비하기</span></button><button class="muted-danger" data-exam-dialog="delete" data-goal="${safeId}">${icon('trash')}<span>시험 삭제</span></button></div>`);
   }else if(type==='memo') {
     presentExamDialog('시험 메모',`<p class="dialog-material-name">${escapeHTML(g.name)}</p><form data-exam-form="memo" data-goal="${safeId}"><div class="form-field"><label for="exam-note">메모 <small>(선택사항)</small></label><textarea id="exam-note" rows="6">${escapeHTML(g.note)}</textarea></div>${dialogFooter('저장')}</form>`);
-  }else if(type==='edit') {
-    const draft=g||{name:'',date:'',materialIds:[],learningDays:[0,1,2,3,4,5],focusMode:'auto',focusDate:''};
-    presentExamDialog(g?'시험 수정':'시험 추가',`<form data-exam-form="edit" data-goal="${safeId}"><div class="form-field"><label for="goal-name">시험 이름</label><input id="goal-name" value="${escapeHTML(draft.name)}" maxlength="100" placeholder="예: 정보처리기사 필기" required></div><div class="form-field"><label for="goal-date">시험 날짜 <small>(선택사항)</small></label><input id="goal-date" type="date" value="${draft.date}"></div><div class="form-field"><span class="field-label">연결할 학습 자료 <small>(선택사항)</small></span><div class="checkbox-list">${demoMaterials.map(m=>`<label><input type="checkbox" name="goal-material" value="${escapeHTML(m.id)}" ${draft.materialIds.includes(m.id)?'checked':''}>${escapeHTML(m.name)}</label>`).join('')}</div></div><hr class="form-divider"><div class="form-field"><span class="field-label">학습 가능한 요일</span><div class="weekday-options">${['월','화','수','목','금','토','일'].map((day,i)=>`<label><input type="checkbox" name="learning-day" value="${i}" ${draft.learningDays.includes(i)?'checked':''} aria-label="${day}요일 학습 가능"><span>${day}</span></label>`).join('')}</div></div><div class="form-field"><label for="focus-mode">시험 전 집중 복습</label><select id="focus-mode"><option value="auto" ${draft.focusMode==='auto'?'selected':''}>학습 기록에 맞춰 자동 추천</option><option value="manual" ${draft.focusMode==='manual'?'selected':''}>직접 시작일 설정</option></select><p class="field-help">직접 설정한 일정은 유지해요. 자동 추천 계산은 아직 연결되지 않았어요.</p></div><div class="form-field" id="focus-date-field" ${draft.focusMode==='manual'?'':'hidden'}><label for="focus-date">집중 복습 시작일</label><input id="focus-date" type="date" value="${draft.focusDate}" ${draft.focusMode==='manual'?'required':''}></div>${dialogFooter(g?'저장':'추가')}</form>`);
+  }else if(type==='edit'||type==='resit') {
+    const draft=type==='resit'?{...g,name:g.name+' · 재응시',date:'',daysOff:[],focusMode:'auto',focusDate:''}:g||{name:'',date:'',materialIds:[],learningDays:[0,1,2,3,4,5],daysOff:[],focusMode:'auto',focusDate:''};
+    presentExamDialog(type==='resit'?'다시 준비하기':g?'시험 수정':'시험 추가',`<form data-exam-form="${type==='resit'?'resit':'edit'}" data-goal="${safeId}">${type==='resit'?'<p class="field-help">선택한 기존 자료와 기록을 함께 사용합니다. 원래 시험과 자료의 직접 중단·보관 상태는 유지해요.</p>':''}<div class="form-field"><label for="goal-name">시험 이름</label><input id="goal-name" value="${escapeHTML(draft.name)}" maxlength="100" placeholder="예: 정보처리기사 필기" required></div><div class="form-field"><label for="goal-date">시험 날짜 <small>(선택사항)</small></label><input id="goal-date" type="date" value="${draft.date}"></div><div class="form-field"><span class="field-label">연결할 학습 자료 <small>(선택사항)</small></span><div class="checkbox-list">${dataState.study.materials.map(studyAPI.project).filter(m=>type!=='resit'||g.materialIds.includes(m.id)).map(m=>`<label><input type="checkbox" name="goal-material" value="${escapeHTML(m.id)}" ${draft.materialIds.includes(m.id)?'checked':''}>${escapeHTML(m.name)}</label>`).join('')}</div></div><hr class="form-divider"><div class="form-field"><span class="field-label">학습 가능한 요일</span><div class="weekday-options">${['월','화','수','목','금','토','일'].map((day,i)=>`<label><input type="checkbox" name="learning-day" value="${i}" ${draft.learningDays.includes(i)?'checked':''} aria-label="${day}요일 학습 가능"><span>${day}</span></label>`).join('')}</div></div><div class="form-field"><label for="exam-days-off">쉬는 날짜 <small>(선택사항)</small></label><textarea id="exam-days-off" rows="2" placeholder="2026-11-01, 2026-11-08">${escapeHTML((draft.daysOff||[]).join(', '))}</textarea><p class="field-help">YYYY-MM-DD 형식으로 쉼표나 줄바꿈으로 구분해 주세요.</p></div><div class="form-field"><label for="focus-mode">시험 전 집중 복습</label><select id="focus-mode"><option value="auto" ${draft.focusMode==='auto'?'selected':''}>학습 기록에 맞춰 자동 추천</option><option value="manual" ${draft.focusMode==='manual'?'selected':''}>직접 시작일 설정</option></select><p class="field-help">직접 설정한 일정은 유지해요. 자동 추천 계산은 아직 연결되지 않았어요.</p></div><div class="form-field" id="focus-date-field" ${draft.focusMode==='manual'?'':'hidden'}><label for="focus-date">집중 복습 시작일</label><input id="focus-date" type="date" value="${draft.focusDate}" ${draft.focusMode==='manual'?'required':''}></div>${dialogFooter(g?'저장':'추가')}</form>`);
   }else if(type==='status'&&(status==='paused'||status==='archived')) {
     const linked=g.materialIds.map(id=>demoMaterials.find(m=>m.id===id)).filter(Boolean);
     const isPause=status==='paused';
@@ -337,14 +369,14 @@ function submitExamForm(event) {
   const id=form.dataset.goal;
   const mode=form.dataset.examForm;
   let action;
-  if(mode==='edit') {
+  if(mode==='edit'||mode==='resit') {
     const name=$('goal-name').value.trim();
     if(!name){$('goal-name').setCustomValidity('시험 이름을 입력해 주세요.');$('goal-name').reportValidity();$('goal-name').addEventListener('input',()=> $('goal-name').setCustomValidity(''),{once:true});return;}
-    const existing=examState.goals.find(g=>g.id===id);
-    action={type:'upsert',goal:{...(existing||{id:'exam-'+Array.from(crypto.getRandomValues(new Uint8Array(16)),n=>n.toString(16).padStart(2,'0')).join(''),status:'active',note:'',icon:'target'}),name,date:$('goal-date').value,
+    const existing=mode==='resit'?null:examState.goals.find(g=>g.id===id);
+    action={type:mode==='resit'?'resit':'upsert',id,goal:{...(existing||{id:'exam-'+Array.from(crypto.getRandomValues(new Uint8Array(16)),n=>n.toString(16).padStart(2,'0')).join(''),status:'active',note:'',icon:'target'}),name,date:$('goal-date').value,
       materialIds:Array.from(form.querySelectorAll('[name="goal-material"]:checked'),el=>el.value),
       learningDays:Array.from(form.querySelectorAll('[name="learning-day"]:checked'),el=>Number(el.value)),
-      focusMode:$('focus-mode').value,focusDate:$('focus-date').value}};
+      focusMode:$('focus-mode').value,focusDate:$('focus-date').value,daysOff:[...new Set(($('exam-days-off')?.value||'').split(/[\s,]+/).filter(Boolean))]}};
   }else if(mode==='memo')action={type:'memo',id,note:$('exam-note').value};
   else if(mode==='delete')action={type:'delete',id};
   else if(mode==='status')action={type:'status',id,status:form.dataset.status,continuedMaterialIds:Array.from(form.querySelectorAll('[name="continue-material"]:checked'),el=>el.value)};
@@ -383,6 +415,7 @@ function submitStudyForm(event){
     const material={id:id||crypto.randomUUID(),name:$('material-name').value.trim(),type,unit:type==='other'?$('custom-unit').value.trim():$('material-unit').value,total:Number($('material-total').value),targetDate:$('material-due').value};
     action={type:'material',material,goalIds:Array.from(form.querySelectorAll('[name="material-goal"]:checked'),el=>el.value)};
   }else if(mode==='memo')action={type:'note',id,note:$('material-note').value};
+  else if(mode==='plan')action={type:'plan',id,amount:$('manual-daily-amount').value.trim()?Number($('manual-daily-amount').value):null};
   else if(mode==='record'||mode==='review'){
     const record={id:form.dataset.record||crypto.randomUUID(),date:$(mode==='record'?'study-date':'review-date').value,understanding:understandingValue};
     if(mode==='record')record.position=Number($('study-position').value);
@@ -402,7 +435,7 @@ function submitStudyForm(event){
     dialog.close();
     if(currentView==='detail'){
       if(['delete'].includes(mode))showView('home');
-      else {openDetail(id);if(mode.includes('review'))renderDetailTab('review');}
+      else {openDetail(id);if(mode.includes('review'))renderDetailTab('review');else if(mode==='plan')renderDetailTab('basic');}
     }
   }
 }

@@ -24,6 +24,7 @@
       identify(m);check(text(m.name)&&Object.hasOwn(labels,m.type)&&text(m.unit)&&positive(m.total)&&positive(m.round));
       check(m.note===undefined||typeof m.note==='string');check(m.targetDate===undefined||m.targetDate===''||date(m.targetDate));
       check(m.archived===undefined||typeof m.archived==='boolean');
+      check(m.manualDailyAmount===undefined||m.manualDailyAmount===null||positive(m.manualDailyAmount),'직접 정한 하루 분량은 1 이상의 정수로 입력해 주세요.');
       check(Array.isArray(m.records)&&Array.isArray(m.reviews)&&Array.isArray(m.roundHistory)&&m.roundHistory.length===m.round-1);
       m.records.forEach(record);calculate(m.records,m.total);
       m.roundHistory.forEach((h,i)=>{check(h.round===i+1&&positive(h.total)&&text(h.unit)&&date(h.completedDate)&&Array.isArray(h.records));h.records.forEach(record);check(calculate(h.records,h.total).at(-1)?.position===h.total);});
@@ -80,6 +81,7 @@
     }else{
       check(m,'자료를 찾을 수 없어요.');
       if(action.type==='note')m.note=action.note;
+      else if(action.type==='plan')m.manualDailyAmount=action.amount;
       else if(action.type==='archive'){
         const settings=next.exams.materialSettings[m.id];
         if(action.archived&&!m.archived)m.beforeArchiveStatus=settings.manualStatus;

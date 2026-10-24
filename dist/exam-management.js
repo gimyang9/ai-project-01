@@ -10,6 +10,7 @@
     for(const g of value.goals){
       if(!g || typeof g.id!=='string' || !g.id || ids.has(g.id) || typeof g.name!=='string' || !g.name.trim() || !validDate(g.date) || !['active','paused','archived'].includes(g.status) || typeof g.note!=='string' || !Array.isArray(g.materialIds) || !g.materialIds.every(id=>typeof id==='string') || new Set(g.materialIds).size!==g.materialIds.length || !Array.isArray(g.learningDays) || !g.learningDays.every(day=>Number.isInteger(day)&&day>=0&&day<=6) || !['auto','manual'].includes(g.focusMode) || !validDate(g.focusDate) || (g.focusMode==='manual'&&!g.focusDate)) throw Error('시험 데이터 구조를 확인해 주세요.');
       if(value.version===2&&(!Array.isArray(g.continuedMaterialIds)||!g.continuedMaterialIds.every(id=>typeof id==='string')||new Set(g.continuedMaterialIds).size!==g.continuedMaterialIds.length))throw Error('학습 유지 선택을 확인해 주세요.');
+      if(g.daysOff!==undefined&&(!Array.isArray(g.daysOff)||!g.daysOff.every(d=>d!==''&&validDate(d))||new Set(g.daysOff).size!==g.daysOff.length))throw Error('쉬는 날짜를 확인해 주세요.');
       ids.add(g.id);
     }
     for(const m of Object.values(value.materialSettings)) if(!m || !['active','paused','archived'].includes(m.manualStatus) || (value.version===1&&typeof m.independent!=='boolean') || !Array.isArray(m.autoPausedBy) || !m.autoPausedBy.every(id=>typeof id==='string')) throw Error('자료 상태를 확인해 주세요.');
@@ -55,7 +56,11 @@
       next.materialSettings[action.id].manualStatus=action.status;
     }else{
       if(!g)throw Error('시험을 찾을 수 없어요.');
-      if(action.type==='priority'){
+      if(action.type==='resit'){
+        const draft=copy(action.goal);
+        if(!draft||next.goals.some(item=>item.id===draft.id)||!Array.isArray(draft.materialIds)||!draft.materialIds.every(id=>g.materialIds.includes(id)))throw Error('재응시 자료와 새 시험을 확인해 주세요.');
+        next.goals.push({...draft,status:'active',sourceGoalId:g.id,continuedMaterialIds:[]});
+      }else if(action.type==='priority'){
         if(g.status!=='active')throw Error('진행 중인 시험만 우선 지정할 수 있어요.');
         next.priorityGoalId=next.priorityGoalId===g.id?null:g.id;
       }else if(action.type==='status'){

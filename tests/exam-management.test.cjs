@@ -18,6 +18,23 @@ test('invalid dates, duplicate ids and manual date missing rejected',()=>{for(co
 test('priority orders recommendation without duplicating shared ids',()=>{const s=E.update(base(),{type:'priority',id:'b'});assert.equal(E.orderedGoals(s)[0].id,'b');const ids=[...new Set(E.orderedGoals(s).flatMap(g=>g.materialIds))];assert.equal(ids.filter(id=>id==='shared').length,1)});
 
 const legacy=()=>{const s=base();s.version=1;for(const g of s.goals)delete g.continuedMaterialIds;for(const [id,m] of Object.entries(s.materialSettings))m.independent=id==='independent';return s;};
+
+test('days off round-trip with schedules and memo; invalid and duplicate dates rejected',()=>{
+ const s=E.update(base(),{type:'upsert',goal:{id:'a',daysOff:['2026-11-01','2026-11-08']}});
+ assert.deepEqual(E.reconcile(s).goals[0].daysOff,['2026-11-01','2026-11-08']);
+ for(const daysOff of [['2026-02-30'],[''],['2026-11-01','2026-11-01'],'2026-11-01'])assert.throws(()=>E.update(s,{type:'upsert',goal:{id:'a',daysOff}}));
+ assert.equal(s.goals[0].importance,'legacy');
+});
+test('resit creates separate exam with selected original ids and leaves original archived exam unchanged',()=>{
+ let s=status(base(),'a','archived');const original=structuredClone(s.goals[0]);
+ s=E.update(s,{type:'resit',id:'a',goal:{...goal('new',['one','manual']),date:'2026-12-01',daysOff:[]}});
+ assert.deepEqual(s.goals[0],original);assert.equal(s.goals.at(-1).sourceGoalId,'a');assert.equal(s.goals.at(-1).status,'active');
+ assert.equal(E.materialStatus(s,'one'),'active');assert.equal(E.materialStatus(s,'manual'),'paused');
+ assert.equal(s.goals[0].materialIds.length,4);assert.deepEqual(s.goals.at(-1).materialIds,['one','manual']);
+});
+test('resit rejects reused exam id, missing source and material not linked to source',()=>{
+ for(const action of [{id:'a',goal:goal('a',['one'])},{id:'missing',goal:goal('new',[])},{id:'a',goal:goal('new',['not-linked'])}])assert.throws(()=>E.update(base(),{type:'resit',...action}));
+});
 test('new pause defaults keep none, including previously flagged legacy materials',()=>{const s=E.update(E.upgrade(legacy()),{type:'status',id:'a',status:'paused'});assert.equal(E.materialStatus(s,'independent'),'paused');assert.equal('independent' in s.materialSettings.independent,false)});
 test('legacy paused/archive states migrated without changing records or current availability',()=>{const raw=legacy();raw.goals[0].status='paused';raw.goals[0].history=[{id:'record',position:20}];const before=JSON.stringify(raw);const s=E.reconcile(raw);assert.equal(s.version,2);assert.equal(E.materialStatus(s,'independent'),'active');assert.equal(E.materialStatus(s,'one'),'paused');assert.deepEqual(s.goals[0].history,raw.goals[0].history);assert.equal(JSON.stringify(raw),before);raw.goals[0].status='archived';assert.equal(E.materialStatus(E.reconcile(raw),'one'),'active')});
 test('legacy raw JSON preserved once before first v2 write',()=>{const raw=JSON.stringify(legacy());const map=new Map([[E.KEY,raw],['study-progress-data-v1','original']]);const storage={getItem:k=>map.get(k)??null,setItem:(k,v)=>map.set(k,v)};const loaded=E.load(storage,base());assert.equal(map.get(E.KEY),raw);E.save(storage,loaded.state);assert.equal(map.get(E.KEY+'.before-choice-v2'),raw);assert.equal(JSON.parse(map.get(E.KEY)).version,2);assert.equal(map.get('study-progress-data-v1'),'original')});
