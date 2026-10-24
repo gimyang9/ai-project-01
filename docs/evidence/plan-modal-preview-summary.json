@@ -1,0 +1,18 @@
+﻿{
+    "date":  "2026-10-25",
+    "appHtmlCssJsAndDataModulesUnchanged":  true,
+    "preview":  "previews/study-plan/index.html",
+    "browserVerified":  false,
+    "mobileWidths":  [
+                         320,
+                         390,
+                         430
+                     ],
+    "statusExamples":  7,
+    "helpIconAdded":  false,
+    "limitations":  [
+                        "No connected browser; actual Safari numeric keyboard/layout not verified",
+                        "Fixture preview only; no persistence or production calculations",
+                        "No app changes or regression test rerun"
+                    ]
+}

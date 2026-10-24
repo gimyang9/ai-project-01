@@ -1,0 +1,33 @@
+{
+  "id": "CG-SKILL-020",
+  "date": "2026-10-25",
+  "skill": "chagok-data-guard",
+  "skill_source": "skills/chagok-data-guard/SKILL.md",
+  "task": "홈 배너 로고/보조 문구 A/B 미리보기만 제작",
+  "todo_refs": [
+    "사용자 요청 홈 배너 A/B, 실제 적용 승인 대기"
+  ],
+  "actions": [
+    "원문과 현재 진행/실제 배너 문구·CSS 확인",
+    "앱 스크립트를 제거한 고정 홈 스냅샷으로 독립 iframe 비교 제작",
+    "A 12px/400/5px 유지, B 새문구/13.2px/600/4px만 미리보기 내부에 적용",
+    "320/390/430/1280px 전환 제공",
+    "앱 HTML/CSS/배너 해시 동일 및 미리보기 구문/저장 접근 없음 확인"
+  ],
+  "evidence": [
+    "previews/banner-logo/index.html",
+    "previews/banner-logo/snapshot.js",
+    "docs/evidence/banner-logo-before.json",
+    "docs/evidence/banner-logo-boundary-before.json",
+    "docs/evidence/banner-logo-boundary-after.json",
+    "docs/evidence/banner-logo-preview-summary.json"
+  ],
+  "result": "limited",
+  "outcome": "독립 A/B 비교 페이지 완료. 실제 앱 코드·배너 이미지 변경 없음. B 추천, 사용자 최종 승인 대기.",
+  "limitations": [
+    "현재 LINE Seed Medium 파일 없음: B는 기존 Bold 600 사용, 진짜 Medium 아님",
+    "연결된 브라우저 없음: 실제 모바일/데스크톱 겹침/레이아웃 미검증",
+    "앱 회귀 테스트 미실행: 앱 코드 변경 없는 미리보기 제작만 수행",
+    "Git 커밋·배포 미수행"
+  ]
+}

@@ -1,0 +1,131 @@
+﻿{
+    "scope":  "Read-only source inventory; no browser storage access",
+    "legacyFiles":  [
+                        {
+                            "path":  "reference/v1/app.js",
+                            "sha256":  "398469CCF2A9A08FEE3850BCF0BC46B26746567F0A7EF9EC01DECC45FB8F8E5F"
+                        },
+                        {
+                            "path":  "reference/v1/favicon.svg",
+                            "sha256":  "55818283581A61F8DD47A289992C21553D92BDAE2B3A4CBB21971518F988E710"
+                        },
+                        {
+                            "path":  "reference/v1/fonts/LINESeedKR-Bd.woff2",
+                            "sha256":  "57F95A6C2CE2FF6FA84E28F96BC5D29DCF5A7E308C9A25ED9541EACFF3EDFA56"
+                        },
+                        {
+                            "path":  "reference/v1/fonts/LINESeedKR-Rg.woff2",
+                            "sha256":  "709275188A8EF23040274490CD1FA048A02E9C441A238A4252837258CF8A43DF"
+                        },
+                        {
+                            "path":  "reference/v1/index.html",
+                            "sha256":  "E39F79962F18CCEF089B462D32C51DD5FE2E1E465423751CF46F8A7D4F16D799"
+                        },
+                        {
+                            "path":  "reference/v1/style.css",
+                            "sha256":  "61BF287A3E5557BEDFFA7F81094F473878C732AA1C78E160723399C831B2A2AE"
+                        }
+                    ],
+    "sourceFiles":  [
+                        {
+                            "path":  "dist/app.js",
+                            "sha256":  "921E2573E2674DD374D7E0D64007AC3D001C495D65C77571D6970CC849BB0D69"
+                        },
+                        {
+                            "path":  "dist/exam-management.js",
+                            "sha256":  "F2C7ED4029103664823439D5FB777066AF233A69E4F7D98DCDA2A33A5EE7B6FC"
+                        },
+                        {
+                            "path":  "dist/learning-plan.js",
+                            "sha256":  "8131927433190943B18353836D3E34414FE80F1D2458C77F5DB681F9629D539B"
+                        },
+                        {
+                            "path":  "dist/previews/banner-logo/snapshot.js",
+                            "sha256":  "7180A293228E50DBC710CFA55B314F26E8FCE27505E627CF6F1899DFD47088B9"
+                        },
+                        {
+                            "path":  "dist/previews/more-responsive/snapshot.js",
+                            "sha256":  "34991DD2D29A59781C8AAB75A860073E30E21107962FB6921BFA1F46B635C5EF"
+                        },
+                        {
+                            "path":  "dist/streak.js",
+                            "sha256":  "5990245C2D0F69B80BED51BCDD05D106C2BCB438DA4D667D5056F35FEE0D47FA"
+                        },
+                        {
+                            "path":  "dist/study-data.js",
+                            "sha256":  "4BAEEAFDE35B7989E102A417C323C321C5DF8492B30245AED21A9691B2041396"
+                        }
+                    ],
+    "storageCandidates":  [
+                              {
+                                  "path":  "dist/app.js",
+                                  "line":  10,
+                                  "text":  "try {studyLoad=studyAPI.load(window.localStorage,examAPI);}"
+                              },
+                              {
+                                  "path":  "dist/app.js",
+                                  "line":  33,
+                                  "text":  "dataState=recovery\u0026\u0026!studyLoad.writable?studyAPI.recover(window.localStorage,next,examAPI):studyAPI.save(window.localStorage,next,examAPI);"
+                              },
+                              {
+                                  "path":  "dist/exam-management.js",
+                                  "line":  80,
+                                  "text":  "try{const raw=storage.getItem(KEY);return {state:raw===null?validate(reconcile(initial)):validate(reconcile(validate(JSON.parse(raw)))),writable:true,error:null};}"
+                              },
+                              {
+                                  "path":  "dist/exam-management.js",
+                                  "line":  85,
+                                  "text":  "const raw=storage.getItem(KEY);"
+                              },
+                              {
+                                  "path":  "dist/exam-management.js",
+                                  "line":  88,
+                                  "text":  "if(previous.version===1\u0026\u0026storage.getItem(KEY+\u0027.before-choice-v2\u0027)===null)storage.setItem(KEY+\u0027.before-choice-v2\u0027,raw);"
+                              },
+                              {
+                                  "path":  "dist/exam-management.js",
+                                  "line":  90,
+                                  "text":  "storage.setItem(KEY,JSON.stringify(safe));return safe;"
+                              },
+                              {
+                                  "path":  "dist/study-data.js",
+                                  "line":  53,
+                                  "text":  "const raw=storage.getItem(KEY);"
+                              },
+                              {
+                                  "path":  "dist/study-data.js",
+                                  "line":  55,
+                                  "text":  "const legacyRaw=storage.getItem(LEGACY_KEY),examRaw=storage.getItem(api.KEY);"
+                              },
+                              {
+                                  "path":  "dist/study-data.js",
+                                  "line":  60,
+                                  "text":  "storage.setItem(KEY,JSON.stringify(next));"
+                              },
+                              {
+                                  "path":  "dist/study-data.js",
+                                  "line":  64,
+                                  "text":  "function save(storage,state,api){const safe=validate(state,api);storage.setItem(KEY,JSON.stringify(safe));return safe;}"
+                              },
+                              {
+                                  "path":  "dist/study-data.js",
+                                  "line":  68,
+                                  "text":  "const original={v2:storage.getItem(KEY),legacy:storage.getItem(LEGACY_KEY),exams:storage.getItem(api.KEY)};"
+                              },
+                              {
+                                  "path":  "dist/study-data.js",
+                                  "line":  69,
+                                  "text":  "let index=0;while(storage.getItem(KEY+\u0027.before-recovery.\u0027+index)!==null)index++;"
+                              },
+                              {
+                                  "path":  "dist/study-data.js",
+                                  "line":  70,
+                                  "text":  "storage.setItem(KEY+\u0027.before-recovery.\u0027+index,JSON.stringify(original));"
+                              }
+                          ],
+    "limitations":  [
+                        "Pattern search can miss indirect access and include unrelated methods.",
+                        "Hashes prove file identity only when compared with a trusted baseline.",
+                        "No runtime, migration, backup round-trip or browser validation is performed."
+                    ]
+}

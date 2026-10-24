@@ -1,0 +1,15 @@
+﻿{
+    "date":  "2026-10-25",
+    "approved":  "B",
+    "subtitle":  "오늘의 공부를 기록해요",
+    "fontSize":  13.2,
+    "fontWeight":  600,
+    "gap":  4,
+    "appJavascriptUnchanged":  true,
+    "legacyUnchanged":  true,
+    "bannerImageUnchanged":  true,
+    "rootDistHtmlEqual":  true,
+    "rootDistCssEqual":  true,
+    "browserVerified":  false,
+    "tests":  "No regression suite rerun for text/CSS-only change; source boundaries and asset identity checked"
+}

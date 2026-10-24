@@ -176,6 +176,23 @@ function planMarkup(p,m,action=true){
   return `<div class="learning-plan"><p><strong>${escapeHTML(dailyPlanLabel(p,m.unit))}</strong></p><p>${escapeHTML(forecastLabel(p))}</p>${p.deadline?`<p>학습 기준일 ${p.deadline} · 남은 학습 가능일 ${p.availableDays}일${p.goalName?` · ${escapeHTML(p.goalName)} 일정`:''}</p>`:'<p>목표일 미정 · 자동 권장량은 기한을 정하면 안내해요.</p>'}${planWarning(p,m.unit)?`<p class="plan-warning">${escapeHTML(planWarning(p,m.unit))}</p>`:''}${action?`<button class="subtle-button" data-dialog="study-plan" data-material="${escapeHTML(m.id)}">학습 계획</button>`:''}</div>`;
 }
 
+// Modal-only presentation: use existing derived plan values without changing policy.
+function compactPlanStatus(p,unit){
+  let primary=dailyPlanLabel(p,unit),secondary='',warning=false;
+  if(!p.remaining)return {primary,secondary,warning};
+  if(!p.isActive)return {primary,secondary:'재개 후 권장량을 확인해 주세요.',warning};
+  const notice=planWarning(p,unit);
+  if(notice){secondary=notice;warning=true;}
+  else if(!p.deadline){
+    if(p.todayAllowed&&!p.manualDailyAmount){primary='목표일 미정';secondary='목표일을 정하면 자동 추천을 안내해요.';}
+    else secondary='목표일 미정';
+  }else if(p.forecast.reason==='insufficient')secondary='예상일을 추정할 기록이 부족해요.';
+  else if(p.forecast.reason==='no-recent-study')secondary='최근 학습량이 없어 예상일을 안내하지 않아요.';
+  else if(p.forecast.reason==='out-of-range')secondary='예상 완료일을 계산할 수 있는 범위를 넘었어요.';
+  else if(p.forecast.reason==='estimated')secondary=`예상 완료 ${p.forecast.date}`;
+  return {primary,secondary,warning};
+}
+
 function renderGoals(filter = 'all') {
   const plans=currentPlans();
   goalFilter=filter;
@@ -269,8 +286,9 @@ function openDialog(type, materialId, editing = false) {
     title='다음 회독을 시작할까요?';content=`<p class="dialog-intro">이전 회독의 날짜·단위·기록은 그대로 보관하고 새 회독의 진도를 0부터 시작해요.</p><form data-study-form="next-round" data-material="${escapeHTML(m.id)}">${dialogFooter('다음 회독 시작')}</form>`;
   } else if (type === 'study-plan') {
     const p=currentPlans().find(p=>p.id===m.id);if(!p)return;
+    const status=compactPlanStatus(p,m.unit);
     title='학습 계획';
-    content=`<p class="dialog-material-name">${escapeHTML(m.name)}</p>${planMarkup(p,m,false)}<form data-study-form="plan" data-material="${escapeHTML(m.id)}"><div class="form-field"><label for="manual-daily-amount">직접 정할 하루 분량 <small>(선택사항)</small></label><div class="input-unit"><input id="manual-daily-amount" type="number" min="1" step="1" inputmode="numeric" value="${m.manualDailyAmount||''}"><span>${escapeHTML(m.unit)}</span></div><p class="field-help">비워 두면 자동 권장량을 사용해요. 직접 정한 분량은 진도가 바뀌어도 유지하며, 오늘 기록한 학습량은 차감해서 안내해요.</p></div><p class="field-help">자동 권장량은 목표일까지 남은 분량과 가능한 날로 계산해요. 예상 완료일은 이와 별개로 자료의 기록 기간에 따라 최근 7·14·28일 평균(쉬는 날 포함)을 사용한 추정이에요.</p>${dialogFooter('저장')}</form>`;
+    content=`<p class="dialog-material-name">${escapeHTML(m.name)}</p><div class="plan-status"><p><strong>${escapeHTML(status.primary)}</strong></p>${status.secondary?`<p class="${status.warning?'plan-status-warning':''}">${escapeHTML(status.secondary)}</p>`:''}</div><form data-study-form="plan" data-material="${escapeHTML(m.id)}"><div class="form-field"><label for="manual-daily-amount">하루 학습량 <small>(선택사항)</small></label><div class="plan-amount"><input id="manual-daily-amount" type="number" min="1" step="1" inputmode="numeric" value="${m.manualDailyAmount||''}"><span>${escapeHTML(m.unit)}</span></div><p class="field-help">비워 두면 자동 추천을 사용해요.</p></div>${dialogFooter('저장')}</form>`;
   } else if (type === 'record') {
     title = '진도 기록';
     content = `<p class="dialog-material-name">${escapeHTML(m.name)}</p><form data-study-form="record" data-material="${escapeHTML(m.id)}"><div class="form-field"><label for="study-date">공부 날짜</label><input id="study-date" type="date" value="${localToday()}" max="${localToday()}" required></div><div class="form-field"><label for="study-position">현재 위치</label><div class="input-unit"><input id="study-position" type="number" min="0" max="${m.total}" step="1" inputmode="numeric" required><span>/ ${m.total} ${escapeHTML(m.unit)}</span></div><p class="field-help">이전 위치 ${m.current}${escapeHTML(m.unit)} · 공부량은 이전 기록과 비교해 계산해요.</p></div>${understanding()}${dialogFooter()}</form>`;
@@ -300,13 +318,14 @@ function openDialog(type, materialId, editing = false) {
     content = `<p class="dialog-intro">‘${escapeHTML(m.name)}’ 자료와 연결된 기록이 삭제됩니다.</p><form data-study-form="delete" data-material="${escapeHTML(m.id)}">${dialogFooter('삭제',true)}</form>`;
   } else if (type === 'material-menu') {
     title = '학습 자료 관리';
-    content = `<div class="more-list"><button data-dialog="study-plan" data-material="${escapeHTML(m.id)}">${icon('calendar')}<span>학습 계획</span></button><button data-dialog="memo" data-material="${escapeHTML(m.id)}">${icon('notes')}<span>메모</span></button><button data-dialog="material" data-material="${escapeHTML(m.id)}" data-edit>${icon('edit')}<span>자료 수정</span></button>${m.current===m.total?`<button data-dialog="next-round" data-material="${escapeHTML(m.id)}">${icon('repeat')}<span>다음 회독 시작</span></button>`:''}<button data-archive-material="${escapeHTML(m.id)}">${icon('archive')}<span>학습을 마무리하고 보관하기</span></button><button data-material-status="${examState.materialSettings[m.id].manualStatus==='paused'?'active':'paused'}" data-material="${escapeHTML(m.id)}">${icon('repeat')}<span>${examState.materialSettings[m.id].manualStatus==='paused'?'다시 시작하기':'일시 중단으로 설정'}</span></button><button class="muted-danger" data-dialog="delete-material" data-material="${escapeHTML(m.id)}">${icon('trash')}<span>자료 삭제</span></button></div>`;
+    content = `<div class="more-list"><button data-dialog="study-plan" data-material="${escapeHTML(m.id)}">${icon('calendar')}<span>학습 계획</span></button><button data-dialog="memo" data-material="${escapeHTML(m.id)}">${icon('notes')}<span>메모</span></button><button data-dialog="material" data-material="${escapeHTML(m.id)}" data-edit>${icon('edit')}<span>자료 수정</span></button>${m.current===m.total?`<button data-dialog="next-round" data-material="${escapeHTML(m.id)}">${icon('repeat')}<span>다음 회독 시작</span></button>`:''}<button data-archive-material="${escapeHTML(m.id)}">${icon('archive')}<span>학습 완료 및 보관</span></button><button data-material-status="${examState.materialSettings[m.id].manualStatus==='paused'?'active':'paused'}" data-material="${escapeHTML(m.id)}">${icon('repeat')}<span>${examState.materialSettings[m.id].manualStatus==='paused'?'다시 시작하기':'학습 일시 중단'}</span></button><button class="muted-danger" data-dialog="delete-material" data-material="${escapeHTML(m.id)}">${icon('trash')}<span>자료 삭제</span></button></div>`;
   } else if (type === 'archive') {
     title = '보관한 학습 자료';
     content = demoArchivedMaterials.map(material => `<div class="material-main"><div class="plant-sprite plant-flower" role="img" aria-label="보관된 완성 식물"></div><div><h3>${escapeHTML(material.name)}</h3><p class="field-help">${material.round}회독 완료 · 보관 중</p><button class="text-link" data-unarchive-material="${escapeHTML(material.id)}">다시 꺼내기${icon('chevron')}</button></div></div>`).join('') || '<p class="field-help">보관한 자료가 없어요.</p>';
   }
   if (!title) return;
   dialog.classList.remove('exam-choice-dialog','exam-pause-dialog');
+  dialog.classList.toggle('study-plan-dialog',type==='study-plan');
   const alreadyOpen = dialog.open;
   if (!alreadyOpen) dialogReturnFocus = document.activeElement;
   $('dialog-title').textContent = title;
@@ -322,6 +341,7 @@ function openDialog(type, materialId, editing = false) {
 }
 
 function presentExamDialog(title,content) {
+  dialog.classList.remove('study-plan-dialog');
   if(!dialog.open)dialogReturnFocus=document.activeElement;
   dialog.classList.toggle('exam-choice-dialog',content.includes('data-exam-choices'));
   dialog.classList.toggle('exam-pause-dialog',content.includes('data-pause-layout'));
@@ -336,7 +356,7 @@ function openExamDialog(type,id,status) {
   if(type!=='edit'&&!g)return;
   const safeId=g?escapeHTML(g.id):'';
   if(type==='menu') {
-    presentExamDialog('시험 관리',`<p class="dialog-material-name">${escapeHTML(g.name)}</p><div class="more-list"><button data-exam-dialog="memo" data-goal="${safeId}">${icon('notes')}<span>메모</span></button><button data-exam-dialog="edit" data-goal="${safeId}">${icon('edit')}<span>시험 수정</span></button>${g.status==='active'?`<button data-exam-priority="${safeId}">${icon('target')}<span>${examState.priorityGoalId===g.id?'우선 시험 해제':'우선 시험으로 설정'}</span></button>`:''}<button data-exam-dialog="status" data-goal="${safeId}" data-status="${g.status==='archived'?'active':'archived'}">${icon('archive')}<span>${g.status==='archived'?'보관 해제하고 다시 시작하기':'시험을 마무리하고 보관하기'}</span></button>${g.status!=='archived'?`<button data-exam-dialog="status" data-goal="${safeId}" data-status="${g.status==='paused'?'active':'paused'}">${icon('repeat')}<span>${g.status==='paused'?'다시 시작하기':'일시 중단으로 설정'}</span></button>`:''}<button data-exam-dialog="resit" data-goal="${safeId}">${icon('repeat')}<span>다시 준비하기</span></button><button class="muted-danger" data-exam-dialog="delete" data-goal="${safeId}">${icon('trash')}<span>시험 삭제</span></button></div>`);
+    presentExamDialog('시험 관리',`<p class="dialog-material-name">${escapeHTML(g.name)}</p><div class="more-list"><button data-exam-dialog="memo" data-goal="${safeId}">${icon('notes')}<span>메모</span></button><button data-exam-dialog="edit" data-goal="${safeId}">${icon('edit')}<span>시험 수정</span></button>${g.status==='active'?`<button data-exam-priority="${safeId}">${icon('target')}<span>${examState.priorityGoalId===g.id?'우선 시험 해제':'우선 시험 지정'}</span></button>`:''}<button data-exam-dialog="status" data-goal="${safeId}" data-status="${g.status==='archived'?'active':'archived'}">${icon('archive')}<span>${g.status==='archived'?'보관 해제하고 다시 시작하기':'시험 완료 및 보관'}</span></button>${g.status!=='archived'?`<button data-exam-dialog="status" data-goal="${safeId}" data-status="${g.status==='paused'?'active':'paused'}">${icon('repeat')}<span>${g.status==='paused'?'다시 시작하기':'학습 일시 중단'}</span></button>`:''}<button data-exam-dialog="resit" data-goal="${safeId}">${icon('repeat')}<span>다시 준비하기</span></button><button class="muted-danger" data-exam-dialog="delete" data-goal="${safeId}">${icon('trash')}<span>시험 삭제</span></button></div>`);
   }else if(type==='memo') {
     presentExamDialog('시험 메모',`<p class="dialog-material-name">${escapeHTML(g.name)}</p><form data-exam-form="memo" data-goal="${safeId}"><div class="form-field"><label for="exam-note">메모 <small>(선택사항)</small></label><textarea id="exam-note" rows="6">${escapeHTML(g.note)}</textarea></div>${dialogFooter('저장')}</form>`);
   }else if(type==='edit'||type==='resit') {

@@ -1,0 +1,34 @@
+﻿[
+    {
+        "Path":  "C:\\Users\\alsru\\OneDrive\\Desktop\\dev\\project-v2-upload\\index.html",
+        "Hash":  "6CC2E45DB05F5CFFFBF3244823D6B38407BC62EF4F9945FFE08D343AC8792534"
+    },
+    {
+        "Path":  "C:\\Users\\alsru\\OneDrive\\Desktop\\dev\\project-v2-upload\\dist\\index.html",
+        "Hash":  "6CC2E45DB05F5CFFFBF3244823D6B38407BC62EF4F9945FFE08D343AC8792534"
+    },
+    {
+        "Path":  "C:\\Users\\alsru\\OneDrive\\Desktop\\dev\\project-v2-upload\\app.js",
+        "Hash":  "10040093C0BFE7D4481FF19D5A6F82B28DEB707E68543BC2E8098AD06FF8BAF5"
+    },
+    {
+        "Path":  "C:\\Users\\alsru\\OneDrive\\Desktop\\dev\\project-v2-upload\\dist\\app.js",
+        "Hash":  "10040093C0BFE7D4481FF19D5A6F82B28DEB707E68543BC2E8098AD06FF8BAF5"
+    },
+    {
+        "Path":  "C:\\Users\\alsru\\OneDrive\\Desktop\\dev\\project-v2-upload\\style.css",
+        "Hash":  "E29D84D345DE0DFAB087D5E60074F3E04403D49F7FD372B96C71D4E0CE3A561B"
+    },
+    {
+        "Path":  "C:\\Users\\alsru\\OneDrive\\Desktop\\dev\\project-v2-upload\\dist\\style.css",
+        "Hash":  "E29D84D345DE0DFAB087D5E60074F3E04403D49F7FD372B96C71D4E0CE3A561B"
+    },
+    {
+        "Path":  "C:\\Users\\alsru\\OneDrive\\Desktop\\dev\\project-v2-upload\\dist\\learning-plan.js",
+        "Hash":  "8131927433190943B18353836D3E34414FE80F1D2458C77F5DB681F9629D539B"
+    },
+    {
+        "Path":  "C:\\Users\\alsru\\OneDrive\\Desktop\\dev\\project-v2-upload\\dist\\study-data.js",
+        "Hash":  "4BAEEAFDE35B7989E102A417C323C321C5DF8492B30245AED21A9691B2041396"
+    }
+]

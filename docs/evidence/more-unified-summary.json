@@ -1,0 +1,23 @@
+{
+  "date": "2026-10-25",
+  "appJavascriptUnchanged": true,
+  "legacyUnchanged": true,
+  "rootDistCssEqual": false,
+  "staticCascadeWidths": [
+    320,
+    390,
+    768,
+    1023,
+    1024,
+    1280,
+    1440,
+    1920
+  ],
+  "specifiedTabletDesktopValuesMatch": true,
+  "desktopSidebarBreakpoint": 1024,
+  "mobilePreservedBelow": 681,
+  "browserVerified": false,
+  "regressionTests": "Not rerun: CSS-only change; static cascade and source-boundary verification performed",
+  "moreScopedRulesIdentical": true,
+  "unrelatedRootCssEditPreserved": "During final check, root style.css independently changed .app-dialog.study-plan-dialog to fit-content/max-height/overflow-y. Outside this task; left untouched. Dist version not changed."
+}

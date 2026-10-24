@@ -1,0 +1,30 @@
+﻿{
+    "id":  "CG-SKILL-023",
+    "date":  "2026-10-25",
+    "skill":  "chagok-data-guard",
+    "skill_source":  "skills/chagok-data-guard/SKILL.md",
+    "task":  "승인된 학습 계획 모달 UI 실제 적용",
+    "todo_refs":  [
+                      "UI-PLAN-01"
+                  ],
+    "actions":  [
+                    "원문·현재 모달/스타일 확인",
+                    "모달 전용 상태표시를 최대2문단으로 축약, 계산 결과는 그대로 사용",
+                    "하루 학습량 라벨·실제 단위 일체형 입력·한줄 안내·간격 조정",
+                    "모달별 스타일 class 토글/해제로 다른 모달 격리",
+                    "92개 테스트 및 전후 계산/저장 모듈·원본 보존 확인"
+                ],
+    "evidence":  [
+                     "docs/evidence/plan-modal-final-tests.tap",
+                     "docs/evidence/plan-modal-final-summary.json",
+                     "docs/evidence/plan-modal-final-before.json",
+                     "docs/evidence/plan-modal-final-after.json"
+                 ],
+    "result":  "limited",
+    "outcome":  "승인 UI 실제 적용 완료. 계산/저장 모듈 불변,92개 테스트 통과. 다른 모달/카드 스타일 유지.",
+    "limitations":  [
+                        "브라우저 연결 없음: 실제 모바일/PC/Safari 숫자 입력·키보드·레이아웃 미검증",
+                        "합성/모의 DOM 검사이며 실제 화면 QA 아님",
+                        "Git 커밋·배포 없음"
+                    ]
+}

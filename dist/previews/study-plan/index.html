@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>학습 계획 모달 · 개선안 비교</title>
+<style>
+@font-face{font-family:Seed;src:url('../../assets/fonts/LINESeedKR-Rg.woff2');font-weight:400}@font-face{font-family:Seed;src:url('../../assets/fonts/LINESeedKR-Bd.woff2');font-weight:600 900}@font-face{font-family:Cafe;src:url('../../assets/fonts/Cafe24Ssurround.woff')}
+*{box-sizing:border-box}body{margin:0;background:#f8f3e9;color:#4b382c;font:14px/1.7 Seed,system-ui,sans-serif}.page{max-width:1120px;margin:auto;padding:32px 22px}h1{font:25px/1.4 Cafe,Seed,sans-serif;margin:0}h2{font-size:16px;margin:0 0 10px}p{color:#91816f;margin:10px 0}.intro{max-width:780px}.controls{display:flex;gap:12px 20px;align-items:center;flex-wrap:wrap;background:#fffcf5;border:1px solid #e9dfcc;border-radius:18px;padding:14px 18px;margin:22px 0}label{display:flex;gap:8px;align-items:center;font-size:12px}select{font:inherit;min-height:44px;border:1px solid #e0d4bf;border-radius:10px;background:#fffdf8;color:#4b382c;padding:0 10px;max-width:220px}:focus-visible{outline:3px solid #9bab77;outline-offset:3px}.compare{display:grid;grid-template-columns:1fr 1fr;gap:28px}.card{min-width:0}.screen{overflow:auto;border:1px solid #e2d6c0;border-radius:23px;background:#e9e1d2;padding:8px}.screen iframe{width:390px;height:660px;border:0;display:block;margin:auto;border-radius:16px;background:#f8f3e9}.caption{font-size:12px}.notes{border-top:1px solid #e0d4bf;margin-top:26px;padding-top:12px;max-width:850px;font-size:12px}strong{color:#526d45}@media(max-width:900px){.compare{grid-template-columns:1fr}}@media(max-width:480px){.page{padding:24px 14px}h1{font-size:22px}.controls{align-items:flex-start;flex-direction:column}.screen iframe{margin:0}}
+</style></head><body><main class="page"><h1>하루 학습량, 간단하게 설정하기</h1><p class="intro">승인 후 실제 앱에 반영한 UI의 독립 비교 자료입니다. 상태 예시와 자료 단위, 화면 폭을 바꿔 입력 영역과 여백을 살펴보세요. 저장 버튼은 시연용이며 실제 데이터에 접근하지 않습니다.</p>
+<section class="controls" aria-label="비교 설정"><label>화면 폭<select id="width"><option value="320">모바일 320px</option><option value="390" selected>모바일 390px</option><option value="430">모바일 430px</option></select></label><label>현재 상황<select id="state"><option value="rest">쉬는 날 · 목표일 미정</option><option value="insufficient">권장량 있음 · 기록 부족</option><option value="auto">권장량 · 예상일 있음</option><option value="undated">목표일 미정</option><option value="manual">직접 설정한 분량</option><option value="shortfall">기한 내 분량 부족</option><option value="paused">학습 중단 중</option></select></label><label>자료 단위<select id="unit"><option>페이지</option><option>강</option><option>챕터</option><option>세트</option></select></label></section>
+<div class="compare"><section class="card"><h2>A · 현재 구성</h2><div class="screen"><iframe id="before" title="현재 학습 계획 모달 비교 예시"></iframe></div><p class="caption">공유 상태 박스의 여러 안내와 긴 설명 문단을 모두 표시합니다.</p></section><section class="card"><h2>B · 승인된 개선안</h2><div class="screen"><iframe id="after" title="개선된 학습 계획 모달 시안"></iframe></div><p class="caption">상태 최대 2줄 · 단위 일체형 입력 · 한 줄 사용 안내 · 콘텐츠에 맞춘 높이</p></section></div>
+<footer class="notes"><p><strong>상태 우선순위:</strong> 완료/중단/쉬는 날/현재 권장 또는 수동 분량을 첫 줄로, 기한·분량 부족 같은 조정 필요 사항을 우선 두 번째 줄로 표시합니다. 그 외에는 목표일 미정 또는 예상일·기록 부족 중 필요한 안내 하나만 표시합니다. 서로 다른 상태는 줄을 나눠 표현합니다.</p><p><strong>입력:</strong> 44px 이상 터치 높이와 16px 숫자 글꼴, 단위가 포함된 공통 테두리를 제안합니다. 숫자 스피너 모양은 정리하되 실제 Safari 동작 검증은 별도입니다. 단위는 실제 적용 시 자료의 저장 단위를 그대로 사용합니다.</p><p><strong>도움말은 미추가:</strong> 원하시면 별도 승인 후 작은 도움말 버튼으로 계산 설명을 옮길 수 있습니다. 현재 시안에는 넣지 않았습니다.</p><p>배경과 자료명/단위/상태는 비교용 고정 예시입니다. 실제 계산 함수나 LocalStorage를 사용하지 않으며, 실제 앱의 다른 모달/카드/계산은 변경하지 않았습니다.</p></footer>
+</main><script>
+const root=new URL('../../',location.href).href;
+const css=`
+.preview-home{padding:32px 18px}.preview-home h1{font-size:24px}.preview-home p{color:var(--muted);font-size:13px}.preview-tile{height:130px;background:#e9eddd;border-radius:22px;margin-top:22px}.preview-feedback{font-size:11px;color:var(--green);min-height:0;margin-top:8px}
+.preview-feedback:empty{display:none}
+.study-plan-proposal{height:auto;min-height:0;padding:20px}
+.study-plan-proposal .dialog-header{margin-bottom:10px}
+.study-plan-proposal .dialog-material-name{padding-bottom:10px;margin-bottom:12px;font-size:15px}
+.study-plan-proposal .plan-status{margin:0 0 16px;padding:10px 12px;border:1px solid #e7e4d4;border-radius:13px;background:#f2f2e6}
+.study-plan-proposal .plan-status p{margin:0;line-height:1.55;font-size:12px;color:var(--muted)}
+.study-plan-proposal .plan-status p+p{margin-top:4px}
+.study-plan-proposal .plan-status strong{color:var(--green);font-size:13px}
+.study-plan-proposal .plan-status .warning{color:#a46748}
+.study-plan-proposal .form-field{margin:0}
+.study-plan-proposal .plan-amount{display:flex;align-items:center;min-height:46px;border:1px solid #e0d4bf;border-radius:11px;background:#fffdf8;overflow:hidden}
+.study-plan-proposal .plan-amount:focus-within{outline:2px solid #a3b181;outline-offset:1px;border-color:#9aa97a}
+.study-plan-proposal .plan-amount input{flex:1;width:0;min-width:0;height:44px;padding:0 12px;border:0;background:transparent;font-size:16px;border-radius:0;outline:0;-webkit-appearance:none;appearance:textfield;-moz-appearance:textfield}
+.study-plan-proposal .plan-amount input::-webkit-inner-spin-button,.study-plan-proposal .plan-amount input::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
+.study-plan-proposal .plan-amount span{padding:0 12px 0 4px;flex:none;max-width:42%;font-size:13px;line-height:1.3;overflow-wrap:anywhere;color:var(--muted)}
+.study-plan-proposal .field-help{margin:8px 0 0;font-size:11px;line-height:1.5}
+.study-plan-proposal .dialog-actions{margin-top:16px;padding-bottom:0}
+.study-plan-proposal .dialog-actions .button{min-height:44px}
+`;
+function contents(improved){
+ const key=document.getElementById('state').value,unit=document.getElementById('unit').value;
+ const states={rest:['오늘은 쉬는 날','목표일 미정','추정할 기록이 부족해요 (학습 기록 기간 7일 미만)'],insufficient:[`오늘 권장 20${unit}`,'예상일을 추정할 기록이 부족해요.','추정할 기록이 부족해요 (학습 기록 기간 7일 미만)'],auto:[`오늘 권장 20${unit}`,'예상 완료 11월 18일','예상 완료 2026-11-18 · 최근 14일 평균 기준'],undated:['목표일 미정','목표일을 정하면 자동 추천을 안내해요.','추정할 기록이 부족해요 (학습 기록 기간 7일 미만)'],manual:[`직접 정한 오늘 분량 15${unit}`,'오늘 기록한 분량을 차감했어요.','예상 완료 2026-11-18 · 최근 14일 평균 기준'],shortfall:[`직접 정한 오늘 분량 10${unit}`,`기한까지 ${30}${unit} 부족해요.`,'예상 완료 2026-12-01 · 최근 14일 평균 기준'],paused:['학습 중단 중','재개 후 권장량을 확인해 주세요.','학습 재개 후 예상일을 확인해 주세요.']};
+ const [primary,secondary,forecast]=states[key];
+ const hasDeadline=!['rest','undated'].includes(key);
+ const beforePrimary=key==='undated'?'목표일을 정하면 권장량을 안내해요':primary;
+ const beforeStatus=`<div class="learning-plan"><p><strong>${beforePrimary}</strong></p><p>${forecast}</p>${hasDeadline?'<p>학습 기준일 2026-11-20 · 남은 학습 가능일 12일 · 자격증 시험 일정</p>':'<p>목표일 미정 · 자동 권장량은 기한을 정하면 안내해요.</p>'}${key==='shortfall'?`<p class="plan-warning">${secondary}</p>`:''}</div>`;
+ const afterStatus=`<div class="plan-status"><p><strong>${primary}</strong></p>${secondary?`<p class="${key==='shortfall'?'warning':''}">${secondary}</p>`:''}</div>`;
+ const value=['manual','shortfall'].includes(key)?(key==='manual'?'15':'10'):'';
+ const input=improved?`<label for="amount">하루 학습량 <small>(선택사항)</small></label><div class="plan-amount"><input id="amount" type="number" min="1" step="1" inputmode="numeric" value="${value}"><span>${unit}</span></div><p class="field-help">비워 두면 자동 추천을 사용해요.</p>`:`<label for="amount">직접 정할 하루 분량 <small>(선택사항)</small></label><div class="input-unit"><input id="amount" type="number" min="1" step="1" inputmode="numeric" value="${value}"><span>${unit}</span></div><p class="field-help">비워 두면 자동 권장량을 사용해요. 직접 정한 분량은 진도가 바뀌어도 유지하며, 오늘 기록한 학습량은 차감해서 안내해요.</p>`;
+ const description=improved?'':'<p class="field-help">자동 권장량은 목표일까지 남은 분량과 가능한 날로 계산해요. 예상 완료일은 이와 별개로 자료의 기록 기간에 따라 최근 7·14·28일 평균(쉬는 날 포함)을 사용한 추정이에요.</p>';
+ return `<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><base href="${root}"><link rel="stylesheet" href="style.css"><style>${css}</style></head><body><div class="preview-home"><h1>오늘의 학습</h1><p>모달 배치 비교용 화면</p><div class="preview-tile"></div></div><dialog id="dialog" class="app-dialog ${improved?'study-plan-proposal':''}" aria-labelledby="title"><div class="dialog-header"><h2 id="title">학습 계획</h2><button class="icon-button" type="button" aria-label="닫기" onclick="document.querySelector('dialog').close()"><svg class="icon" viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18"/></svg></button></div><p class="dialog-material-name">컴퓨터 네트워크</p>${improved?afterStatus:beforeStatus}<form onsubmit="event.preventDefault();document.getElementById('feedback').textContent='미리보기입니다. 실제 저장은 하지 않아요.'"><div class="form-field">${input}</div>${description}<div class="dialog-actions"><button class="button cream" type="button" onclick="document.querySelector('dialog').close()">취소</button><button class="button primary" type="submit">저장</button></div><p class="preview-feedback" id="feedback" role="status"></p></form></dialog><script>document.getElementById('dialog').showModal();<\/script></body></html>`;
+}
+function render(){for(const [id,improved] of [['before',false],['after',true]]){const frame=document.getElementById(id);frame.style.width=document.getElementById('width').value+'px';frame.srcdoc=contents(improved);}}
+for(const input of document.querySelectorAll('select'))input.addEventListener('change',render);render();
+</script></body></html>

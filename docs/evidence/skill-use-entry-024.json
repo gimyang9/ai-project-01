@@ -1,0 +1,35 @@
+{
+  "id": "CG-SKILL-024",
+  "date": "2026-10-25",
+  "skill": "chagok-data-guard",
+  "skill_source": "skills/chagok-data-guard/SKILL.md",
+  "task": "더보기 메뉴 태블릿/PC 반응형 치수 통일",
+  "todo_refs": [
+    "UI-MORE-UNIFIED-01"
+  ],
+  "actions": [
+    "원문/현재 진행/공통 more-list와1024px 확대 규칙 확인",
+    "681px 이상 더보기 전용 규칙을 한곳에 모아 지정 치수 적용,1024px 중복 크기 규칙 제거",
+    "기존 모바일<=680px 및 사이드바1024px 기준/숫자 배지/화살표 구조 유지",
+    "요청6개 너비와 모바일320/390에서 관련 CSS캐스케이드 정적 검사",
+    "화면 폭/한두자릿수 배지 독립 확인 페이지 제작",
+    "앱 JS·원본1.0 보존 확인; 작업 중 루트의 별도 학습계획 CSS수정은 보존"
+  ],
+  "evidence": [
+    "docs/evidence/more-unified-cascade.json",
+    "docs/evidence/more-unified-summary.json",
+    "docs/evidence/more-unified-before.json",
+    "docs/evidence/more-unified-after.json",
+    "docs/evidence/more-unified-css-before.json",
+    "previews/more-responsive/index.html"
+  ],
+  "result": "limited",
+  "outcome": "더보기 행60px/글자14px/아이콘21px/패딩10px14px/간격13px, 카드최대680px/패딩4px18px/반경24px로 통일. 요청 너비 정적 값 일치.",
+  "limitations": [
+    "cua.getState apps=[] browsers=[]: 실제 브라우저 화면·넘침·배지 정렬 미검증",
+    "정적 CSS캐스케이드 검사와 HTML/CSS구조 검토이며 실제 렌더링이 아님",
+    "CSS-only 변경으로 기능 회귀 테스트 미재실행",
+    "루트 style.css에 작업 중 별도 학습계획 모달 수정 발생: 범위 밖이라 유지. 전체 root/dist 파일은 다르나 더보기 규칙은 동일",
+    "Git 커밋·배포 없음"
+  ]
+}

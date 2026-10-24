@@ -1,0 +1,23 @@
+﻿{
+    "date":  "2026-10-25",
+    "protectedHtmlCssBannerUnchanged":  true,
+    "previewOnly":  true,
+    "browserVerified":  false,
+    "A":  {
+              "size":  12,
+              "gap":  5,
+              "text":  "하루하루 쌓이는 공부 기록",
+              "weight":  400
+          },
+    "B":  {
+              "size":  13.2,
+              "gap":  4,
+              "text":  "오늘의 공부를 기록해요",
+              "weight":  600
+          },
+    "limitations":  [
+                        "No connected browsers: apps=[] browsers=[]",
+                        "Bundled font has no Medium face; B uses existing Bold at CSS weight600",
+                        "No real overlap/layout verification; source/static preview only"
+                    ]
+}

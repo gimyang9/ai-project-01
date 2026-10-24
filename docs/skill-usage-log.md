@@ -406,3 +406,71 @@
 - result: limited
 - outcome: 3-1~3-17 구현·합성 자동 검증 완료. 실제 브라우저/사용자 확인 대기.
 - limitations: cua.getState apps=[] browsers=[]로 실제 모바일/PC/Safari/PWA 미검증. 모의 DOM/합성 테스트만 실행, 사용자 실제 저장값 접근 없음. 최초 쉬는 날0/null 테스트 기대값 오류 수정 후 최종90개 통과. 4단계·Git 커밋·배포 없음.
+
+
+## CG-SKILL-020: 홈 배너 로고 A/B 미리보기
+
+- date: 2026-10-25
+- skill: chagok-data-guard
+- skill_source: skills/chagok-data-guard/SKILL.md
+- task: 승인 전 독립 홈 배너 A/B 비교 제작
+- todo_refs: 사용자 요청 홈 배너 문구/디자인 비교, 실제 적용 승인 대기
+- actions: 실제 배너 문구(하루하루 쌓이는 공부 기록)와 CSS12px/400/5px를 확인했다. 앱 스크립트를 제거한 홈 스냅샷을 별도 iframe에 넣고 A 유지/B 오늘의 공부를 기록해요·13.2px·600·4px를 비교했다. 폭320/390/430/1280px 전환을 제공하고 원본 해시·미리보기 구문/저장 접근을 확인했다.
+- evidence: previews/banner-logo/index.html, snapshot.js, docs/evidence/banner-logo-before.json, banner-logo-boundary-before.json, banner-logo-boundary-after.json, banner-logo-preview-summary.json.
+- result: limited
+- outcome: 비교 시안만 제작. 실제 앱 HTML/CSS/배너 이미지 동일. B 추천, 사용자 최종 승인 대기.
+- limitations: Medium 폰트 파일이 없어 기존 Bold600을 사용한 시안이며 진짜 Medium이 아님. cua.getState apps=[] browsers=[]로 실제 모바일/PC 겹침·배치 미검증. 앱 코드를 수정하지 않아 회귀 테스트 미실행. Git 커밋·배포 없음.
+
+## CG-SKILL-021: 승인된 홈 배너 B안 실제 적용
+
+- date: 2026-10-25
+- skill: chagok-data-guard
+- skill_source: skills/chagok-data-guard/SKILL.md
+- task: 사용자 승인 B안의 홈 보조 문구/타이포 적용
+- todo_refs: 홈 배너 B안 사용자 승인
+- actions: 원문/현재 진행/배너를 확인했다. 루트/dist HTML 문구를 오늘의 공부를 기록해요로 변경하고 보조 문구만13.2px·600·간격4px·왼쪽 정렬을 적용했다. 비교 페이지는 A의 이전 스타일을 고정하고 B승인 상태를 표시했다. 전후 저장 경계/이미지 해시/동기화를 확인했다.
+- evidence: docs/evidence/banner-logo-final-before.json, banner-logo-final-after.json, banner-logo-image-before.json, banner-logo-final-summary.json.
+- result: limited
+- outcome: 승인 B안 실제 반영 완료. 제목/배너 이미지·높이·반응형 배치/버전 위치와 앱 JS·원본1.0 유지. 루트/dist 일치.
+- limitations: cua.getState apps=[] browsers=[]로 실제 모바일/PC 겹침과 시각적 균형 미검증. 문구/CSS만 바꿔 회귀 테스트 미재실행, 과거 통과 수를 이번 결과로 재사용하지 않음. Medium 파일 추가 없이 승인 시안의 기존 Bold600 사용. Git 커밋·배포 없음.
+
+
+## CG-SKILL-022: 학습 계획 모달 제안과 독립 비교 시안
+
+- date: 2026-10-25
+- skill: chagok-data-guard
+- skill_source: skills/chagok-data-guard/SKILL.md
+- task: 승인 전 학습 계획 모달 UI/정보 밀도 개선안
+- todo_refs: 사용자 요청 모달 UI 제안, 실제 앱 적용 승인 대기
+- actions: 원문/현재 상태/planMarkup 공유 구조와 모달 템플릿·스타일을 확인했다. 모달 전용 최대2줄 상태, 하루 학습량 라벨/단위 일체형 입력, 비워 두면 자동 추천을 사용해요 한줄 안내, 구분선 유지·padding/간격 축소를 제안했다. 7개 합성 상태와320/390/430px·단위 비교 HTML을 독립 제작했다. 도움말 아이콘 미추가. 앱 해시 불변과 시안 JS구문/저장 접근 없음을 확인했다.
+- evidence: previews/study-plan/index.html, docs/evidence/plan-modal-preview-before.json, plan-modal-preview-boundary-before.json, plan-modal-preview-boundary-after.json, plan-modal-preview-summary.json.
+- result: limited
+- outcome: 독립 비교 제안 완료. 앱/다른 모달/카드/계산/저장 미수정, 사용자 승인 대기.
+- limitations: cua.getState apps=[] browsers=[]로 실제 모바일/PC·Safari 입력/키보드/레이아웃 미검증. 고정 예시만 사용. 앱 코드 변경이 없어 회귀 테스트 미실행. Git 커밋·배포 없음.
+
+## CG-SKILL-023: 승인된 학습 계획 모달 UI 적용
+
+- date: 2026-10-25
+- skill: chagok-data-guard
+- skill_source: skills/chagok-data-guard/SKILL.md
+- task: 학습 계획 모달 표시/입력/여백 개선 실제 반영
+- todo_refs: UI-PLAN-01
+- actions: 원문과 현재 모달/스타일을 확인했다. 공유 planMarkup은 유지하고 모달 전용 compactPlanStatus로 핵심/보조 최대2문단만 표시한다. 실제 계산 결과를 읽기만 하며 상태를 부정확하게 합치지 않는다. 라벨을 하루 학습량으로 바꾸고 실제 단위를 일체형 입력 오른쪽에 표시한다. 46px 그룹/16px 입력/44px 이상 버튼과 한줄 안내, 구분선 유지·간격 축소를 적용했다. 전용 class를 다른 모달 진입 시 해제한다. 도움말은 추가하지 않았다.
+- evidence: docs/evidence/plan-modal-final-tests.tap (92/92 pass), plan-modal-final-summary.json, plan-modal-final-before.json, plan-modal-final-after.json. 원본1.0과 계산/저장 모듈 동일, 루트/dist 일치.
+- result: limited
+- outcome: 승인된 모달 UI 적용 완료. 저장/차감/자동 추천/예상일 정책과 다른 모달/카드 스타일 유지. 입력 보존/상태 우선순위/원본 불변/스타일 격리 신규2개와 기존90개 통과.
+- limitations: cua.getState apps=[] browsers=[]로 실제 모바일/PC/Safari 숫자 입력·키보드·레이아웃 미검증. 모의 DOM을 실제 화면 검증으로 주장하지 않는다. Git 커밋·배포 없음.
+
+
+## CG-SKILL-024: 더보기 태블릿/PC 메뉴 치수 통일
+
+- date: 2026-10-25
+- skill: chagok-data-guard
+- skill_source: skills/chagok-data-guard/SKILL.md
+- task: 더보기 메뉴의1024px 전환 시 확대 제거
+- todo_refs: UI-MORE-UNIFIED-01
+- actions: 원문/현재 상태와 CSS 중복을 확인하고681px 이상 더보기 전용 치수를 한 구간으로 모았다. 행60px·글자14px·아이콘21px·패딩10px14px·간격13px, 카드최대680px·패딩4px18px·반경24px를 적용하고1024px 크기 재정의를 제거했다. 모바일/사이드바/배지/화살표 구조는 유지했다. 요청6폭+모바일2폭을 정적으로 검사하고 별도 확인 페이지를 제작했다.
+- evidence: docs/evidence/more-unified-cascade.json, more-unified-summary.json, more-unified-before.json, more-unified-after.json, more-unified-css-before.json, previews/more-responsive/index.html.
+- result: limited
+- outcome: 지정 치수 통일 및 요청 화면 폭의 정적 적용값 일치. 앱 JS/원본1.0 유지. 더보기 규칙은 루트/dist 동일.
+- limitations: 브라우저 apps=[] browsers=[]로 실제 모바일/PC 렌더링·넘침·숫자 배지 정렬 미검증. CSS-only로 회귀 테스트 미재실행. 작업 시작 시 root/dist CSS는 같았으나 마지막 검사 때 루트의 학습계획 모달에 별도 수정이 생겨 범위 밖 변경을 보존했다. 전체 파일 동일을 주장하지 않는다. Git 커밋·배포 없음.

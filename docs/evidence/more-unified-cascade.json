@@ -1,0 +1,113 @@
+{
+  "method": "Static authored CSS cascade inspection for relevant selectors with shorthand expansion; not browser rendering",
+  "rows": [
+    {
+      "width": 320,
+      "cardPaddingTop": "2px",
+      "cardPaddingRight": "17px",
+      "cardPaddingBottom": "2px",
+      "cardPaddingLeft": "17px",
+      "cardRadius": "19px",
+      "rowHeight": "54px",
+      "rowFont": "13.8px",
+      "rowGap": "12px",
+      "iconSize": "19px"
+    },
+    {
+      "width": 390,
+      "cardPaddingTop": "2px",
+      "cardPaddingRight": "17px",
+      "cardPaddingBottom": "2px",
+      "cardPaddingLeft": "17px",
+      "cardRadius": "19px",
+      "rowHeight": "54px",
+      "rowFont": "13.8px",
+      "rowGap": "12px",
+      "iconSize": "19px"
+    },
+    {
+      "width": 768,
+      "cardPaddingTop": "4px",
+      "cardPaddingRight": "18px",
+      "cardPaddingBottom": "4px",
+      "cardPaddingLeft": "18px",
+      "cardRadius": "24px",
+      "cardMaxWidth": "680px",
+      "rowHeight": "60px",
+      "rowFont": "14px",
+      "rowPadding": "10px 14px",
+      "rowGap": "13px",
+      "iconSize": "21px"
+    },
+    {
+      "width": 1023,
+      "cardPaddingTop": "4px",
+      "cardPaddingRight": "18px",
+      "cardPaddingBottom": "4px",
+      "cardPaddingLeft": "18px",
+      "cardRadius": "24px",
+      "cardMaxWidth": "680px",
+      "rowHeight": "60px",
+      "rowFont": "14px",
+      "rowPadding": "10px 14px",
+      "rowGap": "13px",
+      "iconSize": "21px"
+    },
+    {
+      "width": 1024,
+      "cardPaddingTop": "4px",
+      "cardPaddingRight": "18px",
+      "cardPaddingBottom": "4px",
+      "cardPaddingLeft": "18px",
+      "cardRadius": "24px",
+      "cardMaxWidth": "680px",
+      "rowHeight": "60px",
+      "rowFont": "14px",
+      "rowPadding": "10px 14px",
+      "rowGap": "13px",
+      "iconSize": "21px"
+    },
+    {
+      "width": 1280,
+      "cardPaddingTop": "4px",
+      "cardPaddingRight": "18px",
+      "cardPaddingBottom": "4px",
+      "cardPaddingLeft": "18px",
+      "cardRadius": "24px",
+      "cardMaxWidth": "680px",
+      "rowHeight": "60px",
+      "rowFont": "14px",
+      "rowPadding": "10px 14px",
+      "rowGap": "13px",
+      "iconSize": "21px"
+    },
+    {
+      "width": 1440,
+      "cardPaddingTop": "4px",
+      "cardPaddingRight": "18px",
+      "cardPaddingBottom": "4px",
+      "cardPaddingLeft": "18px",
+      "cardRadius": "24px",
+      "cardMaxWidth": "680px",
+      "rowHeight": "60px",
+      "rowFont": "14px",
+      "rowPadding": "10px 14px",
+      "rowGap": "13px",
+      "iconSize": "21px"
+    },
+    {
+      "width": 1920,
+      "cardPaddingTop": "4px",
+      "cardPaddingRight": "18px",
+      "cardPaddingBottom": "4px",
+      "cardPaddingLeft": "18px",
+      "cardRadius": "24px",
+      "cardMaxWidth": "680px",
+      "rowHeight": "60px",
+      "rowFont": "14px",
+      "rowPadding": "10px 14px",
+      "rowGap": "13px",
+      "iconSize": "21px"
+    }
+  ]
+}

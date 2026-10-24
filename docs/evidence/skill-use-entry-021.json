@@ -1,0 +1,31 @@
+﻿{
+    "id":  "CG-SKILL-021",
+    "date":  "2026-10-25",
+    "skill":  "chagok-data-guard",
+    "skill_source":  "skills/chagok-data-guard/SKILL.md",
+    "task":  "사용자가 승인한 홈 배너 로고 B안 실제 적용",
+    "todo_refs":  [
+                      "홈 배너 B안 사용자 승인"
+                  ],
+    "actions":  [
+                    "원문/현재 상태와 실제 배너 문구·스타일 확인",
+                    "루트/dist 홈 보조 문구를 오늘의 공부를 기록해요로 변경",
+                    "보조 문구만13.2px/600/간격4px/왼쪽 정렬 적용",
+                    "비교 페이지 A안 이전 스타일 고정 및 승인 상태 반영",
+                    "전후 앱 JS·1.0·이미지 보존과 루트/dist 동기화 확인"
+                ],
+    "evidence":  [
+                     "docs/evidence/banner-logo-final-before.json",
+                     "docs/evidence/banner-logo-final-after.json",
+                     "docs/evidence/banner-logo-image-before.json",
+                     "docs/evidence/banner-logo-final-summary.json"
+                 ],
+    "result":  "limited",
+    "outcome":  "승인 B안 실제 앱 적용 완료. 제목/배너 이미지·높이·반응형·버전 위치와 JS/저장 기능 유지.",
+    "limitations":  [
+                        "연결 브라우저 없음: 실제 모바일/PC 겹침·레이아웃 미검증",
+                        "문구/CSS만 수정하여 회귀 테스트 재실행하지 않음. 기존 통과 수 재사용하지 않음",
+                        "Medium 파일을 추가하지 않고 승인 시안의 기존 Bold600 사용",
+                        "Git 커밋·배포 미수행"
+                    ]
+}

@@ -81,3 +81,23 @@ test('failed manual-plan save keeps original plan; clearing it restores automati
  a.context.localStorage.setItem=()=>{throw Error('quota');};a.element('manual-daily-amount').value='99';submit(a,'plan','m');assert.equal(a.map.get(D.KEY),raw);assert.equal(a.run('dataState.study.materials[0].manualDailyAmount'),7);
  a.context.localStorage.setItem=setter;a.element('manual-daily-amount').value='';submit(a,'plan','m');assert.equal(a.run('dataState.study.materials[0].manualDailyAmount'),null);
 });
+test('compact plan modal keeps stored unit/value, removes long explanation, and limits styling to this modal',()=>{
+ const a=boot();a.run("commitStudy({type:'material',material:{id:'m',name:'실제 단위',type:'other',unit:'묶음',total:100}},'ok');commitStudy({type:'plan',id:'m',amount:15},'ok')");
+ const raw=a.map.get(D.KEY),classes=new Set();a.element('app-dialog').classList={add:n=>classes.add(n),remove:(...names)=>names.forEach(n=>classes.delete(n)),toggle:(n,on)=>on?classes.add(n):classes.delete(n)};
+ a.run("openDialog('study-plan','m')");const content=a.element('dialog-content').innerHTML;
+ assert.match(content,/하루 학습량 <small>\(선택사항\)/);assert.match(content,/class="plan-amount"/);assert.match(content,/>묶음<\/span>/);assert.match(content,/value="15"/);assert.match(content,/비워 두면 자동 추천을 사용해요\./);assert.doesNotMatch(content,/7·14·28|최근 .*일 평균|남은 분량과 가능한 날/);
+ const status=content.match(/<div class="plan-status">([\s\S]*?)<\/div>/)[1];assert.ok((status.match(/<p[ >]/g)||[]).length<=2);assert.equal(classes.has('study-plan-dialog'),true);assert.equal(a.map.get(D.KEY),raw);
+ a.run("openDialog('memo','m')");assert.equal(classes.has('study-plan-dialog'),false);
+ a.run("openDialog('study-plan','m');presentExamDialog('시험 메모','<p>예시</p>')");assert.equal(classes.has('study-plan-dialog'),false);
+});
+test('modal status keeps rest independent, prioritises actionable warnings, and never mutates calculations',()=>{
+ const a=boot();const base={remaining:100,isActive:true,todayAllowed:true,manualDailyAmount:null,amount:20,deadline:'2026-11-20',noTime:false,overdue:false,manualShortfall:0,expectedLate:false,forecast:{reason:'insufficient'}};
+ const cases=[
+  [{...base,todayAllowed:false,deadline:null},'오늘은 쉬는 날','목표일 미정'],
+  [base,'오늘 권장 20페이지','예상일을 추정할 기록이 부족해요.'],
+  [{...base,isActive:false,noTime:true},'학습 중단 중','재개 후 권장량을 확인해 주세요.'],
+  [{...base,manualDailyAmount:10,amount:10,manualShortfall:30},'직접 정한 오늘 분량 10페이지','직접 정한 분량으로는 기한까지 30페이지 부족해요.'],
+  [{...base,remaining:0},'이번 회독 완료','']
+ ];
+ for(const [fixture,primary,secondary] of cases){const before=JSON.stringify(fixture);a.context.statusFixture=fixture;const shown=a.run("compactPlanStatus(statusFixture,'페이지')");assert.equal(shown.primary,primary);assert.equal(shown.secondary,secondary);assert.equal(JSON.stringify(fixture),before);}
+});

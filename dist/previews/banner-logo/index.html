@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>차곡차곡 · 홈 배너 로고 A/B 비교</title>
+<style>
+@font-face{font-family:Seed;src:url('../../assets/fonts/LINESeedKR-Rg.woff2');font-weight:400}@font-face{font-family:Seed;src:url('../../assets/fonts/LINESeedKR-Bd.woff2');font-weight:600 900}@font-face{font-family:Cafe;src:url('../../assets/fonts/Cafe24Ssurround.woff')}
+*{box-sizing:border-box}body{margin:0;background:#f8f3e9;color:#4b382c;font:14px/1.7 Seed,system-ui,sans-serif}h1{font:26px/1.4 Cafe,Seed,sans-serif;margin:0}h2{font-size:16px;margin:0}p{margin:8px 0;color:#91816f}.page{max-width:1180px;margin:auto;padding:32px 24px}header{max-width:760px}.controls{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:22px 0}button{font:inherit;background:#fffaf0;border:1px solid #e9dfcc;color:#526d45;border-radius:12px;padding:8px 14px;min-height:44px;cursor:pointer}button[aria-pressed=true]{background:#eaf0df;border-color:#899761;font-weight:600}:focus-visible{outline:3px solid #9bab77;outline-offset:3px}.compare{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:28px}.card{min-width:0}.card-header{margin-bottom:12px}.tag{color:#526d45;font-size:11px;margin-right:8px}.viewport{overflow:auto;padding:12px;background:#eee7d8;border:1px solid #e5dac6;border-radius:26px}.viewport iframe{display:block;width:390px;height:730px;border:0;border-radius:18px;margin:auto;background:#f8f3e9}.caption{font-size:12px;min-height:48px}table{width:100%;border-collapse:collapse;font-size:12px;margin:24px 0}th,td{text-align:left;padding:12px;border-bottom:1px solid #e4d9c6}th{color:#526d45}a{color:#526d45}.note{max-width:850px;font-size:12px}.wide .compare{grid-template-columns:1fr}.wide .viewport iframe{width:1280px;height:760px}.wide .viewport{max-width:100%}@media(max-width:900px){.compare{grid-template-columns:1fr}}@media(max-width:480px){.page{padding:24px 14px}h1{font-size:22px}.viewport{padding:6px}.viewport iframe{margin:0}th,td{padding:8px}}
+</style>
+</head>
+<body><main class="page">
+<header><h1>홈 배너 로고 · A/B 비교</h1><p>현재 앱 화면을 복사한 독립 미리보기입니다. 배너 이미지·제목 크기·높이·버전 위치는 같고, B안의 보조 문구만 달라집니다. B안은 사용자 승인 후 실제 앱에 적용되었습니다. A안은 변경 전 비교용입니다.</p></header>
+<div class="controls" aria-label="화면 크기"><button type="button" data-width="320" aria-pressed="false">모바일 320</button><button type="button" data-width="390" aria-pressed="true">모바일 390</button><button type="button" data-width="430" aria-pressed="false">모바일 430</button><button type="button" data-width="1280" aria-pressed="false">데스크톱 1280</button></div>
+<div class="compare">
+<section class="card"><div class="card-header"><h2><span class="tag">A · 변경 전</span>하루하루 쌓이는 공부 기록</h2></div><div class="viewport"><iframe id="a" title="A안 변경 전 모바일 홈 배너"></iframe></div><p class="caption">현재 문구 · 12px · 굵기 400 · 제목과 간격 5px</p></section>
+<section class="card"><div class="card-header"><h2><span class="tag">B · 제안</span>오늘의 공부를 기록해요</h2></div><div class="viewport"><iframe id="b" title="B안 제안 모바일 홈 배너"></iframe></div><p class="caption">문구 변경 · 13.2px(+10%) · 굵기 600 · 간격 4px(-20%) · 왼쪽 기준선 유지</p></section>
+</div>
+<table><thead><tr><th>비교</th><th>A안</th><th>B안</th></tr></thead><tbody><tr><td>역할</td><td>기록이 쌓이는 의미 설명</td><td>오늘 할 행동을 간결하게 안내</td></tr><tr><td>시각적 관계</td><td>가늘고 여유 있는 부제</td><td>조금 선명하고 제목에 가까운 부제</td></tr><tr><td>제목·픽셀 배경</td><td colspan="2">앱명 주아체·기존 크기와 배너 이미지/높이/위치/v2.0.0 유지</td></tr></tbody></table>
+<p class="note"><strong>B안을 추천합니다.</strong> 문구가 더 짧고 기능을 직접 전달하며, 제목과의 간격을 줄여 한 덩어리로 읽히도록 제안했습니다. 현재 폰트 파일에는 Medium이 없어서 기존 Bold를 600으로 사용합니다. 진짜 Medium 굵기를 재현한 것은 아닙니다.</p>
+<p class="note">아래 학습 영역은 배치 확인용 고정 예시입니다. 앱 스크립트·저장소를 사용하지 않습니다. 화면 폭 버튼으로 배너 안의 나뭇잎/나무와 텍스트의 관계를 비교해 주세요. 실제 브라우저 QA 여부는 작업 기록에 별도로 표시합니다.</p>
+<p class="note"><a href="../../index.html">현재 앱 열기</a> · B안 승인 및 앱 반영 완료. 이 페이지는 변경 전/후 비교용으로 보존합니다.</p>
+</main><script src="snapshot.js"></script>
+<script>
+const root=new URL('../../',location.href).href;
+function snapshot(variant){
+ const doc=new DOMParser().parseFromString(window.bannerSnapshot,'text/html');
+ doc.querySelectorAll('script').forEach(el=>el.remove());
+ const base=doc.createElement('base');base.href=root;doc.head.prepend(base);
+ const style=doc.createElement('style');style.textContent=variant==='b'?'.forest-copy .brand-subtitle{font-size:13.2px;font-weight:600;margin-top:4px;margin-left:0;text-align:left}':'.forest-copy .brand-subtitle{font-size:12px;font-weight:400;margin-top:5px;margin-left:0;text-align:left}';doc.head.append(style);
+ if(variant==='b')doc.querySelector('.brand-subtitle').textContent='오늘의 공부를 기록해요';
+ doc.querySelectorAll('[data-view], [data-dialog], [data-exam-dialog]').forEach(el=>{el.removeAttribute('data-view');el.removeAttribute('data-dialog');el.removeAttribute('data-exam-dialog');});
+ const tasks=doc.getElementById('today-list');if(tasks)tasks.innerHTML='<div class="today-task"><span class="task-copy"><strong>컴퓨터 네트워크</strong><small>오늘 권장 20페이지 · 미리보기 예시</small></span></div>';
+ const grid=doc.getElementById('material-grid');if(grid)grid.innerHTML='<article class="material-card"><h3>나의 학습 자료</h3><p class="field-help">로고 배치 비교용 화면입니다.</p></article>';
+ const note=doc.querySelector('.preview-note');if(note)note.textContent='디자인 비교 전용 · 실제 데이터와 연결되지 않아요.';
+ return '<!doctype html>'+doc.documentElement.outerHTML;
+}
+for(const id of ['a','b'])document.getElementById(id).srcdoc=snapshot(id);
+for(const button of document.querySelectorAll('[data-width]'))button.addEventListener('click',()=>{const width=Number(button.dataset.width);document.body.classList.toggle('wide',width>=1024);for(const frame of document.querySelectorAll('iframe'))frame.style.width=width+'px';for(const other of document.querySelectorAll('[data-width]'))other.setAttribute('aria-pressed',String(other===button));});
+</script></body></html>

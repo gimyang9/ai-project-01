@@ -1,0 +1,32 @@
+{
+  "id": "CG-SKILL-022",
+  "date": "2026-10-25",
+  "skill": "chagok-data-guard",
+  "skill_source": "skills/chagok-data-guard/SKILL.md",
+  "task": "학습 계획 모달 UI 개선 제안과 독립 모바일 비교 시안",
+  "todo_refs": [
+    "학습 계획 모달 UI 제안, 실제 적용 사용자 승인 대기"
+  ],
+  "actions": [
+    "원문/현재 진행/모달 템플릿과 공통 스타일 확인",
+    "상태 최대2줄·단위 일체형 입력·한줄 안내·간격 축소를 제안",
+    "7가지 합성 상태/실제 단위 배치 예시와320/390/430폭 비교 HTML 제작",
+    "도움말 아이콘은 제안만 하고 미추가",
+    "앱 원본/계산/저장 파일 해시 동일, 미리보기 JS구문과 저장 접근 없음 확인"
+  ],
+  "evidence": [
+    "previews/study-plan/index.html",
+    "docs/evidence/plan-modal-preview-before.json",
+    "docs/evidence/plan-modal-preview-boundary-before.json",
+    "docs/evidence/plan-modal-preview-boundary-after.json",
+    "docs/evidence/plan-modal-preview-summary.json"
+  ],
+  "result": "limited",
+  "outcome": "독립 제안/모바일 비교 페이지 완료. 실제 앱과 다른 모달·자료카드·계산·저장 변경 없음. 사용자 승인 대기.",
+  "limitations": [
+    "연결 브라우저 없음: 실제 모바일/PC/Safari 입력 컨트롤·키보드·레이아웃 미검증",
+    "고정 예시 데이터로만 미리보기; 실제 계획 계산은 실행하지 않음",
+    "앱 변경 없어 회귀 테스트 재실행하지 않음",
+    "Git 커밋·배포 없음"
+  ]
+}
