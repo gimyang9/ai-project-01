@@ -125,9 +125,15 @@ function materialCard(material) {
 
 function renderMaterials(filter = 'all') {
   materialFilter=filter;
+  $('material-count').textContent=demoMaterials.length;
+  for(const category of ['all','school','exam']){
+    $('material-count-'+category).textContent=demoMaterials.filter(m=>category==='all'||m.category===category).length;
+  }
   const items = demoMaterials.filter((item) => filter === 'all' || item.category === filter);
   $('material-grid').innerHTML = items.map(materialCard).join('');
   $('filter-empty').hidden = items.length !== 0;
+  $('filter-empty').querySelector('h3').textContent=demoMaterials.length?'이 분류에 해당하는 자료가 없어요':'아직 등록된 자료가 없어요';
+  $('filter-empty').querySelector('p').textContent=demoMaterials.length?'다른 분류를 선택해 보세요.':'첫 학습 자료를 추가해 보세요.';
 }
 
 function renderHomeWelcome() {
@@ -144,7 +150,25 @@ function renderHomeWelcome() {
 
 function renderToday() {
   const tasks=currentPlans().filter(p=>p.isActive&&p.remaining>0);
-  $('today-list').innerHTML=tasks.map(p=>{const m=demoMaterials.find(m=>m.id===p.id);return `<div class="today-task"><span class="task-icon">${icon('book')}</span><span class="task-copy"><strong>${escapeHTML(m.name)}</strong><small>${escapeHTML(dailyPlanLabel(p,m.unit))} · 남은 분량 ${p.remaining}${escapeHTML(m.unit)}</small><small>${escapeHTML(forecastLabel(p))}</small>${planWarning(p,m.unit)?`<small class="plan-warning">${escapeHTML(planWarning(p,m.unit))}</small>`:''}</span><button class="text-link" data-dialog="record" data-material="${escapeHTML(m.id)}">진도 기록${icon('chevron')}</button></div>`;}).join('')||'<p class="field-help">학습 자료를 등록하고 공부한 진도를 기록해 보세요.</p>';
+  $('today-list').innerHTML=tasks.map(p=>{
+    const m=demoMaterials.find(m=>m.id===p.id);
+    const warning=p.noTime||p.manualShortfall>0||p.expectedLate;
+    return `<div class="today-task today-task-compact"><span class="task-icon">${icon('book')}</span><span class="task-copy"><strong>${escapeHTML(m.name)}</strong><small class="${warning?'today-plan-warning':''}">남은 ${p.remaining}${escapeHTML(m.unit)} · ${escapeHTML(homePlanLabel(p,m.unit))}</small></span><button class="text-link" data-dialog="record" data-material="${escapeHTML(m.id)}">진도 기록${icon('chevron')}</button></div>`;
+  }).join('')||`<p class="field-help">${demoMaterials.length?'오늘 진행할 학습이 없어요.':'학습 자료를 등록하고 공부한 진도를 기록해 보세요.'}</p>`;
+}
+
+// Home-only wording. Original calculation and detailed plan labels stay unchanged.
+function homePlanLabel(p,unit){
+  if(!p.remaining)return '이번 회독 완료';
+  if(!p.isActive)return '학습 중단 중';
+  let label;
+  if(!p.todayAllowed)label='오늘은 쉬는 날';
+  else if(p.manualDailyAmount)label=p.amount>0?`오늘 직접 설정 ${p.amount}${unit}`:'오늘 설정한 분량 완료';
+  else if(p.noTime)label='학습 가능일 없음';
+  else if(p.amount!==null&&Number.isFinite(p.amount))label=`오늘 권장 ${p.amount}${unit}`;
+  else label='목표일 미정';
+  const warning=p.overdue?'기한 초과':p.noTime?'학습 가능일 없음':p.manualShortfall>0?`기한 내 ${p.manualShortfall}${unit} 부족`:p.expectedLate?'완료 지연 예상':'';
+  return warning&&warning!==label?`${label} · ${warning}`:label;
 }
 
 function currentPlans(){return LearningPlan.build(dataState,localToday(),studyAPI,examAPI);}

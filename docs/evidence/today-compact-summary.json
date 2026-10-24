@@ -1,0 +1,12 @@
+﻿{
+    "date":  "2026-10-25",
+    "calculationStorageModulesUnchanged":  true,
+    "rootDistAppEqual":  true,
+    "rootAndDistHaveSameNewHomeCss":  true,
+    "existingUnrelatedCssDifferencesPreserved":  true,
+    "tests":  94,
+    "passed":  94,
+    "failed":  0,
+    "browserVerified":  false,
+    "limitation":  "No browser tool and no Playwright; mocked DOM and source checks only"
+}

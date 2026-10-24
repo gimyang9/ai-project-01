@@ -1,0 +1,32 @@
+﻿[
+    {
+        "Algorithm":  "SHA256",
+        "Hash":  "921E2573E2674DD374D7E0D64007AC3D001C495D65C77571D6970CC849BB0D69",
+        "Path":  "D:\\Projects\\project-v2-upload\\app.js"
+    },
+    {
+        "Algorithm":  "SHA256",
+        "Hash":  "921E2573E2674DD374D7E0D64007AC3D001C495D65C77571D6970CC849BB0D69",
+        "Path":  "D:\\Projects\\project-v2-upload\\dist\\app.js"
+    },
+    {
+        "Algorithm":  "SHA256",
+        "Hash":  "A0FC0AD53853241AC35911365830283DE3C9E389B518C7A06F5C864DEFBF12B8",
+        "Path":  "D:\\Projects\\project-v2-upload\\style.css"
+    },
+    {
+        "Algorithm":  "SHA256",
+        "Hash":  "2D23138048FF910BD491A1B509E22775F494462E122B82BF71A4C077E9061606",
+        "Path":  "D:\\Projects\\project-v2-upload\\dist\\style.css"
+    },
+    {
+        "Algorithm":  "SHA256",
+        "Hash":  "8131927433190943B18353836D3E34414FE80F1D2458C77F5DB681F9629D539B",
+        "Path":  "D:\\Projects\\project-v2-upload\\dist\\learning-plan.js"
+    },
+    {
+        "Algorithm":  "SHA256",
+        "Hash":  "4BAEEAFDE35B7989E102A417C323C321C5DF8492B30245AED21A9691B2041396",
+        "Path":  "D:\\Projects\\project-v2-upload\\dist\\study-data.js"
+    }
+]

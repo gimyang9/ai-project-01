@@ -1,0 +1,66 @@
+{
+  "protectedFiles": [
+    {
+      "file": "index.html",
+      "sha256": "da4a6a737c37ff890b7844f1ff318e49d576c8e611977819b65df464fcd50a44",
+      "unchanged": true
+    },
+    {
+      "file": "style.css",
+      "sha256": "4490333b21069b743537586bad1811712c5e89a9b3d848c24c0c7af04965c5b9",
+      "unchanged": true
+    },
+    {
+      "file": "app.js",
+      "sha256": "9e42142331cd1d13204de6e1a78f1a194afdcbf592e488944906bc5e66df706c",
+      "unchanged": true
+    },
+    {
+      "file": "dist/index.html",
+      "sha256": "da4a6a737c37ff890b7844f1ff318e49d576c8e611977819b65df464fcd50a44",
+      "unchanged": true
+    },
+    {
+      "file": "dist/style.css",
+      "sha256": "ebdf0ff702322c6924dd336e31291f0d2fa63a49d67378ddfb20cac2c3bcc3e0",
+      "unchanged": true
+    },
+    {
+      "file": "dist/app.js",
+      "sha256": "9e42142331cd1d13204de6e1a78f1a194afdcbf592e488944906bc5e66df706c",
+      "unchanged": true
+    },
+    {
+      "file": "assets/forest-bear-b.png",
+      "sha256": "e547d0c66792a34bd4b5d535ef2d6b63bd55ae9a595801b67a4a554b666e1829",
+      "unchanged": true
+    },
+    {
+      "file": "previews/home-logo-v6/index.html",
+      "sha256": "76e0606a3fe19cae7c886313e831e91644518f9a2f8deef9c3823cacf1699c77",
+      "unchanged": true
+    },
+    {
+      "file": "previews/home-logo-v6/logo-wood-sprouts.png",
+      "sha256": "cd3c7753a5e39baac3561e5cd0f05a9bec5d3734dabf05ad5710105142a60a85",
+      "unchanged": true
+    }
+  ],
+  "renderedWidths": [
+    320,
+    390,
+    430,
+    680,
+    681,
+    767,
+    768,
+    900,
+    1023,
+    1024,
+    1150,
+    1280,
+    1439,
+    1440,
+    1920
+  ]
+}

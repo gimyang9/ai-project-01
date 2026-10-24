@@ -1,0 +1,34 @@
+﻿[
+    {
+        "Path":  "D:\\Projects\\project-v2-upload\\index.html",
+        "Hash":  "DA4A6A737C37FF890B7844F1FF318E49D576C8E611977819B65DF464FCD50A44"
+    },
+    {
+        "Path":  "D:\\Projects\\project-v2-upload\\dist\\index.html",
+        "Hash":  "DA4A6A737C37FF890B7844F1FF318E49D576C8E611977819B65DF464FCD50A44"
+    },
+    {
+        "Path":  "D:\\Projects\\project-v2-upload\\app.js",
+        "Hash":  "9E42142331CD1D13204DE6E1A78F1A194AFDCBF592E488944906BC5E66DF706C"
+    },
+    {
+        "Path":  "D:\\Projects\\project-v2-upload\\dist\\app.js",
+        "Hash":  "9E42142331CD1D13204DE6E1A78F1A194AFDCBF592E488944906BC5E66DF706C"
+    },
+    {
+        "Path":  "D:\\Projects\\project-v2-upload\\style.css",
+        "Hash":  "4490333B21069B743537586BAD1811712C5E89A9B3D848C24C0C7AF04965C5B9"
+    },
+    {
+        "Path":  "D:\\Projects\\project-v2-upload\\dist\\style.css",
+        "Hash":  "EBDF0FF702322C6924DD336E31291F0D2FA63A49D67378DDFB20CAC2C3BCC3E0"
+    },
+    {
+        "Path":  "D:\\Projects\\project-v2-upload\\assets\\forest-bear-b.png",
+        "Hash":  "E547D0C66792A34BD4B5D535EF2D6B63BD55AE9A595801B67A4A554B666E1829"
+    },
+    {
+        "Path":  "D:\\Projects\\project-v2-upload\\dist\\assets\\forest-bear-b.png",
+        "Hash":  "E547D0C66792A34BD4B5D535EF2D6B63BD55AE9A595801B67A4A554B666E1829"
+    }
+]

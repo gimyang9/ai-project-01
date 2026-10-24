@@ -1,0 +1,37 @@
+﻿{
+    "date":  "2026-10-25",
+    "mode":  "built-in image_gen",
+    "appAndBannerUnchanged":  true,
+    "previewSyntax":  "passed",
+    "renderBrowser":  "Chrome headless exact CDP viewport",
+    "screens":  8,
+    "widths":  [
+                   320,
+                   390,
+                   1024,
+                   1440
+               ],
+    "browserRenderVerified":  true,
+    "physicalSafariVerified":  false,
+    "images":  [
+                   {
+                       "file":  "logo-a-sprout-soft.png",
+                       "width":  2172,
+                       "height":  724,
+                       "sampleStep":  16,
+                       "transparentSamples":  3114,
+                       "visibleSamples":  3142
+                   },
+                   {
+                       "file":  "logo-b-subtle-shadow.png",
+                       "width":  2172,
+                       "height":  724,
+                       "sampleStep":  16,
+                       "transparentSamples":  3469,
+                       "visibleSamples":  2787
+                   }
+               ],
+    "mobilePlacement":  "left12% top11% width40%",
+    "desktopPlacement":  "left25% top17% width27% max300px",
+    "noAppDataAccess":  true
+}

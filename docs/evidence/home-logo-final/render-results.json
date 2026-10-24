@@ -1,0 +1,350 @@
+{
+  "browser": "Chrome headless with exact CDP viewport; mobile simulation, not Safari",
+  "screens": [
+    {
+      "variant": "app",
+      "width": 320,
+      "viewport": 320,
+      "logo": {
+        "x": 32,
+        "y": 26.65625,
+        "width": 134.390625,
+        "height": 48.953125
+      },
+      "banner": {
+        "x": 0,
+        "y": 0,
+        "width": 320,
+        "height": 133.328125
+      },
+      "image": {
+        "fit": "cover",
+        "position": "50% 65%"
+      },
+      "logoLoaded": true,
+      "subtitleRemoved": true
+    },
+    {
+      "variant": "app",
+      "width": 390,
+      "viewport": 390,
+      "logo": {
+        "x": 39,
+        "y": 32.5,
+        "width": 163.796875,
+        "height": 59.65625
+      },
+      "banner": {
+        "x": 0,
+        "y": 0,
+        "width": 390,
+        "height": 162.5
+      },
+      "image": {
+        "fit": "cover",
+        "position": "50% 65%"
+      },
+      "logoLoaded": true,
+      "subtitleRemoved": true
+    },
+    {
+      "variant": "app",
+      "width": 430,
+      "viewport": 430,
+      "logo": {
+        "x": 43,
+        "y": 35.828125,
+        "width": 180.59375,
+        "height": 65.78125
+      },
+      "banner": {
+        "x": 0,
+        "y": 0,
+        "width": 430,
+        "height": 179.15625
+      },
+      "image": {
+        "fit": "cover",
+        "position": "50% 65%"
+      },
+      "logoLoaded": true,
+      "subtitleRemoved": true
+    },
+    {
+      "variant": "app",
+      "width": 680,
+      "viewport": 680,
+      "logo": {
+        "x": 90.71875,
+        "y": 36,
+        "width": 245.828125,
+        "height": 89.546875
+      },
+      "banner": {
+        "x": 0,
+        "y": 0,
+        "width": 680,
+        "height": 236.03125
+      },
+      "image": {
+        "fit": "cover",
+        "position": "50% 65%"
+      },
+      "logoLoaded": true,
+      "subtitleRemoved": true
+    },
+    {
+      "variant": "app",
+      "width": 681,
+      "viewport": 681,
+      "logo": {
+        "x": 90.90625,
+        "y": 36,
+        "width": 246.09375,
+        "height": 89.640625
+      },
+      "banner": {
+        "x": 0,
+        "y": 0,
+        "width": 681,
+        "height": 236.265625
+      },
+      "image": {
+        "fit": "cover",
+        "position": "50% 65%"
+      },
+      "logoLoaded": true,
+      "subtitleRemoved": true
+    },
+    {
+      "variant": "app",
+      "width": 767,
+      "viewport": 767,
+      "logo": {
+        "x": 107.328125,
+        "y": 36,
+        "width": 268.53125,
+        "height": 97.8125
+      },
+      "banner": {
+        "x": 0,
+        "y": 0,
+        "width": 767,
+        "height": 255.765625
+      },
+      "image": {
+        "fit": "cover",
+        "position": "50% 65%"
+      },
+      "logoLoaded": true,
+      "subtitleRemoved": true
+    },
+    {
+      "variant": "app",
+      "width": 768,
+      "viewport": 768,
+      "logo": {
+        "x": 107.515625,
+        "y": 35.828125,
+        "width": 268.796875,
+        "height": 97.90625
+      },
+      "banner": {
+        "x": 0,
+        "y": 0,
+        "width": 768,
+        "height": 256
+      },
+      "image": {
+        "fit": "cover",
+        "position": "50% 65%"
+      },
+      "logoLoaded": true,
+      "subtitleRemoved": true
+    },
+    {
+      "variant": "app",
+      "width": 900,
+      "viewport": 900,
+      "logo": {
+        "x": 126,
+        "y": 42,
+        "width": 315,
+        "height": 114.75
+      },
+      "banner": {
+        "x": 0,
+        "y": 0,
+        "width": 900,
+        "height": 300
+      },
+      "image": {
+        "fit": "cover",
+        "position": "50% 65%"
+      },
+      "logoLoaded": true,
+      "subtitleRemoved": true
+    },
+    {
+      "variant": "app",
+      "width": 1023,
+      "viewport": 1023,
+      "logo": {
+        "x": 143.21875,
+        "y": 47.734375,
+        "width": 358.046875,
+        "height": 130.421875
+      },
+      "banner": {
+        "x": 0,
+        "y": 0,
+        "width": 1023,
+        "height": 341
+      },
+      "image": {
+        "fit": "cover",
+        "position": "50% 65%"
+      },
+      "logoLoaded": true,
+      "subtitleRemoved": true
+    },
+    {
+      "variant": "app",
+      "width": 1024,
+      "viewport": 1024,
+      "logo": {
+        "x": 402.15625,
+        "y": 61.1875,
+        "width": 242.890625,
+        "height": 88.46875
+      },
+      "banner": {
+        "x": 304,
+        "y": 28,
+        "width": 696,
+        "height": 232
+      },
+      "image": {
+        "fit": "cover",
+        "position": "50% 65%"
+      },
+      "logoLoaded": true,
+      "subtitleRemoved": true
+    },
+    {
+      "variant": "app",
+      "width": 1150,
+      "viewport": 1150,
+      "logo": {
+        "x": 419.796875,
+        "y": 67.078125,
+        "width": 287,
+        "height": 104.546875
+      },
+      "banner": {
+        "x": 304,
+        "y": 28,
+        "width": 822,
+        "height": 274
+      },
+      "image": {
+        "fit": "cover",
+        "position": "50% 65%"
+      },
+      "logoLoaded": true,
+      "subtitleRemoved": true
+    },
+    {
+      "variant": "app",
+      "width": 1280,
+      "viewport": 1280,
+      "logo": {
+        "x": 443.75,
+        "y": 72.390625,
+        "width": 326.890625,
+        "height": 119.078125
+      },
+      "banner": {
+        "x": 312,
+        "y": 28,
+        "width": 936,
+        "height": 312
+      },
+      "image": {
+        "fit": "cover",
+        "position": "50% 65%"
+      },
+      "logoLoaded": true,
+      "subtitleRemoved": true
+    },
+    {
+      "variant": "app",
+      "width": 1439,
+      "viewport": 1439,
+      "logo": {
+        "x": 471.765625,
+        "y": 79.0625,
+        "width": 376.9375,
+        "height": 137.3125
+      },
+      "banner": {
+        "x": 320,
+        "y": 28,
+        "width": 1079,
+        "height": 359.65625
+      },
+      "image": {
+        "fit": "cover",
+        "position": "50% 65%"
+      },
+      "logoLoaded": true,
+      "subtitleRemoved": true
+    },
+    {
+      "variant": "app",
+      "width": 1440,
+      "viewport": 1440,
+      "logo": {
+        "x": 471.90625,
+        "y": 79.109375,
+        "width": 377.296875,
+        "height": 137.4375
+      },
+      "banner": {
+        "x": 320,
+        "y": 28,
+        "width": 1080,
+        "height": 360
+      },
+      "image": {
+        "fit": "cover",
+        "position": "50% 65%"
+      },
+      "logoLoaded": true,
+      "subtitleRemoved": true
+    },
+    {
+      "variant": "app",
+      "width": 1920,
+      "viewport": 1920,
+      "logo": {
+        "x": 697.515625,
+        "y": 80.984375,
+        "width": 391.296875,
+        "height": 142.53125
+      },
+      "banner": {
+        "x": 540,
+        "y": 28,
+        "width": 1120,
+        "height": 373.328125
+      },
+      "image": {
+        "fit": "cover",
+        "position": "50% 65%"
+      },
+      "logoLoaded": true,
+      "subtitleRemoved": true
+    }
+  ]
+}

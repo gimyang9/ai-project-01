@@ -1,0 +1,22 @@
+{
+  "change": "Approved balanced pixel wood logo applied",
+  "asset": "assets/home-logo-pixel-wood.png",
+  "source": "previews/home-logo-v8/logo-refined.png",
+  "assetSha256": "5c8d261c412284f15e37aa18d114d1f6e4457486a9b17fbb8f67a57dc3d28985",
+  "unchanged": [
+    "app.js",
+    "dist/app.js",
+    "assets/forest-bear-b.png"
+  ],
+  "screens": 15,
+  "limitations": [
+    "Chrome viewport emulation; no Safari device test",
+    "No deployment or commit"
+  ],
+  "modified": [
+    "index.html",
+    "dist/index.html",
+    "style.css",
+    "dist/style.css"
+  ]
+}

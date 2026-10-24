@@ -66,11 +66,11 @@ test('approved plans render quota and adaptive estimate; manual form persists an
  const a=boot();a.run("Date=class extends Date{constructor(...args){super(...(args.length?args:['2026-10-25T12:00:00']));}}");
  a.run("commitStudy({type:'material',material:{id:'m',name:'추천 자료',type:'book',unit:'페이지',total:100}},'ok')");
  a.run("commitExam({type:'upsert',goal:{id:'g',name:'시험',date:'2026-10-30',status:'active',note:'',materialIds:['m'],continuedMaterialIds:[],learningDays:[0,1,2,3,4,5,6],focusMode:'auto',focusDate:''}},'ok')");
- assert.match(a.element('today-list').innerHTML,/오늘 권장 20페이지/);assert.match(a.element('today-list').innerHTML,/추정할 기록이 부족/);
+ assert.match(a.element('today-list').innerHTML,/오늘 권장 20페이지/);assert.doesNotMatch(a.element('today-list').innerHTML,/추정할 기록이 부족/);
  a.run("commitStudy({type:'record',id:'m',record:{id:'r',date:'2026-10-19',position:20},today:'2026-10-25'},'ok')");
- assert.match(a.element('today-list').innerHTML,/최근 7일 평균/);assert.match(a.element('today-list').innerHTML,/오늘 권장 16페이지/);
+ assert.doesNotMatch(a.element('today-list').innerHTML,/최근 7일 평균/);assert.match(a.element('today-list').innerHTML,/오늘 권장 16페이지/);
  a.run("openDialog('study-plan','m')");assert.match(a.element('dialog-content').innerHTML,/data-study-form="plan"/);
- a.element('manual-daily-amount').value='5';submit(a,'plan','m');assert.match(a.element('today-list').innerHTML,/직접 정한 오늘 분량 5페이지/);
+ a.element('manual-daily-amount').value='5';submit(a,'plan','m');assert.match(a.element('today-list').innerHTML,/오늘 직접 설정 5페이지/);
  a.run("openDetail('m');renderDetailTab('basic')");assert.match(a.element('detail-tab-content').innerHTML,/최근 7일 평균/);
  a.run("renderGoals()");assert.match(a.element('goal-grid').innerHTML,/학습 계획/);
  const b=boot(Object.fromEntries(a.map));assert.equal(b.run('dataState.study.materials[0].manualDailyAmount'),5);
@@ -100,4 +100,57 @@ test('modal status keeps rest independent, prioritises actionable warnings, and 
   [{...base,remaining:0},'이번 회독 완료','']
  ];
  for(const [fixture,primary,secondary] of cases){const before=JSON.stringify(fixture);a.context.statusFixture=fixture;const shown=a.run("compactPlanStatus(statusFixture,'페이지')");assert.equal(shown.primary,primary);assert.equal(shown.secondary,secondary);assert.equal(JSON.stringify(fixture),before);}
+});
+
+test('home today-list shows concise remaining/state only for all requested plan cases',()=>{
+ const a=boot();
+ const base={id:'sample',remaining:25,isActive:true,todayAllowed:true,manualDailyAmount:null,amount:null,deadline:null,noTime:false,overdue:false,manualShortfall:0,expectedLate:false,forecast:{reason:'insufficient'}};
+ const cases=[
+  [base,'남은 25강 · 목표일 미정'],
+  [{...base,deadline:'2026-11-20',amount:5},'남은 25강 · 오늘 권장 5강'],
+  [{...base,manualDailyAmount:10,amount:6},'남은 25강 · 오늘 직접 설정 6강'],
+  [{...base,todayAllowed:false,amount:0},'남은 25강 · 오늘은 쉬는 날'],
+  [{...base,deadline:'2026-11-20',amount:5,forecast:{reason:'no-recent-study',window:14}},'남은 25강 · 오늘 권장 5강'],
+  [{...base,noTime:true,overdue:true},'남은 25강 · 학습 가능일 없음 · 기한 초과'],
+  [{...base,noTime:true},'남은 25강 · 학습 가능일 없음']
+ ];
+ const raw=a.map.get(D.KEY);
+ for(const [plan,expected] of cases){
+  const before=JSON.stringify(plan);a.context.homeFixture=[plan];
+  a.run("demoMaterials=[{id:'sample',name:'아주 긴 자료명 <안전한 표시>',unit:'강'}];currentPlans=()=>homeFixture;renderToday()");
+  const html=a.element('today-list').innerHTML;
+  assert.ok(html.includes(expected));assert.equal((html.match(/<small/g)||[]).length,1);
+  assert.doesNotMatch(html,/추정할 기록|최근 14일|예상 완료|목표일을 정하면 권장량/);
+  assert.match(html,/data-dialog="record" data-material="sample"/);
+  assert.match(html,/&lt;안전한 표시&gt;/);assert.equal(JSON.stringify(plan),before);
+ }
+ assert.equal(a.map.get(D.KEY),raw);
+ a.context.homeFixture=[{...base,remaining:0,amount:0}];a.run('renderToday()');
+ assert.doesNotMatch(a.element('today-list').innerHTML,/data-material="sample"/);
+ assert.match(a.element('today-list').innerHTML,/오늘 진행할 학습이 없어요/);
+});
+
+test('home manual target completion and short warnings preserve original detailed labels',()=>{
+ const a=boot();const plan={remaining:30,isActive:true,todayAllowed:true,manualDailyAmount:10,amount:0,deadline:'2026-11-20',noTime:false,overdue:false,manualShortfall:0,expectedLate:false,forecast:{reason:'no-recent-study',window:14}};
+ a.context.homeFixture=plan;
+ assert.equal(a.run("homePlanLabel(homeFixture,'페이지')"),'오늘 설정한 분량 완료');
+ assert.match(a.run('forecastLabel(homeFixture)'),/최근 14일 학습량이 0/);
+ a.context.homeFixture={...plan,amount:4,manualShortfall:12};
+ assert.equal(a.run("homePlanLabel(homeFixture,'페이지')"),'오늘 직접 설정 4페이지 · 기한 내 12페이지 부족');
+ assert.match(a.run("planWarning(homeFixture,'페이지')"),/직접 정한 분량으로는/);
+});
+
+test('material heading and filters reflect live unarchived data across changes and reload',()=>{
+ const a=boot();
+ const counts=()=>['material-count','material-count-all','material-count-school','material-count-exam'].map(id=>Number(a.element(id).textContent));
+ assert.deepEqual(counts(),[0,0,0,0]);
+ a.run("commitStudy({type:'material',material:{id:'school',name:'전공',type:'book',unit:'페이지',total:10,category:'school'}},'ok');commitStudy({type:'material',material:{id:'exam',name:'시험',type:'book',unit:'페이지',total:10,category:'exam'}},'ok')");
+ assert.deepEqual(counts(),[2,2,1,1]);
+ a.run("renderMaterials('school')");assert.deepEqual(counts(),[2,2,1,1]);
+ a.run("commitStudy({type:'archive',id:'school',archived:true},'ok')");assert.deepEqual(counts(),[1,1,0,1]);
+ assert.match(a.element('filter-empty child').textContent,/분류/);
+ const b=boot(Object.fromEntries(a.map));assert.equal(Number(b.element('material-count').textContent),1);
+ a.run("commitStudy({type:'archive',id:'school',archived:false},'ok')");assert.deepEqual(counts(),[2,2,1,1]);
+ a.run("commitStudy({type:'delete',id:'exam'},'ok')");assert.deepEqual(counts(),[1,1,1,0]);
+ submit(a,'reset');assert.deepEqual(counts(),[0,0,0,0]);
 });

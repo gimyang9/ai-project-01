@@ -1,0 +1,11 @@
+﻿{
+    "scope":  "Read-only source inventory; no browser storage access",
+    "legacyFiles":  [
+                        {
+                            "path":  "reference/v1/app.js",
+                            "sha256":  "398469CCF2A9A08FEE3850BCF0BC46B26746567F0A7EF9EC01DECC45FB8F8E5F"
+                        },
+                        {
+                            "path":  "reference/v1/favicon.svg",
+                            "sha256":  "55818283581A61F8DD47A289992C21553D92BDAE2B3A4CBB21971518F988E710"
+                        },
