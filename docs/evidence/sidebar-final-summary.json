@@ -1,0 +1,19 @@
+﻿{
+    "date":  "2026-10-25",
+    "appJavascriptUnchanged":  true,
+    "legacyUnchanged":  true,
+    "selectedArtExactCopy":  true,
+    "rootDistHtmlEqual":  true,
+    "rootDistCssEqual":  true,
+    "artWidth":  208,
+    "previousPreviewWidth":  192,
+    "increasePercent":  8.333,
+    "captionGap":  5,
+    "tests":  56,
+    "passed":  56,
+    "browserVerified":  false,
+    "limitations":  [
+                        "cua.getState apps=[] browsers=[]; actual desktop home screenshot and mobile layout not verified",
+                        "CSS static review only; inherited content gap is 44/52/60px at desktop breakpoints"
+                    ]
+}

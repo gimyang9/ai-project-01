@@ -1,0 +1,42 @@
+﻿[
+    {
+        "file":  "01-bear-tree.png",
+        "width":  1448,
+        "height":  1086,
+        "sampleStep":  12,
+        "transparentSamples":  5883,
+        "opaqueSamples":  2,
+        "partialSamples":  5126,
+        "topLeftAlpha":  0
+    },
+    {
+        "file":  "02-growing-garden.png",
+        "width":  1448,
+        "height":  1086,
+        "sampleStep":  12,
+        "transparentSamples":  6366,
+        "opaqueSamples":  3,
+        "partialSamples":  4642,
+        "topLeftAlpha":  0
+    },
+    {
+        "file":  "03-woodland-cabin.png",
+        "width":  1448,
+        "height":  1086,
+        "sampleStep":  12,
+        "transparentSamples":  4650,
+        "opaqueSamples":  0,
+        "partialSamples":  6361,
+        "topLeftAlpha":  0
+    },
+    {
+        "file":  "04-study-garden.png",
+        "width":  1448,
+        "height":  1086,
+        "sampleStep":  12,
+        "transparentSamples":  5453,
+        "opaqueSamples":  1,
+        "partialSamples":  5557,
+        "topLeftAlpha":  0
+    }
+]

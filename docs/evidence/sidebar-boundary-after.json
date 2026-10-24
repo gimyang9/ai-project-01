@@ -1,0 +1,119 @@
+﻿{
+    "scope":  "Read-only source inventory; no browser storage access",
+    "legacyFiles":  [
+                        {
+                            "path":  "reference/v1/app.js",
+                            "sha256":  "398469CCF2A9A08FEE3850BCF0BC46B26746567F0A7EF9EC01DECC45FB8F8E5F"
+                        },
+                        {
+                            "path":  "reference/v1/favicon.svg",
+                            "sha256":  "55818283581A61F8DD47A289992C21553D92BDAE2B3A4CBB21971518F988E710"
+                        },
+                        {
+                            "path":  "reference/v1/fonts/LINESeedKR-Bd.woff2",
+                            "sha256":  "57F95A6C2CE2FF6FA84E28F96BC5D29DCF5A7E308C9A25ED9541EACFF3EDFA56"
+                        },
+                        {
+                            "path":  "reference/v1/fonts/LINESeedKR-Rg.woff2",
+                            "sha256":  "709275188A8EF23040274490CD1FA048A02E9C441A238A4252837258CF8A43DF"
+                        },
+                        {
+                            "path":  "reference/v1/index.html",
+                            "sha256":  "E39F79962F18CCEF089B462D32C51DD5FE2E1E465423751CF46F8A7D4F16D799"
+                        },
+                        {
+                            "path":  "reference/v1/style.css",
+                            "sha256":  "61BF287A3E5557BEDFFA7F81094F473878C732AA1C78E160723399C831B2A2AE"
+                        }
+                    ],
+    "sourceFiles":  [
+                        {
+                            "path":  "dist/app.js",
+                            "sha256":  "4D1B10681646C46EE848710CE7A762F79D8E69F0C8B831D40E4D5150CF8A4B14"
+                        },
+                        {
+                            "path":  "dist/exam-management.js",
+                            "sha256":  "0100F9ECD456FBEBF6796DF6A32FEA95580872B1FA2BCB2F55979B8E7F121504"
+                        },
+                        {
+                            "path":  "dist/streak.js",
+                            "sha256":  "5990245C2D0F69B80BED51BCDD05D106C2BCB438DA4D667D5056F35FEE0D47FA"
+                        },
+                        {
+                            "path":  "dist/study-data.js",
+                            "sha256":  "64E069C6E50EB50F69AD2F99AE62E850E99F765D76DF83CB535962F86E55EE2A"
+                        }
+                    ],
+    "storageCandidates":  [
+                              {
+                                  "path":  "dist/app.js",
+                                  "line":  10,
+                                  "text":  "try {studyLoad=studyAPI.load(window.localStorage,examAPI);}"
+                              },
+                              {
+                                  "path":  "dist/app.js",
+                                  "line":  33,
+                                  "text":  "dataState=recovery\u0026\u0026!studyLoad.writable?studyAPI.recover(window.localStorage,next,examAPI):studyAPI.save(window.localStorage,next,examAPI);"
+                              },
+                              {
+                                  "path":  "dist/exam-management.js",
+                                  "line":  75,
+                                  "text":  "try{const raw=storage.getItem(KEY);return {state:raw===null?validate(reconcile(initial)):validate(reconcile(validate(JSON.parse(raw)))),writable:true,error:null};}"
+                              },
+                              {
+                                  "path":  "dist/exam-management.js",
+                                  "line":  80,
+                                  "text":  "const raw=storage.getItem(KEY);"
+                              },
+                              {
+                                  "path":  "dist/exam-management.js",
+                                  "line":  83,
+                                  "text":  "if(previous.version===1\u0026\u0026storage.getItem(KEY+\u0027.before-choice-v2\u0027)===null)storage.setItem(KEY+\u0027.before-choice-v2\u0027,raw);"
+                              },
+                              {
+                                  "path":  "dist/exam-management.js",
+                                  "line":  85,
+                                  "text":  "storage.setItem(KEY,JSON.stringify(safe));return safe;"
+                              },
+                              {
+                                  "path":  "dist/study-data.js",
+                                  "line":  52,
+                                  "text":  "const raw=storage.getItem(KEY);"
+                              },
+                              {
+                                  "path":  "dist/study-data.js",
+                                  "line":  54,
+                                  "text":  "const legacyRaw=storage.getItem(LEGACY_KEY),examRaw=storage.getItem(api.KEY);"
+                              },
+                              {
+                                  "path":  "dist/study-data.js",
+                                  "line":  59,
+                                  "text":  "storage.setItem(KEY,JSON.stringify(next));"
+                              },
+                              {
+                                  "path":  "dist/study-data.js",
+                                  "line":  63,
+                                  "text":  "function save(storage,state,api){const safe=validate(state,api);storage.setItem(KEY,JSON.stringify(safe));return safe;}"
+                              },
+                              {
+                                  "path":  "dist/study-data.js",
+                                  "line":  67,
+                                  "text":  "const original={v2:storage.getItem(KEY),legacy:storage.getItem(LEGACY_KEY),exams:storage.getItem(api.KEY)};"
+                              },
+                              {
+                                  "path":  "dist/study-data.js",
+                                  "line":  68,
+                                  "text":  "let index=0;while(storage.getItem(KEY+\u0027.before-recovery.\u0027+index)!==null)index++;"
+                              },
+                              {
+                                  "path":  "dist/study-data.js",
+                                  "line":  69,
+                                  "text":  "storage.setItem(KEY+\u0027.before-recovery.\u0027+index,JSON.stringify(original));"
+                              }
+                          ],
+    "limitations":  [
+                        "Pattern search can miss indirect access and include unrelated methods.",
+                        "Hashes prove file identity only when compared with a trusted baseline.",
+                        "No runtime, migration, backup round-trip or browser validation is performed."
+                    ]
+}

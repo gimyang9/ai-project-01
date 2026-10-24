@@ -353,3 +353,29 @@
 - result: limited
 - outcome: 2-1~2-14 구현·합성 자동 검증 완료. 실제 브라우저·사용자 1.0 백업 복사본 검증·사용자 최종 확인 대기. 3단계 미착수.
 - limitations: 사용자 실제 저장값 접근 없음. 모의 DOM은 실제 브라우저·모바일/PC 레이아웃·파일 다운로드·Safari/PWA 검증을 대체하지 않는다. computer-use 스킬 원문을 읽고 cua 브라우저 검증을 시도했으나 apps/browsers 모두 없고 iab unavailable이었다. 경계 도구는 프로세스 한정 ExecutionPolicy 옵션으로 실행했으며 시스템 정책 변경 없음. 해시는 파일 보존 근거이며 사용자 데이터 전환 성공을 뜻하지 않는다. 배포·Git 커밋·Push 없음. 생성 전 구현 소급 기록 없음.
+
+## CG-SKILL-016: 데스크톱 사이드바와 미적용 시안 4종
+
+- date: 2026-10-24
+- skill: chagok-data-guard
+- skill_source: skills/chagok-data-guard/SKILL.md
+- task: 승인된 데스크톱 반응형 레이아웃과 시안 4종 비교 자료
+- todo_refs: UI-SIDEBAR-01~04
+- actions: 원문/현재 진행과 이미지 에셋 확인, HTML/CSS로 동일 메뉴의 1024px 사이드바 전환·홈/더보기 정렬 개선. 모바일 스타일 유지. imagegen 스킬과 내장 image_gen으로 투명 PNG 4종을 생성해 독립 폴더에 보존하고 비교 HTML·최종 프롬프트를 작성. 앱에는 시안 미적용. 기존 테스트 재실행과 전후 경계·알파·미리보기 JS 검사.
+- evidence: docs/sidebar-layout-notes.md, docs/evidence/sidebar-tests.tap (56/56 pass), sidebar-summary.json, sidebar-art-alpha.json, sidebar-boundary-before.json, sidebar-boundary-after.json, skill-use-entry-016.json. Node는 Codex 런타임 실행 파일 사용.
+- result: limited
+- outcome: 레이아웃 구현 및 독립 시안 4종 완료. 앱 JavaScript·reference/v1 전후 해시 동일. 루트/dist 동기화. 일러스트 실제 앱 미참조.
+- limitations: cua.getState apps=[] browsers=[]로 실제 모바일/PC·1024px 경계·낮은 창·키보드 QA 미수행. 모의 DOM/정적 구조 검사를 실제 화면 검증으로 주장하지 않음. 알파는 12px 간격 표본 검사. 실제 Safari/PWA 미검증. 사용자 시안 선택 대기. 3단계·Git 커밋·배포 없음.
+
+## CG-SKILL-017: 사이드바 최종안 1번 실제 적용
+
+- date: 2026-10-25
+- skill: chagok-data-guard
+- skill_source: skills/chagok-data-guard/SKILL.md
+- task: 사용자 최종 선택 나무 곁의 아기 곰을 실제 데스크톱 사이드바에 적용
+- todo_refs: UI-SIDEBAR-04 완료, UI-SIDEBAR-03 실제 화면 확인 대기
+- actions: 스킬/현재 진행/CSS와 선택 이미지를 확인했다. 원본을 새 assets 경로에 복사해 desktop media picture로 연결하고 208px 지정·컨테이너 제한/문구 간격5px/버전 분리/낮은 창 spacing을 적용했다. 기존 본문 간격과 모바일 스타일을 검토하고 JS/저장 로직은 유지했다. 비교 페이지 선택 상태와 문서를 갱신했다.
+- evidence: sidebar-final-tests.tap 56/56 pass, sidebar-final-summary.json, sidebar-final-before.json, sidebar-final-after.json, docs/sidebar-layout-notes.md. 앱 JS/1.0 전후 동일, 선택 원본과 새 에셋 동일, 루트/dist 일치.
+- result: limited
+- outcome: 실제 앱 최종안 적용 완료, 기능 테스트 56개 통과. 기존 이미지 원본/앱 기능 보존.
+- limitations: cua.getState apps=[] browsers=[]이므로 데스크톱 홈/모바일/낮은 창 시각 검증 미수행. 정적 간격 검토를 실제 화면 QA로 주장하지 않는다. 이미지 생성/편집 없음. Git 커밋·배포 없음.

@@ -1,0 +1,21 @@
+﻿{
+    "date":  "2026-10-24",
+    "legacyFilesUnchanged":  true,
+    "appJavascriptUnchanged":  true,
+    "navigationButtons":  4,
+    "hasLeafSymbol":  true,
+    "hasDesktopBreakpoint":  true,
+    "hasThreeColumnBreakpoint":  true,
+    "cssBracesBalanced":  true,
+    "artReferencedByApp":  false,
+    "rootDistHtmlEqual":  true,
+    "rootDistCssEqual":  true,
+    "tests":  56,
+    "passed":  56,
+    "failed":  0,
+    "browserVerified":  false,
+    "limitations":  [
+                        "Static structure and mocked DOM tests do not prove responsive layout or actual browser behavior",
+                        "No connected browsers: cua.getState apps=[] browsers=[]"
+                    ]
+}

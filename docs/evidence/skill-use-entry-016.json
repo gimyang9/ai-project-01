@@ -1,0 +1,40 @@
+﻿{
+    "id":  "CG-SKILL-016",
+    "date":  "2026-10-24",
+    "skill":  "chagok-data-guard",
+    "skill_source":  "skills/chagok-data-guard/SKILL.md",
+    "task":  "승인된 데스크톱 사이드바 레이아웃과 미적용 픽셀 시안 4종 제작",
+    "todo_refs":  [
+                      "UI-SIDEBAR-01",
+                      "UI-SIDEBAR-02",
+                      "UI-SIDEBAR-03 검증 대기",
+                      "UI-SIDEBAR-04 선택 대기"
+                  ],
+    "actions":  [
+                    "스킬·현재 진행/요구와 기존 이미지 직접 확인",
+                    "HTML/CSS로 동일 네 메뉴를 1024px 이상 고정 사이드바로 전환",
+                    "모바일 기존 스타일 유지, 홈 배너·요약·자료 그리드와 더보기 정렬 개선",
+                    "imagegen 스킬과 내장 image_gen으로 투명 PNG 4종 제작, 새 폴더에 보존",
+                    "독립 비교 HTML과 폭/이미지 크기/투명도 옵션, 프롬프트 파일 제작",
+                    "기존 56개 테스트 재실행, 경계·시안 알파·미리보기 스크립트 검사"
+                ],
+    "evidence":  [
+                     "docs/sidebar-layout-notes.md",
+                     "docs/evidence/sidebar-tests.tap",
+                     "docs/evidence/sidebar-summary.json",
+                     "docs/evidence/sidebar-art-alpha.json",
+                     "docs/evidence/sidebar-boundary-before.json",
+                     "docs/evidence/sidebar-boundary-after.json",
+                     "previews/sidebar-art/index.html",
+                     "previews/sidebar-art/prompts.json"
+                 ],
+    "result":  "limited",
+    "outcome":  "레이아웃 구현과 독립 시안 4종 완료, 기존 56개 테스트 통과. 앱 JS/원본 1.0 보존. 시안 앱 미적용.",
+    "limitations":  [
+                        "cua.getState apps=[] browsers=[]; 실제 모바일/PC/1024px 경계 화면·키보드 검증 미수행",
+                        "모의 DOM/정적 검사는 브라우저 레이아웃 QA를 대체하지 않음",
+                        "알파는 12px 간격 표본 검사, 전체 픽셀 전수 검사 아님",
+                        "Safari/PWA 미검증, 일러스트 선택 대기",
+                        "3단계·Git 커밋·배포 미진행"
+                    ]
+}

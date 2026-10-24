@@ -1,0 +1,33 @@
+﻿{
+    "id":  "CG-SKILL-017",
+    "date":  "2026-10-25",
+    "skill":  "chagok-data-guard",
+    "skill_source":  "skills/chagok-data-guard/SKILL.md",
+    "task":  "사용자 최종 선택 1번을 실제 데스크톱 사이드바에 적용",
+    "todo_refs":  [
+                      "UI-SIDEBAR-04",
+                      "UI-SIDEBAR-03 화면 검증 대기"
+                  ],
+    "actions":  [
+                    "원문/진행/현재 사이드바와 선택 이미지를 확인",
+                    "원본을 새 앱 에셋 경로로 복사, picture media로 데스크톱 전용 연결",
+                    "폭 208px와 가용 폭 제한, 문구 간격5px/버전 구분선/낮은 창 spacing 조정",
+                    "기존 본문과 사이드바 간격 정적 검토, 모바일 및 JS 유지",
+                    "56개 테스트 재실행 및 전후 경계/해시 비교, 문서 현행화"
+                ],
+    "evidence":  [
+                     "docs/evidence/sidebar-final-summary.json",
+                     "docs/evidence/sidebar-final-tests.tap",
+                     "docs/evidence/sidebar-final-before.json",
+                     "docs/evidence/sidebar-final-after.json",
+                     "docs/sidebar-layout-notes.md"
+                 ],
+    "result":  "limited",
+    "outcome":  "실제 앱 최종안 적용 완료, 56개 자동 테스트 통과. 모바일 기존 구조 유지, 원본 에셋·JS·저장 로직 보존.",
+    "limitations":  [
+                        "cua.getState apps=[] browsers=[]로 실제 데스크톱 홈/모바일/낮은 창 화면 검증 미수행",
+                        "정적 간격 검토와 자동 테스트를 시각 QA로 주장하지 않음",
+                        "새 이미지 생성·편집 없음; 사용자 선택 원본을 그대로 복사",
+                        "Git 커밋·배포 미수행"
+                    ]
+}
