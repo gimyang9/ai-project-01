@@ -285,3 +285,39 @@ body:has(#view-more:not([hidden])) .preview-note{margin-top:18px}
   .home-intro .forest-banner{height:calc(22.68245vw + 81.7988px);aspect-ratio:auto}
   .home-intro .forest-copy{left:calc(19.0888% - 39.082px);top:36px;width:calc(26.0947% + 68.3928px)}
 }
+
+/* Review planning only. */
+.review-plan-actions{display:flex;align-items:center;flex-wrap:wrap;gap:8px;margin-top:8px}.review-plan-actions .badge{margin-top:0}.review-plan-actions button{min-height:44px}.review-plan-item h3,.review-plan-item p,.review-focus-note p{overflow-wrap:anywhere}.review-focus-note{padding:12px 14px;background:#f1f0e3;border-radius:14px;margin:14px 0}.review-focus-note h3{font-size:13px}.review-focus-note p{font-size:12px;line-height:1.7;color:var(--brown);margin:6px 0}.review-upcoming{margin-top:18px}.review-upcoming>summary{min-height:44px;cursor:pointer;font-size:13px;color:var(--brown)}
+
+.review-amount{display:flex;align-items:center;min-height:44px;min-width:0;border:1px solid #e0d4bf;border-radius:11px;background:#fffdf8}.review-amount input{flex:1;width:0;height:44px;min-width:0;border:0;background:transparent;font-size:16px}.review-amount>span{flex:none;padding-right:12px;color:var(--muted);font-size:12px;white-space:nowrap}.review-amount:focus-within{outline:2px solid #a3b181;outline-offset:1px}.review-amount input:focus{outline:none}
+
+/* Camera framing: 1024px baseline (696 / 3) * .95 = 220.4px.
+   Fixed scene scale reveals more woodland as the camera window widens. */
+.home-intro .forest-banner{height:220px;min-height:0;aspect-ratio:auto;isolation:isolate}
+.home-intro .forest-image{inset:auto;left:50%;top:50%;width:max(100%,1045px);height:350px;max-width:none;object-fit:cover;object-position:50% 52%;transform:translate(-50%,-50%);image-rendering:auto}
+.home-intro .forest-copy{left:clamp(74px,15%,170px);top:30px;width:clamp(210px,29%,285px);max-width:none;padding:0}
+.home-intro .home-brand-logo{width:100%;height:auto;image-rendering:auto}
+@media(max-width:767px){
+ .home-intro .forest-banner{height:auto;aspect-ratio:12/5}
+ .home-intro .forest-image{width:auto;height:max(100%,190px);min-width:100%;object-fit:cover;object-position:50% 52%}
+ .home-intro .forest-copy{left:9%;top:19%;width:43%;max-width:260px}
+}
+@media(min-width:431px) and (max-width:767px){
+ .home-intro .forest-banner{height:clamp(179.1667px,calc(16.2684vw + 109.213px),220px);aspect-ratio:auto}
+ .home-intro .forest-image{height:clamp(190px,calc(47.3373vw - 13.55px),350px);width:auto;min-width:100%}
+ .home-intro .forest-copy{left:calc(22.63vw - 58.63px);top:calc(39.5px - 1.24vw);width:calc(11.19vw + 136.77px);max-width:260px}
+}
+
+/* User-approved banner-logo-layout.json: fixed-scale camera, proportional assets. */
+.home-intro .forest-banner{container:approved-banner / inline-size;height:210px;max-height:none;min-height:0;aspect-ratio:auto;border:0;isolation:isolate}
+.home-intro .forest-banner::after{display:none}
+.home-intro .forest-image{inset:auto;left:calc(100cqw - 1120px + clamp(0px,calc(390px - 41.6666666667cqw),100px));right:auto;top:-94px;width:1120px;height:373.3333333333px;min-width:0;max-width:none;object-fit:contain;object-position:center;transform:none;image-rendering:auto}
+.home-intro .forest-copy{padding:0;left:clamp(0px,calc(33.75cqw - 215.9px),240px);right:auto;top:clamp(37px,calc(34.1px + .4166666667cqw),38px);width:265px;max-width:none;transform:none}
+.home-intro .home-brand-logo{display:block;width:100%;height:auto;max-width:none;image-rendering:auto}
+.home-intro .welcome-panel{margin-top:-24px}
+@container approved-banner (min-width:936px){.home-intro .forest-copy{left:clamp(100px,calc(97.2222222222cqw - 810px),240px);top:38px}}
+@media(max-width:767px){
+ .home-intro .forest-banner{height:min(210px,41.6666666667vw);max-height:none;aspect-ratio:auto}
+ .home-intro .forest-image{left:auto;right:-7.5%;top:0;width:auto;height:110%;min-width:0;max-width:none;object-fit:contain;transform:none}
+ .home-intro .forest-copy{left:1.6279069767cqw;top:min(45px,10.4651162791cqw);width:min(170px,39.5348837209cqw);max-width:none}
+}

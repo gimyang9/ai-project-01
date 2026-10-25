@@ -25,6 +25,11 @@
       check(m.note===undefined||typeof m.note==='string');check(m.targetDate===undefined||m.targetDate===''||date(m.targetDate));
       check(m.archived===undefined||typeof m.archived==='boolean');
       check(m.manualDailyAmount===undefined||m.manualDailyAmount===null||positive(m.manualDailyAmount),'직접 정한 하루 분량은 1 이상의 정수로 입력해 주세요.');
+      if(m.reviewSettings!==undefined){
+        const settings=m.reviewSettings;check(settings&&typeof settings==='object'&&!Array.isArray(settings));
+        check(settings.dailyAmount===undefined||settings.dailyAmount===null||positive(settings.dailyAmount),'하루 복습량은 1 이상의 정수로 입력해 주세요.');
+        if(settings.schedules!==undefined){check(Array.isArray(settings.schedules));for(const r of settings.schedules)check(positive(r.start)&&positive(r.end)&&r.start<=r.end&&r.end<=m.total&&text(r.unit)&&date(r.date)&&date(r.setDate)&&integer(r.afterSequence),'직접 지정한 복습 날짜와 범위를 확인해 주세요.');}
+      }
       check(Array.isArray(m.records)&&Array.isArray(m.reviews)&&Array.isArray(m.roundHistory)&&m.roundHistory.length===m.round-1);
       m.records.forEach(record);calculate(m.records,m.total);
       m.roundHistory.forEach((h,i)=>{check(h.round===i+1&&positive(h.total)&&text(h.unit)&&date(h.completedDate)&&Array.isArray(h.records));h.records.forEach(record);check(calculate(h.records,h.total).at(-1)?.position===h.total);});
@@ -82,6 +87,19 @@
       check(m,'자료를 찾을 수 없어요.');
       if(action.type==='note')m.note=action.note;
       else if(action.type==='plan')m.manualDailyAmount=action.amount;
+      else if(action.type==='review-settings'){m.reviewSettings={...m.reviewSettings,dailyAmount:action.amount};}
+      else if(action.type==='review-date'){
+        check(positive(action.start)&&positive(action.end)&&action.start<=action.end&&action.end<=m.total,'복습 범위를 확인해 주세요.');
+        check(action.date===''||date(action.date),'복습 날짜를 확인해 주세요.');
+        const schedules=[];
+        for(const r of m.reviewSettings?.schedules||[]){
+          if(r.unit!==m.unit||r.end<action.start||r.start>action.end){schedules.push(r);continue;}
+          if(r.start<action.start)schedules.push({...r,end:action.start-1});
+          if(r.end>action.end)schedules.push({...r,start:action.end+1});
+        }
+        if(action.date){const setDate=action.today||new Date().toISOString().slice(0,10);check(date(setDate));schedules.push({start:action.start,end:action.end,unit:m.unit,date:action.date,setDate,afterSequence:s.recordSequence});}
+        m.reviewSettings={...m.reviewSettings,schedules};
+      }
       else if(action.type==='archive'){
         const settings=next.exams.materialSettings[m.id];
         if(action.archived&&!m.archived)m.beforeArchiveStatus=settings.manualStatus;

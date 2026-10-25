@@ -13,7 +13,7 @@ let dataState=studyLoad.state;
 let examState=dataState.exams;
 let demoMaterials=dataState.study.materials.filter(m=>!m.archived).map(studyAPI.project);
 let demoArchivedMaterials=dataState.study.materials.filter(m=>m.archived).map(studyAPI.project);
-const demoReviewPlans=[];
+
 let pendingRestore=null;
 function refreshData(){
   examState=dataState.exams;
@@ -25,7 +25,7 @@ function refreshData(){
 }
 function renderStorageNote(){
   const note=document.querySelector('.preview-note');
-  note.textContent=studyLoad.writable?'자료·학습 기록·시험은 이 브라우저에 저장됩니다. 통계는 예시이며 자동 복습 추천은 준비 중입니다.':studyLoad.error+' 설정에서 백업 파일을 복원할 수 있어요.';
+  note.textContent=studyLoad.writable?'자료·학습 기록·시험은 이 브라우저에 저장됩니다. 통계는 예시입니다.':studyLoad.error+' 설정에서 백업 파일을 복원할 수 있어요.';
 }
 function persistData(next,message,recovery=false){
   if(!studyLoad.writable&&!recovery){notify(studyLoad.error);return false;}
@@ -56,8 +56,38 @@ function commitExam(action,message) {
   try{return persistData({...dataState,exams:examAPI.update(examState,action)},message);}
   catch(error){notify(error.message);return false;}
 }
-function activeReviewPlans(){return demoReviewPlans.filter(plan=>examAPI.materialStatus(examState,plan.materialId)==='active'&&(!plan.goalId||examState.goals.some(g=>g.id===plan.goalId&&g.status==='active')));}
-function renderReviewSummary(){$('review-range-count').textContent='자동 추천 준비 중';}
+
+let reviewCache=null;
+function currentReviews(){
+  const today=localToday();
+  if(!reviewCache||reviewCache.state!==dataState||reviewCache.today!==today)reviewCache={state:dataState,today,value:ReviewPlan.build(dataState,today,studyAPI,examAPI,LearningPlan)};
+  return reviewCache.value;
+}
+function activeReviewPlans(){return currentReviews().today;}
+function renderReviewSummary(){$('review-range-count').textContent=activeReviewPlans().length?`${activeReviewPlans().length}개 범위`:'오늘은 복습이 없어요';}
+function reviewFocusText(plan,unit){
+  if(!plan)return '';
+  if(plan.reason==='no-study')return '현재 회독에서 공부한 범위가 없어 집중 복습을 기다리고 있어요.';
+  if(plan.reason==='no-recent-review')return '최근 복습량이 없어 속도를 추정하지 않아요. 하루 복습량을 직접 정할 수 있어요.';
+  if(plan.reason==='no-days')return '복습 가능한 날이 없어 시작일을 계산할 수 없어요.';
+  if(plan.reason==='invalid-start')return '집중 복습 시작일을 시험 전 날짜로 확인해 주세요.';
+  if(!plan.speed.amount)return '복습 속도를 계산할 기록이 없어요.';
+  const label=plan.speed.reason==='initial'?'초기 추정':plan.speed.reason==='manual'?'직접 설정':'최근 기록 기준';
+  return `${label} 하루 ${Math.round(plan.speed.amount*100)/100}${unit} · 시작 ${plan.startDate}${plan.effectiveStart!==plan.startDate?' (오늘부터)':''}${plan.shortfall?' · 시험 전 '+plan.shortfall+unit+' 부족 예상':''}`;
+}
+function reviewRow(plan,material,upcoming=false){
+  const date=plan.dueDate||'';
+  const labels=upcoming?['복습 예정']:plan.sources.includes('focus')&&plan.status==='복습 지연'?['복습 지연','시험 전 복습']:[plan.status];
+  return `<article class="review-plan-item"><h3>${escapeHTML(material.name)}</h3><p>${plan.start}–${plan.end}${escapeHTML(material.unit)}${date?' · '+escapeHTML(date):''}${plan.manual?' · 직접 지정':''}</p><div class="review-plan-actions">${labels.map(label=>`<span class="badge ${label==='복습 지연'?'clay':'sage'}">${label}</span>`).join('')}<button class="text-link" data-dialog="review" data-material="${escapeHTML(material.id)}" data-review-start="${plan.start}" data-review-end="${plan.end}">복습 기록${icon('chevron')}</button><button class="subtle-button" data-dialog="review-date" data-material="${escapeHTML(material.id)}" data-review-start="${plan.start}" data-review-end="${plan.end}" data-review-due="${escapeHTML(date)}">날짜 변경</button></div></article>`;
+}
+function reviewListMarkup(){
+  const snapshot=currentReviews(),today=localToday();
+  const rows=snapshot.today.map(plan=>reviewRow(plan,demoMaterials.find(m=>m.id===plan.materialId))).join('');
+  const upcoming=snapshot.materials.flatMap(plan=>plan.segments.filter(r=>r.dueDate&&r.dueDate>today).map(r=>({...r,materialId:plan.id}))).sort((a,b)=>a.dueDate.localeCompare(b.dueDate)||a.start-b.start);
+  const focus=snapshot.materials.filter(p=>p.focus).map(p=>{const m=demoMaterials.find(m=>m.id===p.id);return `<article class="review-focus-note"><h3>${escapeHTML(m.name)} · 시험 전 복습</h3><p>${escapeHTML(reviewFocusText(p.focus,m.unit))}</p><button class="subtle-button" data-dialog="review-settings" data-material="${escapeHTML(m.id)}">복습 계획</button></article>`;}).join('');
+  return (rows||'<p class="dialog-intro">오늘 예정된 복습이 없어요.</p>')+focus+(upcoming.length?`<details class="review-upcoming"><summary>앞으로의 복습 일정</summary>${upcoming.map(p=>reviewRow(p,demoMaterials.find(m=>m.id===p.materialId),true)).join('')}</details>`:'')+'<p class="field-help">추천은 학습 기록을 바탕으로 한 추정이에요. 자료 관리의 복습 계획에서 분량을 직접 정할 수 있어요.</p>';
+}
+
 function renderExamSummary(){
   const g=examState.goals.filter(g=>g.status==='active'&&g.date&&examAPI.dayDifference(g.date,localToday())>=0).sort((a,b)=>a.date.localeCompare(b.date))[0];
   const card=document.querySelector('.exam-summary');
@@ -326,11 +356,14 @@ function openDialog(type, materialId, editing = false) {
     title = '메모';
     content = `<p class="dialog-material-name">${escapeHTML(m.name)}</p><form data-study-form="memo" data-material="${escapeHTML(m.id)}"><div class="form-field"><label for="material-note">학습 메모 <small>(선택사항)</small></label><textarea id="material-note" rows="6" placeholder="필요할 때 꺼내 볼 메모를 남겨요.">${escapeHTML(m.note)}</textarea></div>${dialogFooter('저장')}</form>`;
   } else if (type === 'review-plan') {
-    title = '오늘의 복습';
-    content = activeReviewPlans().length ? activeReviewPlans().map(plan=>{
-      const material=demoMaterials.find(item=>item.id===plan.materialId);
-      return `<div class="review-plan-item"><h3>${escapeHTML(material.name)}</h3><p>${plan.start}–${plan.end}${escapeHTML(material.unit)}</p><span class="badge ${plan.status==='복습 지연'?'clay':'sage'}">${plan.status}</span><button class="text-link" style="float:right" data-dialog="review" data-material="${escapeHTML(material.id)}">복습 기록${icon('chevron')}</button></div>`;
-    }).join('') : '<p class="dialog-intro">자동 복습 추천은 준비 중이에요. 자료 카드의 복습 버튼으로 공부한 범위를 기록할 수 있어요.</p>';
+    title='오늘의 복습';content=reviewListMarkup();
+  } else if(type==='review-settings'){
+    title='복습 계획';
+    const source=dataState.study.materials.find(item=>item.id===m.id),plan=currentReviews().materials.find(p=>p.id===m.id);
+    content=`<p class="dialog-material-name">${escapeHTML(m.name)}</p>${plan?.focus?`<div class="plan-status"><p>${escapeHTML(reviewFocusText(plan.focus,m.unit))}</p></div>`:''}<form data-study-form="review-settings" data-material="${escapeHTML(m.id)}"><div class="form-field"><label for="manual-review-amount">하루 복습량 <small>(선택사항)</small></label><div class="review-amount"><input id="manual-review-amount" type="number" min="1" step="1" inputmode="numeric" value="${source.reviewSettings?.dailyAmount||''}"><span>${escapeHTML(m.unit)}</span></div><p class="field-help">비워 두면 기록에 따른 자동 추정을 사용해요.</p></div>${dialogFooter('저장')}</form><button class="subtle-button" data-dialog="review-date" data-material="${escapeHTML(m.id)}">범위별 복습 날짜 정하기</button><p class="field-help">집중 복습 시작일은 연결 시험 수정에서 직접 정할 수 있어요.</p>`;
+  } else if(type==='review-date'){
+    title='복습 날짜 변경';
+    content=`<p class="dialog-material-name">${escapeHTML(m.name)}</p><form data-study-form="review-date" data-material="${escapeHTML(m.id)}"><div class="form-row"><div class="form-field"><label for="review-schedule-start">시작 위치</label><input id="review-schedule-start" type="number" min="1" max="${m.total}" step="1" inputmode="numeric" required></div><div class="form-field"><label for="review-schedule-end">끝 위치</label><input id="review-schedule-end" type="number" min="1" max="${m.total}" step="1" inputmode="numeric" required></div></div><div class="form-field"><label for="review-schedule-date">복습 날짜 <small>(선택사항)</small></label><input id="review-schedule-date" type="date"><p class="field-help">비워 두면 이 범위의 자동 복습 날짜로 돌아가요.</p></div>${dialogFooter('저장')}</form>`;
   } else if (type === 'settings') {
     title = '설정';
     content = `<section class="settings-block"><h3>학습 데이터 백업</h3><button class="button secondary" data-backup>백업 파일 저장</button></section><section class="settings-block"><h3>학습 데이터 복원</h3><input id="restore-file" type="file" accept="application/json,.json" hidden><button class="button secondary" data-restore>백업 파일 선택</button></section><button class="reset-button" data-dialog="reset">초기화</button>`;
@@ -342,7 +375,7 @@ function openDialog(type, materialId, editing = false) {
     content = `<p class="dialog-intro">‘${escapeHTML(m.name)}’ 자료와 연결된 기록이 삭제됩니다.</p><form data-study-form="delete" data-material="${escapeHTML(m.id)}">${dialogFooter('삭제',true)}</form>`;
   } else if (type === 'material-menu') {
     title = '학습 자료 관리';
-    content = `<div class="more-list"><button data-dialog="study-plan" data-material="${escapeHTML(m.id)}">${icon('calendar')}<span>학습 계획</span></button><button data-dialog="memo" data-material="${escapeHTML(m.id)}">${icon('notes')}<span>메모</span></button><button data-dialog="material" data-material="${escapeHTML(m.id)}" data-edit>${icon('edit')}<span>자료 수정</span></button>${m.current===m.total?`<button data-dialog="next-round" data-material="${escapeHTML(m.id)}">${icon('repeat')}<span>다음 회독 시작</span></button>`:''}<button data-archive-material="${escapeHTML(m.id)}">${icon('archive')}<span>학습 완료 및 보관</span></button><button data-material-status="${examState.materialSettings[m.id].manualStatus==='paused'?'active':'paused'}" data-material="${escapeHTML(m.id)}">${icon('repeat')}<span>${examState.materialSettings[m.id].manualStatus==='paused'?'다시 시작하기':'학습 일시 중단'}</span></button><button class="muted-danger" data-dialog="delete-material" data-material="${escapeHTML(m.id)}">${icon('trash')}<span>자료 삭제</span></button></div>`;
+    content = `<div class="more-list"><button data-dialog="study-plan" data-material="${escapeHTML(m.id)}">${icon('calendar')}<span>학습 계획</span></button><button data-dialog="review-settings" data-material="${escapeHTML(m.id)}">${icon('repeat')}<span>복습 계획</span></button><button data-dialog="memo" data-material="${escapeHTML(m.id)}">${icon('notes')}<span>메모</span></button><button data-dialog="material" data-material="${escapeHTML(m.id)}" data-edit>${icon('edit')}<span>자료 수정</span></button>${m.current===m.total?`<button data-dialog="next-round" data-material="${escapeHTML(m.id)}">${icon('repeat')}<span>다음 회독 시작</span></button>`:''}<button data-archive-material="${escapeHTML(m.id)}">${icon('archive')}<span>학습 완료 및 보관</span></button><button data-material-status="${examState.materialSettings[m.id].manualStatus==='paused'?'active':'paused'}" data-material="${escapeHTML(m.id)}">${icon('repeat')}<span>${examState.materialSettings[m.id].manualStatus==='paused'?'다시 시작하기':'학습 일시 중단'}</span></button><button class="muted-danger" data-dialog="delete-material" data-material="${escapeHTML(m.id)}">${icon('trash')}<span>자료 삭제</span></button></div>`;
   } else if (type === 'archive') {
     title = '보관한 학습 자료';
     content = demoArchivedMaterials.map(material => `<div class="material-main"><div class="plant-sprite plant-flower" role="img" aria-label="보관된 완성 식물"></div><div><h3>${escapeHTML(material.name)}</h3><p class="field-help">${material.round}회독 완료 · 보관 중</p><button class="text-link" data-unarchive-material="${escapeHTML(material.id)}">다시 꺼내기${icon('chevron')}</button></div></div>`).join('') || '<p class="field-help">보관한 자료가 없어요.</p>';
@@ -385,7 +418,7 @@ function openExamDialog(type,id,status) {
     presentExamDialog('시험 메모',`<p class="dialog-material-name">${escapeHTML(g.name)}</p><form data-exam-form="memo" data-goal="${safeId}"><div class="form-field"><label for="exam-note">메모 <small>(선택사항)</small></label><textarea id="exam-note" rows="6">${escapeHTML(g.note)}</textarea></div>${dialogFooter('저장')}</form>`);
   }else if(type==='edit'||type==='resit') {
     const draft=type==='resit'?{...g,name:g.name+' · 재응시',date:'',daysOff:[],focusMode:'auto',focusDate:''}:g||{name:'',date:'',materialIds:[],learningDays:[0,1,2,3,4,5],daysOff:[],focusMode:'auto',focusDate:''};
-    presentExamDialog(type==='resit'?'다시 준비하기':g?'시험 수정':'시험 추가',`<form data-exam-form="${type==='resit'?'resit':'edit'}" data-goal="${safeId}">${type==='resit'?'<p class="field-help">선택한 기존 자료와 기록을 함께 사용합니다. 원래 시험과 자료의 직접 중단·보관 상태는 유지해요.</p>':''}<div class="form-field"><label for="goal-name">시험 이름</label><input id="goal-name" value="${escapeHTML(draft.name)}" maxlength="100" placeholder="예: 정보처리기사 필기" required></div><div class="form-field"><label for="goal-date">시험 날짜 <small>(선택사항)</small></label><input id="goal-date" type="date" value="${draft.date}"></div><div class="form-field"><span class="field-label">연결할 학습 자료 <small>(선택사항)</small></span><div class="checkbox-list">${dataState.study.materials.map(studyAPI.project).filter(m=>type!=='resit'||g.materialIds.includes(m.id)).map(m=>`<label><input type="checkbox" name="goal-material" value="${escapeHTML(m.id)}" ${draft.materialIds.includes(m.id)?'checked':''}>${escapeHTML(m.name)}</label>`).join('')}</div></div><hr class="form-divider"><div class="form-field"><span class="field-label">학습 가능한 요일</span><div class="weekday-options">${['월','화','수','목','금','토','일'].map((day,i)=>`<label><input type="checkbox" name="learning-day" value="${i}" ${draft.learningDays.includes(i)?'checked':''} aria-label="${day}요일 학습 가능"><span>${day}</span></label>`).join('')}</div></div><div class="form-field"><label for="exam-days-off">쉬는 날짜 <small>(선택사항)</small></label><textarea id="exam-days-off" rows="2" placeholder="2026-11-01, 2026-11-08">${escapeHTML((draft.daysOff||[]).join(', '))}</textarea><p class="field-help">YYYY-MM-DD 형식으로 쉼표나 줄바꿈으로 구분해 주세요.</p></div><div class="form-field"><label for="focus-mode">시험 전 집중 복습</label><select id="focus-mode"><option value="auto" ${draft.focusMode==='auto'?'selected':''}>학습 기록에 맞춰 자동 추천</option><option value="manual" ${draft.focusMode==='manual'?'selected':''}>직접 시작일 설정</option></select><p class="field-help">직접 설정한 일정은 유지해요. 자동 추천 계산은 아직 연결되지 않았어요.</p></div><div class="form-field" id="focus-date-field" ${draft.focusMode==='manual'?'':'hidden'}><label for="focus-date">집중 복습 시작일</label><input id="focus-date" type="date" value="${draft.focusDate}" ${draft.focusMode==='manual'?'required':''}></div>${dialogFooter(g?'저장':'추가')}</form>`);
+    presentExamDialog(type==='resit'?'다시 준비하기':g?'시험 수정':'시험 추가',`<form data-exam-form="${type==='resit'?'resit':'edit'}" data-goal="${safeId}">${type==='resit'?'<p class="field-help">선택한 기존 자료와 기록을 함께 사용합니다. 원래 시험과 자료의 직접 중단·보관 상태는 유지해요.</p>':''}<div class="form-field"><label for="goal-name">시험 이름</label><input id="goal-name" value="${escapeHTML(draft.name)}" maxlength="100" placeholder="예: 정보처리기사 필기" required></div><div class="form-field"><label for="goal-date">시험 날짜 <small>(선택사항)</small></label><input id="goal-date" type="date" value="${draft.date}"></div><div class="form-field"><span class="field-label">연결할 학습 자료 <small>(선택사항)</small></span><div class="checkbox-list">${dataState.study.materials.map(studyAPI.project).filter(m=>type!=='resit'||g.materialIds.includes(m.id)).map(m=>`<label><input type="checkbox" name="goal-material" value="${escapeHTML(m.id)}" ${draft.materialIds.includes(m.id)?'checked':''}>${escapeHTML(m.name)}</label>`).join('')}</div></div><hr class="form-divider"><div class="form-field"><span class="field-label">학습 가능한 요일</span><div class="weekday-options">${['월','화','수','목','금','토','일'].map((day,i)=>`<label><input type="checkbox" name="learning-day" value="${i}" ${draft.learningDays.includes(i)?'checked':''} aria-label="${day}요일 학습 가능"><span>${day}</span></label>`).join('')}</div></div><div class="form-field"><label for="exam-days-off">쉬는 날짜 <small>(선택사항)</small></label><textarea id="exam-days-off" rows="2" placeholder="2026-11-01, 2026-11-08">${escapeHTML((draft.daysOff||[]).join(', '))}</textarea><p class="field-help">YYYY-MM-DD 형식으로 쉼표나 줄바꿈으로 구분해 주세요.</p></div><div class="form-field"><label for="focus-mode">시험 전 집중 복습</label><select id="focus-mode"><option value="auto" ${draft.focusMode==='auto'?'selected':''}>학습 기록에 맞춰 자동 추천</option><option value="manual" ${draft.focusMode==='manual'?'selected':''}>직접 시작일 설정</option></select><p class="field-help">실제 복습 속도와 학습 가능일로 추천해요. 직접 설정한 시작일을 우선해요.</p></div><div class="form-field" id="focus-date-field" ${draft.focusMode==='manual'?'':'hidden'}><label for="focus-date">집중 복습 시작일</label><input id="focus-date" type="date" value="${draft.focusDate}" ${draft.focusMode==='manual'?'required':''}></div>${dialogFooter(g?'저장':'추가')}</form>`);
   }else if(type==='status'&&(status==='paused'||status==='archived')) {
     const linked=g.materialIds.map(id=>demoMaterials.find(m=>m.id===id)).filter(Boolean);
     const isPause=status==='paused';
@@ -460,6 +493,8 @@ function submitStudyForm(event){
     action={type:'material',material,goalIds:Array.from(form.querySelectorAll('[name="material-goal"]:checked'),el=>el.value)};
   }else if(mode==='memo')action={type:'note',id,note:$('material-note').value};
   else if(mode==='plan')action={type:'plan',id,amount:$('manual-daily-amount').value.trim()?Number($('manual-daily-amount').value):null};
+  else if(mode==='review-settings')action={type:'review-settings',id,amount:$('manual-review-amount').value.trim()?Number($('manual-review-amount').value):null};
+  else if(mode==='review-date')action={type:'review-date',id,start:Number($('review-schedule-start').value),end:Number($('review-schedule-end').value),date:$('review-schedule-date').value,today:localToday()};
   else if(mode==='record'||mode==='review'){
     const record={id:form.dataset.record||crypto.randomUUID(),date:$(mode==='record'?'study-date':'review-date').value,understanding:understandingValue};
     if(mode==='record')record.position=Number($('study-position').value);
@@ -485,6 +520,16 @@ function submitStudyForm(event){
 }
 
 function handleStudyButton(button){
+  if(button.dataset.reviewStart){
+    openDialog(button.dataset.dialog,button.dataset.material);
+    if(button.dataset.dialog==='review'){
+      $('review-from').value=button.dataset.reviewStart;$('review-to').value=button.dataset.reviewEnd;
+    }else{
+      $('review-schedule-start').value=button.dataset.reviewStart;$('review-schedule-end').value=button.dataset.reviewEnd;
+      $('review-schedule-date').value=button.dataset.reviewDue||'';
+    }
+    return true;
+  }
   if(button.hasAttribute('data-backup')){
     if(!studyLoad.writable){notify(studyLoad.error);return true;}
     try{

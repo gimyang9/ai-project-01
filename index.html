@@ -15,6 +15,7 @@
   <script defer src="exam-management.js"></script>
   <script defer src="study-data.js"></script>
   <script defer src="learning-plan.js"></script>
+  <script defer src="review-plan.js"></script>
   <script defer src="app.js"></script>
 </head>
 <body>
@@ -49,8 +50,8 @@
     <section id="view-home" class="view" aria-labelledby="home-heading">
       <div class="home-intro">
       <div class="forest-banner">
-        <img class="forest-image" src="assets/forest-bear-b.png" alt="꽃과 나무에 둘러싸인 오두막 옆에서 아기 곰이 책을 읽는 픽셀 숲">
-        <div class="forest-copy"><h1 id="home-heading"><img class="home-brand-logo" src="assets/home-logo-pixel-wood.png" alt="차곡차곡" width="2078" height="757" decoding="async"></h1></div><span class="version forest-version">v2.0.0</span>
+        <picture><source media="(min-width:768px)" srcset="assets/home-banner-flower-yard-pc.jpg"><img class="forest-image" src="assets/home-banner-flower-yard-mobile.png" alt="꽃길이 이어지는 숲속 오두막 옆에서 곰이 책을 읽는 픽셀 풍경"></picture>
+        <div class="forest-copy"><h1 id="home-heading"><img class="home-brand-logo" src="assets/home-logo-approved.png" alt="차곡차곡" width="2078" height="757" decoding="async"></h1></div><span class="version forest-version">v2.0.0</span>
       </div>
       <section class="welcome-panel" aria-labelledby="welcome-heading">
         <div class="welcome-date"><img class="pixel-date" src="assets/date-leaf.png" alt=""><time id="home-date"></time></div>
@@ -59,7 +60,7 @@
       </div>
       <div class="home-overview">
         <section class="panel today-panel" aria-labelledby="today-heading"><div class="section-title"><h2 id="today-heading">오늘의 학습</h2></div><div class="today-list" id="today-list"></div></section>
-        <div class="summary-stack"><button class="summary-card exam-summary" data-view="goals"><span class="summary-icon terracotta"><svg class="icon"><use href="#i-calendar"/></svg></span><span><small>가장 가까운 시험</small><strong>정보처리기사</strong><span class="summary-sub">필기 · 11월 21일</span></span><b class="d-day">D−28</b></button><button class="summary-card review-summary" data-dialog="review-plan"><span class="summary-icon olive"><svg class="icon"><use href="#i-repeat"/></svg></span><span><small>오늘 복습할 범위</small><strong id="review-range-count">3개 범위</strong><span class="summary-sub">예정 · 지연 복습 확인</span></span><svg class="icon chevron"><use href="#i-chevron"/></svg></button></div>
+        <div class="summary-stack"><button class="summary-card exam-summary" data-view="goals"><span class="summary-icon terracotta"><svg class="icon"><use href="#i-calendar"/></svg></span><span><small>가장 가까운 시험</small><strong>정보처리기사</strong><span class="summary-sub">필기 · 11월 21일</span></span><b class="d-day">D−28</b></button><button class="summary-card review-summary" data-dialog="review-plan"><span class="summary-icon olive"><svg class="icon"><use href="#i-repeat"/></svg></span><span><small>오늘 복습할 범위</small><strong id="review-range-count">복습 일정 확인</strong><span class="summary-sub">예정 · 지연 복습 확인</span></span><svg class="icon chevron"><use href="#i-chevron"/></svg></button></div>
       </div>
       <section class="materials-section" aria-labelledby="materials-heading"><div class="section-title material-heading"><div><h2 id="materials-heading">학습 자료 <span id="material-count" class="count">0</span></h2></div><button class="button primary compact" data-dialog="material"><svg class="icon"><use href="#i-plus"/></svg>추가</button></div><div class="filter-row" aria-label="학습 자료 필터"><button class="filter active" data-filter="all" aria-pressed="true">전체 <span id="material-count-all">0</span></button><button class="filter" data-filter="school" aria-pressed="false">전공 공부 <span id="material-count-school">0</span></button><button class="filter" data-filter="exam" aria-pressed="false">시험 준비 <span id="material-count-exam">0</span></button></div><div class="material-grid" id="material-grid"></div><div class="empty-panel" id="filter-empty" hidden><svg class="icon"><use href="#i-leaf"/></svg><h3>아직 등록된 자료가 없어요</h3><p>첫 학습 자료를 추가해 보세요.</p></div></section>
     </section>

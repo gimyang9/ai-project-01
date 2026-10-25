@@ -474,3 +474,109 @@
 - result: limited
 - outcome: 지정 치수 통일 및 요청 화면 폭의 정적 적용값 일치. 앱 JS/원본1.0 유지. 더보기 규칙은 루트/dist 동일.
 - limitations: 브라우저 apps=[] browsers=[]로 실제 모바일/PC 렌더링·넘침·숫자 배지 정렬 미검증. CSS-only로 회귀 테스트 미재실행. 작업 시작 시 root/dist CSS는 같았으나 마지막 검사 때 루트의 학습계획 모달에 별도 수정이 생겨 범위 밖 변경을 보존했다. 전체 파일 동일을 주장하지 않는다. Git 커밋·배포 없음.
+
+
+## CG-SKILL-025 — 4단계 착수: 이해도 저장 검증과 복습 정책 제안
+
+{
+  "date": "2026-10-25",
+  "skill": "chagok-data-guard",
+  "skill_source": "skills/chagok-data-guard/SKILL.md",
+  "task": "4단계 착수: 이해도 저장 검증과 복습 정책 제안",
+  "todo_refs": [
+    "4-1",
+    "4-2",
+    "4-3",
+    "4-14",
+    "4-15"
+  ],
+  "actions": [
+    "기존 이해도 저장·수정·회독·백업 경로 확인",
+    "합성 데이터 보존 테스트5개 추가",
+    "기존 포함100개 테스트 실행·통과",
+    "일반 간격·초기 추정량·여유일을 사례 문서로 작성하고 사용자 확인 요청"
+  ],
+  "evidence": [
+    "tests/review-foundation.test.cjs",
+    "docs/stage4-review-proposal.md",
+    "docs/evidence/stage4/before.json",
+    "docs/evidence/stage4/summary.json"
+  ],
+  "result": "limited",
+  "outcome": "이해도 저장 경계 검증 및 수치 제안 작성 완료. 자동 복습 계산 연결은 수치 확인 대기.",
+  "limitations": [
+    "scripts/inspect-boundary.ps1 미존재: 도구 미실행, 직접 소스 검토와 해시로 보조 확인",
+    "합성 Node 테스트이며 실제 사용자 백업과 Safari 검증 아님",
+    "4단계 전체 미완료, 수치 규칙은 아직 제안",
+    "사용자 데이터·앱 계산·저장 형식 변경 없음",
+    "Git 커밋·배포 없음"
+  ],
+  "id": "CG-SKILL-025"
+}
+
+
+## CG-SKILL-026 — 4단계 이해도 기반 복습·시험 전 추천 실제 연결
+
+{
+  "date": "2026-10-25",
+  "skill": "chagok-data-guard",
+  "skill_source": "skills/chagok-data-guard/SKILL.md",
+  "task": "4단계 이해도 기반 복습·시험 전 추천 실제 연결",
+  "todo_refs": [
+    "4-1",
+    "4-2",
+    "4-3",
+    "4-4",
+    "4-5",
+    "4-6",
+    "4-7",
+    "4-8",
+    "4-9",
+    "4-10",
+    "4-11",
+    "4-12",
+    "4-13",
+    "4-14",
+    "4-15",
+    "4-16",
+    "4-17",
+    "4-18",
+    "4-19",
+    "4-20",
+    "4-21",
+    "4-22",
+    "4-23"
+  ],
+  "actions": [
+    "사용자 확정 간격·반올림·현재회독10%·수동우선 정책을 상수로 분리",
+    "원본 이력과 분리한 범위별 파생 복습·지연·성공 상태 계산",
+    "자료별 최근7/14/28일 속도 및 실제 학습 가능일 역산·부족량 추정",
+    "일반/집중 중복 없는 목록과 단일 완료 폼 연결",
+    "선택형 reviewSettings로 수동 분량·범위별 날짜 저장 및 백업 호환 유지",
+    "기존 포함135개 테스트와 임시 Chrome5개 너비·단일 완료·수동 설정·재실행 확인",
+    "root/dist 반영 및 신규 학습·시험 계산 모듈 보존 확인"
+  ],
+  "evidence": [
+    "review-plan.js",
+    "tests/review-plan.test.cjs",
+    "tests/review-foundation.test.cjs",
+    "tests/study-app.test.cjs",
+    "docs/stage4-validation.md",
+    "docs/evidence/stage4/final-tests.tap",
+    "docs/evidence/stage4/test-results.json",
+    "docs/evidence/stage4/browser-results.json",
+    "docs/evidence/stage4/implementation-before.json",
+    "docs/evidence/stage4/implementation-after.json"
+  ],
+  "result": "limited",
+  "outcome": "4-1~4-23 구현 기준 완료. 135개 자동 테스트와 합성 브라우저 흐름 통과. 실제 사용자 백업·Safari/PWA 검증은 남음.",
+  "limitations": [
+    "scripts/inspect-boundary.ps1 미존재로 도구 미실행: 직접 소스·해시 및 합성 실행으로 보조 확인",
+    "실제 사용자 데이터·1.0 원본은 사용하거나 변경하지 않음",
+    "Chrome 너비 모의 검증이며 실제 Safari/PWA는 아님",
+    "영향 자료의 이력을 재생하며 완전한 차등 계산 캐시는 아님",
+    "초대형 이력 성능·여러 자료 총 학습 시간 보장은 별도 범위",
+    "Git 커밋·배포 없음;5단계 미착수"
+  ],
+  "id": "CG-SKILL-026"
+}

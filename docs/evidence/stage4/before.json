@@ -1,0 +1,26 @@
+[
+  {
+    "file": "study-data.js",
+    "sha256": "4baeeafde35b7989e102a417c323c321c5df8492b30245aed21a9691b2041396"
+  },
+  {
+    "file": "dist/study-data.js",
+    "sha256": "4baeeafde35b7989e102a417c323c321c5df8492b30245aed21a9691b2041396"
+  },
+  {
+    "file": "app.js",
+    "sha256": "9e42142331cd1d13204de6e1a78f1a194afdcbf592e488944906bc5e66df706c"
+  },
+  {
+    "file": "dist/app.js",
+    "sha256": "9e42142331cd1d13204de6e1a78f1a194afdcbf592e488944906bc5e66df706c"
+  },
+  {
+    "file": "learning-plan.js",
+    "sha256": "8131927433190943b18353836d3e34414fe80f1d2458c77f5db681f9629d539b"
+  },
+  {
+    "file": "dist/learning-plan.js",
+    "sha256": "8131927433190943b18353836d3e34414fe80f1d2458c77f5db681f9629d539b"
+  }
+]

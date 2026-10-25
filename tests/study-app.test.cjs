@@ -7,7 +7,7 @@ function boot(entries={}){
  const document={getElementById:element,querySelector:element,querySelectorAll:()=>[],addEventListener(){},activeElement:null};
  const context=vm.createContext({document,console,Date,Intl,crypto,location:{hash:''},history:{replaceState(){}},setTimeout:()=>1,clearTimeout(){},localStorage:{getItem:k=>map.get(k)??null,setItem:(k,v)=>map.set(k,v)},addEventListener(){},scrollTo(){}});
  context.window=context;
- for(const name of ['streak.js','exam-management.js','study-data.js','learning-plan.js','app.js'])vm.runInContext(fs.readFileSync('dist/'+name,'utf8'),context,{filename:name});
+ for(const name of ['streak.js','exam-management.js','study-data.js','learning-plan.js','review-plan.js','app.js'])vm.runInContext(fs.readFileSync('dist/'+name,'utf8'),context,{filename:name});
  return {map,element,run:code=>vm.runInContext(code,context),context};
 }
 const submit=(app,mode,id='',record='')=>app.run(`submitStudyForm({preventDefault(){},target:{dataset:{studyForm:${JSON.stringify(mode)},material:${JSON.stringify(id)},record:${JSON.stringify(record)}},querySelector(){return null;},querySelectorAll(){return [];}}})`);
@@ -153,4 +153,29 @@ test('material heading and filters reflect live unarchived data across changes a
  a.run("commitStudy({type:'archive',id:'school',archived:false},'ok')");assert.deepEqual(counts(),[2,2,1,1]);
  a.run("commitStudy({type:'delete',id:'exam'},'ok')");assert.deepEqual(counts(),[1,1,1,0]);
  submit(a,'reset');assert.deepEqual(counts(),[0,0,0,0]);
+});
+
+test('review UI shows merged ranges, prefills one completion, and stores only one history row',()=>{
+ const a=boot();
+ a.run("commitStudy({type:'material',material:{id:'m',name:'복습 UI',type:'book',unit:'페이지',total:100}},'ok')");
+ a.run("commitStudy({type:'record',id:'m',record:{id:'r',date:'2026-10-01',position:60,understanding:'보통'},today:'2026-10-25'},'ok')");
+ a.run("commitExam({type:'upsert',goal:{id:'g',name:'시험',date:'2026-11-10',status:'active',note:'',materialIds:['m'],learningDays:[0,1,2,3,4,5,6],daysOff:[],focusMode:'manual',focusDate:'2026-10-20',continuedMaterialIds:[]}},'ok')");
+ a.run("openDialog('review-plan')");const html=a.element('dialog-content').innerHTML;
+ assert.match(html,/복습 UI/);assert.match(html,/시험 전 복습/);assert.doesNotMatch(html,/successStreak|연속 성공/);
+ const first=a.run('activeReviewPlans()[0]');
+ a.run(`handleStudyButton({dataset:{dialog:'review',material:'m',reviewStart:'${first.start}',reviewEnd:'${first.end}'}})`);
+ assert.equal(String(a.element('review-from').value),String(first.start));assert.equal(String(a.element('review-to').value),String(first.end));
+ a.element('review-date').value='2026-10-25';submit(a,'review','m');
+ const saved=JSON.parse(a.map.get(D.KEY));assert.equal(saved.study.materials[0].reviews.length,1);assert.equal(saved.study.materials[0].records.length,1);
+ assert.ok(a.run('activeReviewPlans()').every(p=>p.start>first.end||p.end<first.start));
+});
+test('manual review quantity/date forms persist independently and survive app reload',()=>{
+ const a=boot();a.run("commitStudy({type:'material',material:{id:'m',name:'범위',type:'book',unit:'페이지',total:100}},'ok')");
+ a.run("commitStudy({type:'record',id:'m',record:{id:'r',date:'2026-10-01',position:40},today:'2026-10-25'},'ok')");
+ a.run("openDialog('review-settings','m')");a.element('manual-review-amount').value='4';submit(a,'review-settings','m');
+ a.run("openDialog('review-date','m')");a.element('review-schedule-start').value='1';a.element('review-schedule-end').value='10';a.element('review-schedule-date').value='2026-11-01';submit(a,'review-date','m');
+ const saved=JSON.parse(a.map.get(D.KEY));assert.equal(saved.study.materials[0].reviewSettings.dailyAmount,4);assert.equal(saved.study.materials[0].reviewSettings.schedules[0].date,'2026-11-01');
+ const b=boot(Object.fromEntries(a.map));b.run("openDialog('review-settings','m')");assert.match(b.element('dialog-content').innerHTML,/value="4"/);
+ assert.equal(b.run("currentReviews().materials[0].segments[0].dueDate"),'2026-11-01');
+ a.element('manual-review-amount').value='';submit(a,'review-settings','m');assert.equal(JSON.parse(a.map.get(D.KEY)).study.materials[0].reviewSettings.dailyAmount,null);
 });

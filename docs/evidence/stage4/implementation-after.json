@@ -1,0 +1,58 @@
+[
+  {
+    "file": "study-data.js",
+    "sha256": "a5123dff97566f8f767f262f2671a1ebcb10f46586d7471b6ab596f69b877500"
+  },
+  {
+    "file": "dist/study-data.js",
+    "sha256": "a5123dff97566f8f767f262f2671a1ebcb10f46586d7471b6ab596f69b877500"
+  },
+  {
+    "file": "app.js",
+    "sha256": "4683944f1dd149849d7e2b114a4167e6a67ecffb4794d58d184bb9f8c54b727c"
+  },
+  {
+    "file": "dist/app.js",
+    "sha256": "4683944f1dd149849d7e2b114a4167e6a67ecffb4794d58d184bb9f8c54b727c"
+  },
+  {
+    "file": "exam-management.js",
+    "sha256": "f2c7ed4029103664823439d5fb777066af233a69e4f7d98dcda2a33a5ee7b6fc"
+  },
+  {
+    "file": "dist/exam-management.js",
+    "sha256": "f2c7ed4029103664823439d5fb777066af233a69e4f7d98dcda2a33a5ee7b6fc"
+  },
+  {
+    "file": "learning-plan.js",
+    "sha256": "8131927433190943b18353836d3e34414fe80f1d2458c77f5db681f9629d539b"
+  },
+  {
+    "file": "dist/learning-plan.js",
+    "sha256": "8131927433190943b18353836d3e34414fe80f1d2458c77f5db681f9629d539b"
+  },
+  {
+    "file": "index.html",
+    "sha256": "fc0710a3c77045ac34c0562edf40e630aa3f703281fa8b259dc6dba76071c78d"
+  },
+  {
+    "file": "dist/index.html",
+    "sha256": "fc0710a3c77045ac34c0562edf40e630aa3f703281fa8b259dc6dba76071c78d"
+  },
+  {
+    "file": "review-plan.js",
+    "sha256": "2b1121fc91007b8e1281671bbb0e28c86205cfa58f8173a354d25a4213d6bac8"
+  },
+  {
+    "file": "dist/review-plan.js",
+    "sha256": "2b1121fc91007b8e1281671bbb0e28c86205cfa58f8173a354d25a4213d6bac8"
+  },
+  {
+    "file": "style.css",
+    "sha256": "75e3c2caec405a1d1f0edf237b4f983bb009557eda1e2efb719b314bb7a0a2df"
+  },
+  {
+    "file": "dist/style.css",
+    "sha256": "40ae03fafb67767b1bb85e903c6017a7755ce2eb3571dabd399b274330f73148"
+  }
+]

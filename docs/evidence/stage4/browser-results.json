@@ -1,0 +1,342 @@
+{
+  "browser": "Chrome CDP isolated synthetic profile; not Safari device",
+  "screens": [
+    {
+      "width": 320,
+      "overflow": false,
+      "dialogWidth": 286,
+      "rows": [
+        {
+          "materialId": "m",
+          "start": 1,
+          "end": 20,
+          "sources": [
+            "regular"
+          ]
+        },
+        {
+          "materialId": "lecture",
+          "start": 1,
+          "end": 3,
+          "sources": [
+            "regular"
+          ]
+        },
+        {
+          "materialId": "lecture",
+          "start": 4,
+          "end": 15,
+          "sources": [
+            "regular"
+          ]
+        },
+        {
+          "materialId": "m",
+          "start": 21,
+          "end": 26,
+          "sources": [
+            "regular",
+            "focus"
+          ]
+        },
+        {
+          "materialId": "m",
+          "start": 27,
+          "end": 30,
+          "sources": [
+            "regular"
+          ]
+        },
+        {
+          "materialId": "m",
+          "start": 41,
+          "end": 60,
+          "sources": [
+            "regular"
+          ]
+        }
+      ],
+      "streakExposed": false
+    },
+    {
+      "width": 390,
+      "overflow": false,
+      "dialogWidth": 356,
+      "rows": [
+        {
+          "materialId": "m",
+          "start": 1,
+          "end": 20,
+          "sources": [
+            "regular"
+          ]
+        },
+        {
+          "materialId": "lecture",
+          "start": 1,
+          "end": 3,
+          "sources": [
+            "regular"
+          ]
+        },
+        {
+          "materialId": "lecture",
+          "start": 4,
+          "end": 15,
+          "sources": [
+            "regular"
+          ]
+        },
+        {
+          "materialId": "m",
+          "start": 21,
+          "end": 26,
+          "sources": [
+            "regular",
+            "focus"
+          ]
+        },
+        {
+          "materialId": "m",
+          "start": 27,
+          "end": 30,
+          "sources": [
+            "regular"
+          ]
+        },
+        {
+          "materialId": "m",
+          "start": 41,
+          "end": 60,
+          "sources": [
+            "regular"
+          ]
+        }
+      ],
+      "streakExposed": false
+    },
+    {
+      "width": 768,
+      "overflow": false,
+      "dialogWidth": 480,
+      "rows": [
+        {
+          "materialId": "m",
+          "start": 1,
+          "end": 20,
+          "sources": [
+            "regular"
+          ]
+        },
+        {
+          "materialId": "lecture",
+          "start": 1,
+          "end": 3,
+          "sources": [
+            "regular"
+          ]
+        },
+        {
+          "materialId": "lecture",
+          "start": 4,
+          "end": 15,
+          "sources": [
+            "regular"
+          ]
+        },
+        {
+          "materialId": "m",
+          "start": 21,
+          "end": 26,
+          "sources": [
+            "regular",
+            "focus"
+          ]
+        },
+        {
+          "materialId": "m",
+          "start": 27,
+          "end": 30,
+          "sources": [
+            "regular"
+          ]
+        },
+        {
+          "materialId": "m",
+          "start": 41,
+          "end": 60,
+          "sources": [
+            "regular"
+          ]
+        }
+      ],
+      "streakExposed": false
+    },
+    {
+      "width": 1024,
+      "overflow": false,
+      "dialogWidth": 480,
+      "rows": [
+        {
+          "materialId": "m",
+          "start": 1,
+          "end": 20,
+          "sources": [
+            "regular"
+          ]
+        },
+        {
+          "materialId": "lecture",
+          "start": 1,
+          "end": 3,
+          "sources": [
+            "regular"
+          ]
+        },
+        {
+          "materialId": "lecture",
+          "start": 4,
+          "end": 15,
+          "sources": [
+            "regular"
+          ]
+        },
+        {
+          "materialId": "m",
+          "start": 21,
+          "end": 26,
+          "sources": [
+            "regular",
+            "focus"
+          ]
+        },
+        {
+          "materialId": "m",
+          "start": 27,
+          "end": 30,
+          "sources": [
+            "regular"
+          ]
+        },
+        {
+          "materialId": "m",
+          "start": 41,
+          "end": 60,
+          "sources": [
+            "regular"
+          ]
+        }
+      ],
+      "streakExposed": false
+    },
+    {
+      "width": 1440,
+      "overflow": false,
+      "dialogWidth": 480,
+      "rows": [
+        {
+          "materialId": "m",
+          "start": 1,
+          "end": 20,
+          "sources": [
+            "regular"
+          ]
+        },
+        {
+          "materialId": "lecture",
+          "start": 1,
+          "end": 3,
+          "sources": [
+            "regular"
+          ]
+        },
+        {
+          "materialId": "lecture",
+          "start": 4,
+          "end": 15,
+          "sources": [
+            "regular"
+          ]
+        },
+        {
+          "materialId": "m",
+          "start": 21,
+          "end": 26,
+          "sources": [
+            "regular",
+            "focus"
+          ]
+        },
+        {
+          "materialId": "m",
+          "start": 27,
+          "end": 30,
+          "sources": [
+            "regular"
+          ]
+        },
+        {
+          "materialId": "m",
+          "start": 41,
+          "end": 60,
+          "sources": [
+            "regular"
+          ]
+        }
+      ],
+      "streakExposed": false
+    }
+  ],
+  "completion": {
+    "before": {
+      "count": 1,
+      "records": "[{\"id\":\"s1\",\"date\":\"2026-10-15\",\"position\":60,\"understanding\":\"보통\",\"sequence\":0,\"createdAt\":\"2026-10-25T03:51:15.628Z\",\"unit\":\"페이지\",\"total\":100,\"amount\":60}]",
+      "round": 1
+    },
+    "selected": {
+      "start": 1,
+      "end": 20,
+      "from": 1,
+      "to": 20
+    },
+    "after": {
+      "count": 2,
+      "records": "[{\"id\":\"s1\",\"date\":\"2026-10-15\",\"position\":60,\"understanding\":\"보통\",\"sequence\":0,\"createdAt\":\"2026-10-25T03:51:15.628Z\",\"unit\":\"페이지\",\"total\":100,\"amount\":60}]",
+      "round": 1,
+      "remaining": [
+        {
+          "start": 21,
+          "end": 30
+        },
+        {
+          "start": 41,
+          "end": 60
+        }
+      ]
+    }
+  },
+  "reload": {
+    "amount": 5,
+    "schedules": [
+      {
+        "start": 31,
+        "end": 40,
+        "unit": "페이지",
+        "date": "2026-10-29",
+        "setDate": "2026-10-25",
+        "afterSequence": 4
+      },
+      {
+        "start": 21,
+        "end": 30,
+        "unit": "페이지",
+        "date": "2026-11-03",
+        "setDate": "2026-10-25",
+        "afterSequence": 5
+      }
+    ],
+    "rows": 2,
+    "old": null
+  },
+  "errors": []
+}
