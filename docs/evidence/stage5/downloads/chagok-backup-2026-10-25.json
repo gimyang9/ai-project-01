@@ -1,0 +1,237 @@
+{
+  "app": "chagok-v2",
+  "backupVersion": 1,
+  "createdAt": "2026-10-25T03:00:00.000Z",
+  "data": {
+    "app": "chagok-v2",
+    "version": 1,
+    "study": {
+      "version": 1,
+      "materials": [
+        {
+          "id": "m",
+          "name": "네트워크 · 실제 통계 자료",
+          "type": "book",
+          "unit": "페이지",
+          "total": 100,
+          "round": 1,
+          "records": [
+            {
+              "id": "a",
+              "date": "2026-09-30",
+              "position": 20,
+              "understanding": "보통",
+              "sequence": 0,
+              "createdAt": "2026-10-25T15:25:14.123Z",
+              "unit": "페이지",
+              "total": 100,
+              "amount": 20
+            },
+            {
+              "id": "b",
+              "date": "2026-10-20",
+              "position": 40,
+              "understanding": "보통",
+              "sequence": 1,
+              "createdAt": "2026-10-25T15:25:14.123Z",
+              "unit": "페이지",
+              "total": 100,
+              "amount": 20
+            },
+            {
+              "id": "c",
+              "date": "2026-10-25",
+              "position": 60,
+              "understanding": "보통",
+              "sequence": 2,
+              "createdAt": "2026-10-25T15:25:14.133Z",
+              "unit": "페이지",
+              "total": 100,
+              "amount": 20
+            }
+          ],
+          "reviews": [
+            {
+              "id": "rev",
+              "date": "2026-10-24",
+              "start": 1,
+              "end": 20,
+              "understanding": "어려움",
+              "sequence": 3,
+              "createdAt": "2026-10-25T15:25:14.133Z",
+              "total": 100,
+              "unit": "페이지"
+            }
+          ],
+          "roundHistory": [],
+          "note": "",
+          "archived": false,
+          "growthState": {
+            "family": "tree",
+            "completed": false
+          },
+          "current": 60,
+          "reviewSettings": {
+            "schedules": [
+              {
+                "start": 41,
+                "end": 50,
+                "unit": "페이지",
+                "date": "2026-10-28",
+                "setDate": "2026-10-25",
+                "afterSequence": 7
+              }
+            ]
+          }
+        },
+        {
+          "id": "l",
+          "name": "운영체제 강의",
+          "type": "lecture",
+          "unit": "강",
+          "total": 10,
+          "round": 2,
+          "records": [
+            {
+              "id": "ln",
+              "date": "2026-10-24",
+              "position": 3,
+              "sequence": 5,
+              "createdAt": "2026-10-25T15:25:14.134Z",
+              "unit": "강",
+              "total": 10,
+              "amount": 3
+            }
+          ],
+          "reviews": [],
+          "roundHistory": [
+            {
+              "round": 1,
+              "total": 10,
+              "unit": "강",
+              "completedDate": "2026-09-15",
+              "records": [
+                {
+                  "id": "lc",
+                  "date": "2026-09-15",
+                  "position": 10,
+                  "sequence": 4,
+                  "createdAt": "2026-10-25T15:25:14.133Z",
+                  "unit": "강",
+                  "total": 10,
+                  "amount": 10
+                }
+              ]
+            }
+          ],
+          "note": "",
+          "archived": false,
+          "growthState": {
+            "family": "flower",
+            "completed": true
+          },
+          "current": 3
+        },
+        {
+          "id": "v",
+          "name": "보관한 단어장",
+          "type": "vocabulary",
+          "unit": "단어",
+          "total": 50,
+          "round": 1,
+          "records": [
+            {
+              "id": "vr",
+              "date": "2026-08-16",
+              "position": 20,
+              "sequence": 6,
+              "createdAt": "2026-10-25T15:25:14.134Z",
+              "unit": "단어",
+              "total": 50,
+              "amount": 20
+            }
+          ],
+          "reviews": [],
+          "roundHistory": [],
+          "note": "",
+          "archived": true,
+          "growthState": {
+            "family": "cactus",
+            "completed": false
+          },
+          "current": 20,
+          "beforeArchiveStatus": "active"
+        }
+      ],
+      "recordSequence": 7
+    },
+    "exams": {
+      "app": "chagok-preview-exams",
+      "version": 2,
+      "goals": [
+        {
+          "id": "exam1",
+          "name": "연결된 시험 하나",
+          "date": "2026-11-04",
+          "status": "active",
+          "note": "",
+          "materialIds": [
+            "m",
+            "l"
+          ],
+          "learningDays": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6
+          ],
+          "daysOff": [],
+          "focusMode": "manual",
+          "focusDate": "2026-10-25",
+          "continuedMaterialIds": []
+        },
+        {
+          "id": "exam2",
+          "name": "다른 시험",
+          "date": "2026-11-04",
+          "status": "active",
+          "note": "",
+          "materialIds": [
+            "m"
+          ],
+          "learningDays": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6
+          ],
+          "daysOff": [],
+          "focusMode": "manual",
+          "focusDate": "2026-10-25",
+          "continuedMaterialIds": []
+        }
+      ],
+      "priorityGoalId": null,
+      "materialSettings": {
+        "m": {
+          "manualStatus": "active",
+          "autoPausedBy": []
+        },
+        "l": {
+          "manualStatus": "active",
+          "autoPausedBy": []
+        },
+        "v": {
+          "manualStatus": "archived",
+          "autoPausedBy": []
+        }
+      }
+    }
+  }
+}

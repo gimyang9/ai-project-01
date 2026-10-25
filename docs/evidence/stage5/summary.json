@@ -1,0 +1,54 @@
+{
+  "tests": {
+    "command": "node --test --test-reporter=tap tests/exam-management.test.cjs tests/learning-plan.test.cjs tests/pwa.test.cjs tests/review-foundation.test.cjs tests/review-plan.test.cjs tests/streak.test.cjs tests/study-app.test.cjs tests/study-data.test.cjs tests/study-stats.test.cjs",
+    "tests": 153,
+    "passed": 153,
+    "failed": 0,
+    "exitCode": 0
+  },
+  "browser": {
+    "widths": [
+      320,
+      390,
+      768,
+      1024,
+      1440
+    ],
+    "offline": {
+      "reload": true,
+      "save": true,
+      "secondReload": true,
+      "allDisplayedImagesLoaded": true
+    },
+    "backup": {
+      "download": true,
+      "filePicker": true,
+      "confirmation": true,
+      "restore": true
+    },
+    "manifest": {
+      "url": "http://127.0.0.1:49701/project-v2-upload/manifest.webmanifest",
+      "errors": [],
+      "installability": {
+        "installabilityErrors": []
+      }
+    },
+    "updateWaitsWithoutReplacingOpenForm": true,
+    "errors": []
+  },
+  "existingCalculationsUnchanged": true,
+  "rootDistStage5ScriptsAndStatsMatched": true,
+  "preservedDifferences": [
+    "root/dist banner markup and CSS from separate edits"
+  ],
+  "skill": "CG-SKILL-027",
+  "limitations": [
+    "실제 iPhone Safari·홈 화면 설치 PWA와 게시 주소 미검증",
+    "실제 사용자 백업 대신 합성 자료로 검증",
+    "자정 날짜 불일치 검출 후 검증 시계만2026-10-25로 고정",
+    "scripts/inspect-boundary.ps1 미존재: 직접 소스·해시·실행으로 보조 확인",
+    "기존 자료 식물은 읽기 강제 저장 없이 안정 표시, 다음 해당 자료 저장 시 보존",
+    "별도 작업의 root/dist 배너·CSS 차이를 합치지 않고 보존",
+    "Git 커밋·배포 없음,6단계 미착수"
+  ]
+}

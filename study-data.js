@@ -14,6 +14,13 @@
     let previous=0;
     return sorted(records).map(r=>{check(integer(r.position)&&r.position<=total&&r.position>=previous,'날짜·순서별 현재 위치가 줄어들거나 전체 분량을 넘을 수 없어요.');const value={...r,amount:r.position-previous};previous=r.position;return value;});
   }
+  const plantAliases={daisy:'flower',sprout:'flower',flower:'flower',seed:'tree',sapling:'tree',tree:'tree',cactus:'cactus',mushroom:'mushroom'};
+  function growth(material){
+    let hash=0;for(const c of material.id)hash=(Math.imul(hash,31)+c.charCodeAt(0))>>>0;
+    const family=material.growthState?.family||plantAliases[material.plant]||['flower','tree','cactus','mushroom'][hash%4];
+    const completed=!!material.growthState?.completed||material.plantCompleted===true||material.round>1||calculate(material.records,material.total).at(-1)?.position===material.total;
+    return {family,completed};
+  }
   function validateStudy(input){
     const value=clone(input);check(value&&value.version===1&&Array.isArray(value.materials));
     check(value.app===undefined||value.app==='study-progress');
@@ -25,6 +32,7 @@
       check(m.note===undefined||typeof m.note==='string');check(m.targetDate===undefined||m.targetDate===''||date(m.targetDate));
       check(m.archived===undefined||typeof m.archived==='boolean');
       check(m.manualDailyAmount===undefined||m.manualDailyAmount===null||positive(m.manualDailyAmount),'직접 정한 하루 분량은 1 이상의 정수로 입력해 주세요.');
+      if(m.growthState!==undefined)check(m.growthState&&['flower','tree','cactus','mushroom'].includes(m.growthState.family)&&typeof m.growthState.completed==='boolean','식물 성장 상태를 확인해 주세요.');
       if(m.reviewSettings!==undefined){
         const settings=m.reviewSettings;check(settings&&typeof settings==='object'&&!Array.isArray(settings));
         check(settings.dailyAmount===undefined||settings.dailyAmount===null||positive(settings.dailyAmount),'하루 복습량은 1 이상의 정수로 입력해 주세요.');
@@ -75,9 +83,11 @@
     storage.setItem(KEY+'.before-recovery.'+index,JSON.stringify(original));
     return save(storage,safe,api);
   }
-  function project(m){const records=calculate(m.records,m.total);return {...m,typeKey:m.type,type:labels[m.type],current:records.at(-1)?.position||0,records,note:m.note||'',category:m.category||'exam',plant:m.plant||'tree',targetDate:m.targetDate||''};}
+  function project(m){const records=calculate(m.records,m.total);return {...m,growthState:growth(m),typeKey:m.type,type:labels[m.type],current:records.at(-1)?.position||0,records,note:m.note||'',category:m.category||'exam',plant:m.plant||'tree',targetDate:m.targetDate||''};}
   function update(input,action,api){
     const next=validate(input,api),s=next.study;let m=s.materials.find(m=>m.id===action.id);
+    const previousMaterial=m||(action.type==='material'?s.materials.find(item=>item.id===action.material?.id):null);
+    const previousGrowth=previousMaterial?growth(previousMaterial):null;
     if(action.type==='material'){
       const draft=clone(action.material);check(text(draft.id));m=s.materials.find(m=>m.id===draft.id);
       if(m){check(draft.unit===m.unit||(!m.records.length&&!m.reviews.length&&!m.roundHistory.length),'기록이 있는 자료의 단위는 바꿀 수 없어요. 기존 범위와 단위를 보존합니다.');Object.assign(m,draft);}
@@ -125,6 +135,7 @@
         if(!review){m.records=calculate(m.records,m.total);m.current=m.records.at(-1)?.position||0;}
       }else throw Error('지원하지 않는 작업이에요.');
     }
+    if(m&&s.materials.some(item=>item.id===m.id)){const nextGrowth=growth(m);m.growthState={...m.growthState,family:previousGrowth?.family||nextGrowth.family,completed:!!previousGrowth?.completed||nextGrowth.completed};}
     return validate(next,api);
   }
   function backup(state,api){return {app:'chagok-v2',backupVersion:1,createdAt:new Date().toISOString(),data:validate(state,api)};}
@@ -136,6 +147,6 @@
     // Legacy files have no exams: retain current exam data explicitly, with original IDs.
     return validate({...current,study},api);
   }
-  const api={KEY,LEGACY_KEY,labels,date,calculate,sorted,validateStudy,validate,emptyStudy,emptyExams,envelope,load,save,recover,project,update,backup,restore};
+  const api={growth,KEY,LEGACY_KEY,labels,date,calculate,sorted,validateStudy,validate,emptyStudy,emptyExams,envelope,load,save,recover,project,update,backup,restore};
   if(typeof module!=='undefined'&&module.exports)module.exports=api;else root.StudyData=api;
 })(typeof window==='undefined'?this:window);

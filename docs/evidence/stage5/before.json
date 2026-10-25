@@ -1,0 +1,42 @@
+[
+  {
+    "file": "app.js",
+    "sha256": "4683944f1dd149849d7e2b114a4167e6a67ecffb4794d58d184bb9f8c54b727c"
+  },
+  {
+    "file": "dist/app.js",
+    "sha256": "4683944f1dd149849d7e2b114a4167e6a67ecffb4794d58d184bb9f8c54b727c"
+  },
+  {
+    "file": "study-data.js",
+    "sha256": "a5123dff97566f8f767f262f2671a1ebcb10f46586d7471b6ab596f69b877500"
+  },
+  {
+    "file": "dist/study-data.js",
+    "sha256": "a5123dff97566f8f767f262f2671a1ebcb10f46586d7471b6ab596f69b877500"
+  },
+  {
+    "file": "review-plan.js",
+    "sha256": "2b1121fc91007b8e1281671bbb0e28c86205cfa58f8173a354d25a4213d6bac8"
+  },
+  {
+    "file": "dist/review-plan.js",
+    "sha256": "2b1121fc91007b8e1281671bbb0e28c86205cfa58f8173a354d25a4213d6bac8"
+  },
+  {
+    "file": "learning-plan.js",
+    "sha256": "8131927433190943b18353836d3e34414fe80f1d2458c77f5db681f9629d539b"
+  },
+  {
+    "file": "exam-management.js",
+    "sha256": "f2c7ed4029103664823439d5fb777066af233a69e4f7d98dcda2a33a5ee7b6fc"
+  },
+  {
+    "file": "index.html",
+    "sha256": "a591db58738b67e161075f35453e61b1243e1cb4afe0228157798acbfd15b78b"
+  },
+  {
+    "file": "style.css",
+    "sha256": "07ef9b3ecf578fadb5332f717ebb1bbb8b015ed1d58f97d6618dba0ac471fb65"
+  }
+]

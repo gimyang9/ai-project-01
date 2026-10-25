@@ -1,0 +1,68 @@
+{
+  "browser": "Chrome CDP synthetic data, clock fixed to 2026-10-25, loopback project subdirectory; not iPhone Safari",
+  "screens": [
+    {
+      "width": 320,
+      "overflow": false,
+      "summary": "학습 기록3건복습 기록1건기록한 날3일",
+      "shares": "연결된 시험 하나66.7%다른 시험33.3%"
+    },
+    {
+      "width": 390,
+      "overflow": false,
+      "summary": "학습 기록3건복습 기록1건기록한 날3일",
+      "shares": "연결된 시험 하나66.7%다른 시험33.3%"
+    },
+    {
+      "width": 768,
+      "overflow": false,
+      "summary": "학습 기록3건복습 기록1건기록한 날3일",
+      "shares": "연결된 시험 하나66.7%다른 시험33.3%"
+    },
+    {
+      "width": 1024,
+      "overflow": false,
+      "summary": "학습 기록3건복습 기록1건기록한 날3일",
+      "shares": "연결된 시험 하나66.7%다른 시험33.3%"
+    },
+    {
+      "width": 1440,
+      "overflow": false,
+      "summary": "학습 기록3건복습 기록1건기록한 날3일",
+      "shares": "연결된 시험 하나66.7%다른 시험33.3%"
+    }
+  ],
+  "counts": {
+    "study": 3,
+    "review": 1
+  },
+  "serviceWorker": {
+    "scope": "http://127.0.0.1:49701/project-v2-upload/",
+    "caches": [
+      "chagok-v2-shell:http%3A%2F%2F127.0.0.1%3A49701%2Fproject-v2-upload%2F:61d237e6bcbc2ac8"
+    ],
+    "manifest": "http://127.0.0.1:49701/project-v2-upload/manifest.webmanifest"
+  },
+  "manifest": {
+    "url": "http://127.0.0.1:49701/project-v2-upload/manifest.webmanifest",
+    "errors": [],
+    "installability": {
+      "installabilityErrors": []
+    }
+  },
+  "offline": {
+    "reload": true,
+    "save": true,
+    "secondReload": true,
+    "allDisplayedImagesLoaded": true
+  },
+  "backup": {
+    "download": true,
+    "filePicker": true,
+    "confirmation": true,
+    "restore": true
+  },
+  "updateWaitsWithoutReplacingOpenForm": true,
+  "errors": [],
+  "missing": []
+}

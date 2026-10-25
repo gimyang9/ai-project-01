@@ -580,3 +580,62 @@
   ],
   "id": "CG-SKILL-026"
 }
+
+
+## CG-SKILL-027 — 5단계 실제 통계·캘린더·식물 성장·PWA 연결
+
+{
+  "date": "2026-10-26",
+  "skill": "chagok-data-guard",
+  "skill_source": "skills/chagok-data-guard/SKILL.md",
+  "task": "5단계 실제 통계·캘린더·식물 성장·PWA 연결",
+  "todo_refs": [
+    "5-1",
+    "5-2",
+    "5-3",
+    "5-4",
+    "5-5",
+    "5-6",
+    "5-7",
+    "5-8",
+    "5-9",
+    "5-10",
+    "5-11",
+    "5-12"
+  ],
+  "actions": [
+    "실제 이력 기간·건수·단위별 분량·다중 시험 분할 비중·주간 요약 집계",
+    "완료 기록과 현재 복습 예정/집중 시작을 캘린더에서 분리",
+    "기존 학습 속도·예상일 연결, 통계 예시 제거",
+    "선택형 growthState로 자동 배정·최초 완성·회독/보관/복원 보존",
+    "상대 경로 매니페스트·실제 참조 자산 자동 캐시·대기형 업데이트 추가",
+    "153개 테스트·Chrome5개 너비·하위 경로 오프라인 이미지/저장/백업/업데이트 검증",
+    "공유 작업 중 배너 차이는 보존하고 해당 새 이미지도 캐시",
+    "5-12 실기기/게시 주소 확인 대기 기록"
+  ],
+  "evidence": [
+    "study-stats.js",
+    "study-data.js",
+    "scripts/build-pwa.cjs",
+    "tests/study-stats.test.cjs",
+    "tests/pwa.test.cjs",
+    "tests/study-app.test.cjs",
+    "docs/stage5-validation.md",
+    "docs/evidence/stage5/before.json",
+    "docs/evidence/stage5/after.json",
+    "docs/evidence/stage5/final-tests.tap",
+    "docs/evidence/stage5/browser-results.json"
+  ],
+  "result": "limited",
+  "outcome": "5-1~5-11 구현·합성 검증 완료.153개 테스트와 Chrome/PWA 로컬 흐름 통과.5-12 iPhone·설치/게시 주소 확인 대기.",
+  "limitations": [
+    "실제 iPhone Safari·홈 화면 설치 PWA와 게시 주소 미검증",
+    "실제 사용자 백업 대신 합성 자료로 검증",
+    "자정 날짜 불일치 검출 후 검증 시계만2026-10-25로 고정",
+    "scripts/inspect-boundary.ps1 미존재: 직접 소스·해시·실행으로 보조 확인",
+    "기존 자료 식물은 읽기 강제 저장 없이 안정 표시, 다음 해당 자료 저장 시 보존",
+    "별도 작업의 root/dist 배너·CSS 차이를 합치지 않고 보존",
+    "Git 커밋·배포 없음,6단계 미착수"
+  ],
+  "id": "CG-SKILL-027"
+}

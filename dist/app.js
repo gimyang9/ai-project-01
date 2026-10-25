@@ -21,11 +21,11 @@ function refreshData(){
   demoArchivedMaterials=dataState.study.materials.filter(m=>m.archived).map(studyAPI.project);
   $('archive-count').textContent=demoArchivedMaterials.length;
   $('archive-count').setAttribute('aria-label',`보관 자료 ${demoArchivedMaterials.length}개`);
-  renderMaterials(materialFilter);renderGoals(goalFilter);renderToday();renderHomeWelcome();renderReviewSummary();renderExamSummary();renderStorageNote();
+  renderMaterials(materialFilter);renderGoals(goalFilter);renderToday();renderHomeWelcome();renderReviewSummary();renderExamSummary();renderStorageNote();renderStats(statsPeriod);renderCalendar();
 }
 function renderStorageNote(){
   const note=document.querySelector('.preview-note');
-  note.textContent=studyLoad.writable?'자료·학습 기록·시험은 이 브라우저에 저장됩니다. 통계는 예시입니다.':studyLoad.error+' 설정에서 백업 파일을 복원할 수 있어요.';
+  note.textContent=studyLoad.writable?'자료·학습 기록·시험은 이 브라우저에 저장됩니다.':studyLoad.error+' 설정에서 백업 파일을 복원할 수 있어요.';
 }
 function persistData(next,message,recovery=false){
   if(!studyLoad.writable&&!recovery){notify(studyLoad.error);return false;}
@@ -95,8 +95,8 @@ function renderExamSummary(){
 }
 let selectedMaterial = demoMaterials[0] || null;
 let currentView = 'home';
-let calendarMonth = 9;
-let calendarYear = 2026;
+let calendarMonth = new Date().getMonth();
+let calendarYear = new Date().getFullYear();
 let toastTimer;
 let dialogReturnFocus;
 const dialog = $('app-dialog');
@@ -112,6 +112,7 @@ function showView(view, focus = false) {
   if (!['home','goals','stats','more','detail'].includes(view)) view = 'home';
   if (dialog.open) dialog.close();
   currentView = view;
+  if(view==='stats'){renderStats(statsPeriod);renderCalendar();}
   document.querySelectorAll('.view').forEach((section) => section.hidden = section.id !== `view-${view}`);
   document.querySelectorAll('.nav-item').forEach((button) => {
     const active = button.dataset.view === (view === 'detail' ? 'home' : view);
@@ -129,10 +130,9 @@ function progressMarkup(percent, label = '현재 진행률') {
 
 
 function plantClass(material) {
-  const aliases = {daisy:'flower',sprout:'flower',flower:'flower',seed:'tree',sapling:'tree',tree:'tree',cactus:'cactus',mushroom:'mushroom'};
-  const family = aliases[material.plant] || 'tree';
+  const growth=studyAPI.growth(material),family=growth.family;
   const ratio = material.total > 0 ? Math.max(0,Math.min(1,material.current/material.total)) : 0;
-  const completed = material.round > 1 || ratio >= 1;
+  const completed = growth.completed;
   const stage = completed ? 4 : ratio <= .1 ? 0 : ratio <= .3 ? 1 : ratio <= .6 ? 2 : 3;
   return `growth-${family} stage-${stage}`;
 }
@@ -267,35 +267,46 @@ function renderGoals(filter = 'all') {
   $('goal-empty').querySelector('p').textContent='시험 추가 버튼에서 시험을 등록할 수 있어요.';
 }
 
-const periods = {
-  week:{study:12,review:5,days:5,range:'10월 18일 – 10월 24일',labels:['일','월','화','수','목','금','토'],values:[0,3,0,2,2,3,2],reviews:[0,1,0,1,1,1,1]},
-  month:{study:43,review:17,days:18,range:'2026년 10월',labels:['1주','2주','3주','4주'],values:[8,12,10,13],reviews:[3,5,4,5]},
-  quarter:{study:118,review:39,days:51,range:'2026년 8월 – 10월',labels:['8월','9월','10월'],values:[31,44,43],reviews:[8,14,17]},
-  half:{study:226,review:67,days:99,range:'2026년 5월 – 10월',labels:['5월','6월','7월','8월','9월','10월'],values:[32,36,40,31,44,43],reviews:[6,10,12,8,14,17]}
-};
 
-function renderStats(period = 'week') {
-  const data = periods[period];
-  $('stats-summary').innerHTML = [['학습 기록',data.study,'건'],['복습 기록',data.review,'건'],['기록한 날',data.days,'일']].map(([label,value,unit]) => `<div class="stat-tile"><small>${label}</small><strong>${value}<span>${unit}</span></strong></div>`).join('');
-  $('chart-period').textContent = data.range;
-  const max = Math.max(...data.values,...data.reviews) * 1.2;
-  $('bar-chart').innerHTML = data.labels.map((label,i) => `<div class="bar-column"><div class="bar-pair"><div class="bar" style="height:${data.values[i]/max*100}%" title="학습 ${data.values[i]}건"></div><div class="bar review" style="height:${data.reviews[i]/max*100}%" title="복습 ${data.reviews[i]}건"></div></div><small>${label}</small></div>`).join('');
-  $('bar-chart').setAttribute('aria-label',data.labels.map((label,i) => `${label}: 학습 ${data.values[i]}건, 복습 ${data.reviews[i]}건`).join(', '));
+let statsPeriod='week',statsGroup='exam';
+const statsColors=['#627c50','#c3a35b','#b98067','#8c9e79','#a39bba','#7ba09c','#ba9079','#8b9155'];
+function renderStats(period='week'){
+  statsPeriod=period;
+  const today=localToday(),data=StudyStats.summarize(dataState,today,period,studyAPI,LearningPlan);
+  $('stats-summary').innerHTML=[['학습 기록',data.study,'건'],['복습 기록',data.review,'건'],['기록한 날',data.days,'일']].map(([label,value,unit])=>`<div class="stat-tile"><small>${label}</small><strong>${value}<span>${unit}</span></strong></div>`).join('');
+  $('chart-period').textContent=data.start+' – '+data.end;
+  const max=Math.max(1,...data.bins.flatMap(b=>[b.study,b.review]))*1.2;
+  $('bar-chart').innerHTML=data.bins.map(b=>`<div class="bar-column"><div class="bar-pair"><div class="bar${b.study?'':' empty'}" style="height:${b.study/max*100}%" title="학습 ${b.study}건"></div><div class="bar review${b.review?'':' empty'}" style="height:${b.review/max*100}%" title="복습 ${b.review}건"></div></div><small>${b.label}</small></div>`).join('');
+  $('bar-chart').setAttribute('aria-label',data.bins.map(b=>`${b.label}: 학습 ${b.study}건, 복습 ${b.review}건`).join(', '));
+  const shares=statsGroup==='exam'?data.exams:data.materials;let position=0;
+  const gradient=shares.map((g,i)=>{const start=position;position+=g.percent;return `${statsColors[i%statsColors.length]} ${start}% ${position}%`;}).join(',');
+  $('stats-donut').style.background=shares.length?`conic-gradient(${gradient})`:'#ebe4d5';
+  $('stats-donut').setAttribute('aria-label',shares.length?shares.map(g=>g.name+' '+Math.round(g.percent*10)/10+'%').join(', '):'이 기간의 학습 기록이 없어요.');
+  $('stats-group-count').textContent=shares.length;
+  $('stats-group-label').textContent=statsGroup==='exam'?'시험 / 독립':'자료';
+  $('stats-proportions').innerHTML=shares.map((g,i)=>`<li><i class="legend-dot" style="background:${statsColors[i%statsColors.length]}"></i><span>${escapeHTML(g.name)}</span><b>${Math.round(g.percent*10)/10}%</b></li>`).join('')||'<li>이 기간의 학습 기록이 없어요.</li>';
+  const week=StudyStats.summarize(dataState,today,'week',studyAPI,LearningPlan);
+  const volume=kind=>week.units.filter(g=>g.kind===kind).map(g=>g.amount+escapeHTML(g.unit)).join(' · ');
+  $('weekly-summary').innerHTML=`<p>${week.start} – ${today}</p><strong>이번 주 ${week.days}일 기록했어요.</strong><p>학습 ${week.study}건 · 복습 ${week.review}건</p>${volume('study')?'<p>학습량 '+volume('study')+'</p>':''}${volume('review')?'<p>복습량 '+volume('review')+'</p>':''}`;
+  const plans=currentPlans();
+  $('stats-forecast').innerHTML=plans.map(p=>{const m=demoMaterials.find(m=>m.id===p.id),f=p.forecast;return `<article class="stats-forecast-item"><h3>${escapeHTML(m.name)}</h3><p>${p.isActive&&f.reason==='estimated'&&f.window&&f.speed!==null?`최근 ${f.window}일 평균 ${Math.round(f.speed*100)/100}${escapeHTML(m.unit)}/일 · `:''}${escapeHTML(f.reason==='estimated'&&p.isActive?'예상 완료 '+f.date:forecastLabel(p))}</p></article>`;}).join('')||'<p class="field-help">자료와 학습 기록을 등록하면 속도를 확인할 수 있어요.</p>';
 }
-
-function renderCalendar() {
-  $('calendar-title').textContent = `${calendarYear}년 ${calendarMonth + 1}월`;
-  const offset = new Date(calendarYear,calendarMonth,1).getDay();
-  const count = new Date(calendarYear,calendarMonth + 1,0).getDate();
-  const marks = {1:1,3:2,5:1,7:3,9:1,10:2,12:3,14:2,15:1,17:2,19:4,21:3,22:3,23:4,24:3};
-  $('calendar-grid').innerHTML = '<span class="blank" aria-hidden="true"></span>'.repeat(offset) + Array.from({length:count},(_,i) => {
-    const day = i + 1;
-    const current = calendarYear === 2026 && calendarMonth === 9;
-    const recordCount = current ? marks[day] || 0 : 0;
-    const level = Math.min(3,recordCount);
-    const isToday = current && day === 24;
-    return `<button class="${level ? `level-${level}` : ''} ${isToday ? 'today' : ''}" data-day="${day}" data-day-count="${recordCount}" aria-label="${calendarMonth + 1}월 ${day}일, 예시 기록 ${recordCount}건" ${isToday ? 'aria-current="date"' : ''}>${day}</button>`;
+function calendarData(){return StudyStats.calendar(dataState,localToday(),studyAPI,currentReviews());}
+function renderCalendar(){
+  const first=`${calendarYear}-${String(calendarMonth+1).padStart(2,'0')}-01`,today=localToday(),dates=calendarData();
+  $('calendar-title').textContent=`${calendarYear}년 ${calendarMonth+1}월`;
+  const offset=new Date(first+'T12:00:00').getDay(),count=new Date(calendarYear,calendarMonth+1,0).getDate();
+  $('calendar-grid').innerHTML='<span class="blank" aria-hidden="true"></span>'.repeat(offset)+Array.from({length:count},(_,i)=>{
+    const day=i+1,date=first.slice(0,8)+String(day).padStart(2,'0'),entry=dates[date],done=entry?.records.length||0,scheduled=entry?.scheduled.length||0,focus=entry?.focus.length||0;
+    return `<button class="${done?'level-'+Math.min(3,done):''} ${date===today?'today':''}" data-day="${day}" aria-label="${date}, 완료 기록 ${done}건, 예정 범위 ${scheduled}개, 집중 복습 시작 ${focus}개" ${date===today?'aria-current="date"':''}>${day}<span class="calendar-marks" aria-hidden="true">${scheduled?'<i class="calendar-scheduled '+(date<today?'overdue':'')+'"></i>':''}${focus?'<i class="calendar-focus"></i>':''}</span></button>`;
   }).join('');
+}
+function showCalendarDay(date){
+  const entry=calendarData()[date]||{records:[],scheduled:[],focus:[]},material=id=>dataState.study.materials.find(m=>m.id===id);
+  const records=entry.records.map(r=>`<article class="review-plan-item"><h3>${escapeHTML(r.name)}</h3><p>${r.kind==='study'?'학습':'복습'} · ${r.start}–${r.end}${escapeHTML(r.unit)}${r.kind==='study'?' · '+r.round+'회독':''}</p>${r.understanding?'<span class="badge sage">'+escapeHTML(r.understanding)+'</span>':''}</article>`).join('')||'<p class="field-help">이날 완료한 기록이 없어요.</p>';
+  const upcoming=entry.scheduled.map(p=>{const m=material(p.materialId);return `<article class="review-plan-item"><h3>${escapeHTML(m.name)}</h3><p>${p.start}–${p.end}${escapeHTML(m.unit)} · ${date<localToday()?'복습 지연':'복습 예정'}${p.manual?' · 직접 지정':''}</p><button class="text-link" data-dialog="review" data-material="${escapeHTML(m.id)}" data-review-start="${p.start}" data-review-end="${p.end}">복습 기록${icon('chevron')}</button></article>`;}).join('');
+  const focus=entry.focus.map(p=>`<article class="review-plan-item"><h3>${escapeHTML(material(p.materialId).name)}</h3><p>시험 전 집중 복습 시작 · ${escapeHTML(p.goalName)}</p></article>`).join('');
+  presentExamDialog(date+' 기록과 일정','<h3 class="calendar-section-title">완료 기록</h3>'+records+(upcoming?'<h3 class="calendar-section-title">현재 복습 일정</h3>'+upcoming:'')+focus);
 }
 
 function openDetail(id) {
@@ -378,7 +389,7 @@ function openDialog(type, materialId, editing = false) {
     content = `<div class="more-list"><button data-dialog="study-plan" data-material="${escapeHTML(m.id)}">${icon('calendar')}<span>학습 계획</span></button><button data-dialog="review-settings" data-material="${escapeHTML(m.id)}">${icon('repeat')}<span>복습 계획</span></button><button data-dialog="memo" data-material="${escapeHTML(m.id)}">${icon('notes')}<span>메모</span></button><button data-dialog="material" data-material="${escapeHTML(m.id)}" data-edit>${icon('edit')}<span>자료 수정</span></button>${m.current===m.total?`<button data-dialog="next-round" data-material="${escapeHTML(m.id)}">${icon('repeat')}<span>다음 회독 시작</span></button>`:''}<button data-archive-material="${escapeHTML(m.id)}">${icon('archive')}<span>학습 완료 및 보관</span></button><button data-material-status="${examState.materialSettings[m.id].manualStatus==='paused'?'active':'paused'}" data-material="${escapeHTML(m.id)}">${icon('repeat')}<span>${examState.materialSettings[m.id].manualStatus==='paused'?'다시 시작하기':'학습 일시 중단'}</span></button><button class="muted-danger" data-dialog="delete-material" data-material="${escapeHTML(m.id)}">${icon('trash')}<span>자료 삭제</span></button></div>`;
   } else if (type === 'archive') {
     title = '보관한 학습 자료';
-    content = demoArchivedMaterials.map(material => `<div class="material-main"><div class="plant-sprite plant-flower" role="img" aria-label="보관된 완성 식물"></div><div><h3>${escapeHTML(material.name)}</h3><p class="field-help">${material.round}회독 완료 · 보관 중</p><button class="text-link" data-unarchive-material="${escapeHTML(material.id)}">다시 꺼내기${icon('chevron')}</button></div></div>`).join('') || '<p class="field-help">보관한 자료가 없어요.</p>';
+    content = demoArchivedMaterials.map(material => `<div class="material-main">${plantMarkup(material)}<div><h3>${escapeHTML(material.name)}</h3><p class="field-help">${material.round}회독 완료 · 보관 중</p><button class="text-link" data-unarchive-material="${escapeHTML(material.id)}">다시 꺼내기${icon('chevron')}</button></div></div>`).join('') || '<p class="field-help">보관한 자료가 없어요.</p>';
   }
   if (!title) return;
   dialog.classList.remove('exam-choice-dialog','exam-pause-dialog');
@@ -598,20 +609,16 @@ document.addEventListener('click',(event)=>{
   }
   if (button.dataset.calendar) {
     const date = new Date(calendarYear,calendarMonth+Number(button.dataset.calendar),1);
-    calendarYear=date.getFullYear();calendarMonth=date.getMonth();return renderCalendar();
+    if(date.getFullYear()<1000||date.getFullYear()>9999)return;calendarYear=date.getFullYear();calendarMonth=date.getMonth();return renderCalendar();
   }
-  if (button.dataset.day) {
-    $('dialog-title').textContent=`${calendarMonth+1}월 ${button.dataset.day}일 기록`;
-    const count=Number(button.dataset.dayCount);
-    $('dialog-content').innerHTML=count ? `<p class="dialog-intro">화면 확인용 예시 기록 ${count}건입니다.</p>${Array.from({length:count},(_,i)=>`<div class="review-plan-item"><h3>${i%2?'토익 RC 문제집':'컴퓨터 네트워크'}</h3><p>${i%2?'복습 · 31–50페이지':'학습 기록 · 20페이지'}</p></div>`).join('')}` : '<div class="empty-panel"><h3>이날은 기록이 없어요</h3><p>다른 날짜의 기록을 확인해 보세요.</p></div>';
-    dialogReturnFocus=button;dialog.showModal();return;
-  }
+  if (button.dataset.day) return showCalendarDay(calendarYear+'-'+String(calendarMonth+1).padStart(2,'0')+'-'+String(button.dataset.day).padStart(2,'0'));
   if (button.dataset.detailTab) {selectInGroup(button,'[data-detail-tab]');return renderDetailTab(button.dataset.detailTab);}
   if (button.closest('[data-choice-group]')) selectInGroup(button,'.choice-button');
 });
 
 document.addEventListener('change',(event)=>{
   const target=event.target;
+  if(target.id==='stats-group'){statsGroup=target.value;renderStats(statsPeriod);return;}
   if(target.id==='restore-file'){readRestore(target);return;}
   if (target.id==='material-type') updateMaterialType(target.value);
   if (target.id==='focus-mode') {

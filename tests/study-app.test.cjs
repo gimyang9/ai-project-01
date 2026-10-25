@@ -3,11 +3,11 @@ const test=require('node:test'),assert=require('node:assert/strict'),vm=require(
 const D=require('../dist/study-data.js');
 function boot(entries={}){
  const map=new Map(Object.entries(entries)),elements=new Map();
- function element(id){if(!elements.has(id))elements.set(id,{id,value:'',textContent:'',innerHTML:'',hidden:false,dataset:{},classList:{add(){},remove(){},toggle(){}},setAttribute(){},removeAttribute(){},addEventListener(){},focus(){},querySelector(){return element(id+' child');},querySelectorAll(){return [];},showModal(){this.open=true;},close(){this.open=false;},scrollTop:0});return elements.get(id);}
+ function element(id){if(!elements.has(id))elements.set(id,{id,style:{},value:'',textContent:'',innerHTML:'',hidden:false,dataset:{},classList:{add(){},remove(){},toggle(){}},setAttribute(){},removeAttribute(){},addEventListener(){},focus(){},querySelector(){return element(id+' child');},querySelectorAll(){return [];},showModal(){this.open=true;},close(){this.open=false;},scrollTop:0});return elements.get(id);}
  const document={getElementById:element,querySelector:element,querySelectorAll:()=>[],addEventListener(){},activeElement:null};
  const context=vm.createContext({document,console,Date,Intl,crypto,location:{hash:''},history:{replaceState(){}},setTimeout:()=>1,clearTimeout(){},localStorage:{getItem:k=>map.get(k)??null,setItem:(k,v)=>map.set(k,v)},addEventListener(){},scrollTo(){}});
  context.window=context;
- for(const name of ['streak.js','exam-management.js','study-data.js','learning-plan.js','review-plan.js','app.js'])vm.runInContext(fs.readFileSync('dist/'+name,'utf8'),context,{filename:name});
+ for(const name of ['streak.js','exam-management.js','study-data.js','learning-plan.js','review-plan.js','study-stats.js','app.js'])vm.runInContext(fs.readFileSync('dist/'+name,'utf8'),context,{filename:name});
  return {map,element,run:code=>vm.runInContext(code,context),context};
 }
 const submit=(app,mode,id='',record='')=>app.run(`submitStudyForm({preventDefault(){},target:{dataset:{studyForm:${JSON.stringify(mode)},material:${JSON.stringify(id)},record:${JSON.stringify(record)}},querySelector(){return null;},querySelectorAll(){return [];}}})`);
@@ -178,4 +178,22 @@ test('manual review quantity/date forms persist independently and survive app re
  const b=boot(Object.fromEntries(a.map));b.run("openDialog('review-settings','m')");assert.match(b.element('dialog-content').innerHTML,/value="4"/);
  assert.equal(b.run("currentReviews().materials[0].segments[0].dueDate"),'2026-11-01');
  a.element('manual-review-amount').value='';submit(a,'review-settings','m');assert.equal(JSON.parse(a.map.get(D.KEY)).study.materials[0].reviewSettings.dailyAmount,null);
+});
+
+test('stats UI refreshes after writes and calendar shows actual names and scheduled ranges',()=>{
+ const a=boot();assert.match(a.element('stats-summary').innerHTML,/>0<span>건/);assert.doesNotMatch(a.element('stats-proportions').innerHTML,/정보처리기사|45%/);
+ a.run("commitStudy({type:'material',material:{id:'m',name:'실제 통계 자료',type:'book',unit:'페이지',total:100}},'ok')");
+ a.run("commitStudy({type:'record',id:'m',record:{id:'r',date:localToday(),position:20},today:localToday()},'ok')");
+ assert.match(a.element('stats-summary').innerHTML,/>1<span>건/);assert.match(a.element('stats-proportions').innerHTML,/100%/);
+ a.run("showCalendarDay(localToday())");assert.match(a.element('dialog-content').innerHTML,/실제 통계 자료/);assert.match(a.element('dialog-content').innerHTML,/1–20페이지/);assert.doesNotMatch(a.element('dialog-content').innerHTML,/예시 기록/);
+ a.run("commitStudy({type:'review-date',id:'m',start:1,end:10,date:'2026-11-01',today:localToday()},'ok');showCalendarDay('2026-11-01')");
+ assert.match(a.element('dialog-content').innerHTML,/복습 예정/);assert.match(a.element('dialog-content').innerHTML,/이날 완료한 기록이 없어요/);
+});
+test('five plant stages retain first completion and render the stored family in archive',()=>{
+ const a=boot();a.run("commitStudy({type:'material',material:{id:'m',name:'식물',type:'book',unit:'페이지',total:100}},'ok')");
+ for(const [current,stage] of [[0,0],[10,0],[11,1],[30,1],[31,2],[60,2],[61,3],[99,3],[100,4]])assert.match(a.run(`plantClass({id:'p',type:'book',unit:'페이지',total:100,round:1,records:[{id:'r',date:'2026-10-01',position:${current},sequence:0}],roundHistory:[],reviews:[],current:${current},growthState:{family:'cactus',completed:false}})`),new RegExp('growth-cactus stage-'+stage));
+ a.run("commitStudy({type:'record',id:'m',record:{id:'r',date:localToday(),position:100},today:localToday()},'ok')");
+ const saved=JSON.parse(a.map.get(D.KEY)),family=saved.study.materials[0].growthState.family;
+ a.run("commitStudy({type:'archive',id:'m',archived:true},'ok');openDialog('archive')");
+ assert.match(a.element('dialog-content').innerHTML,new RegExp('growth-'+family+' stage-4'));
 });
