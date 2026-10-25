@@ -1,0 +1,39 @@
+{
+  "sourceFilesCompared": 162,
+  "changedProductionFiles": [],
+  "measurements": 452,
+  "pointerDragMeasurements": 361,
+  "maxImprovedGap": 0,
+  "maxDragLogoWidthStep": 0.390625,
+  "nativeZooms": [
+    0.8,
+    0.9,
+    1,
+    1.1,
+    1.25,
+    1.5,
+    2
+  ],
+  "appSidebarTransition": [
+    {
+      "frameWidth": 1023,
+      "bannerWidth": 1008,
+      "backgroundWidth": 1120,
+      "logoWidth": 265
+    },
+    {
+      "frameWidth": 1024,
+      "bannerWidth": 681,
+      "backgroundWidth": 1120,
+      "logoWidth": 265
+    }
+  ],
+  "runtimeErrors": [],
+  "missing": [],
+  "state": {
+    "storage": 0,
+    "appScripts": "undefined",
+    "iframeTransform": "none"
+  },
+  "productionApplied": false
+}

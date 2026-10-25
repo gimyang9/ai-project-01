@@ -1,0 +1,6 @@
+{
+  "basis": "dist/index.html exact home-intro; dist/style.css loaded directly",
+  "homeBlockSha256": "eb193b9f80c1de5ecb6276baabe2b12c440f6bdbb3fcd59444c4acc64b8b0c56",
+  "frameHomeMatchesApp": true,
+  "storageScriptsLoaded": false
+}

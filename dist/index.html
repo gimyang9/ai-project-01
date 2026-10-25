@@ -16,12 +16,14 @@
   <link rel="preload" href="assets/fonts/Cafe24Ssurround.woff" as="font" type="font/woff" crossorigin>
   <link rel="preload" href="assets/fonts/BMJUA.woff" as="font" type="font/woff" crossorigin>
   <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="banner-camera.css">
   <script defer src="streak.js"></script>
   <script defer src="exam-management.js"></script>
   <script defer src="study-data.js"></script>
   <script defer src="learning-plan.js"></script>
   <script defer src="review-plan.js"></script>
   <script defer src="study-stats.js"></script>
+  <script defer src="storage-guard.js"></script>
   <script defer src="app.js"></script>
   <script defer src="pwa.js"></script>
 </head>
@@ -56,7 +58,7 @@
   <main id="main" tabindex="-1">
     <section id="view-home" class="view" aria-labelledby="home-heading">
       <div class="home-intro">
-      <div class="forest-banner">
+      <div class="forest-banner camera-continuous">
         <img class="forest-image" src="assets/home-banner-garden-background.png" alt="꽃길과 울타리가 이어지는 밝은 숲속 정원" decoding="async"><div class="banner-cottage"><img src="assets/home-banner-cottage-bear.png" alt="책 읽는 곰과 꽃으로 꾸민 숲속 오두막" decoding="async"></div>
         <div class="forest-copy"><h1 id="home-heading"><img class="home-brand-logo" src="assets/home-logo-approved.png" alt="차곡차곡" width="2078" height="757" decoding="async"></h1></div><span class="version forest-version">v2.0.0</span>
       </div>
@@ -79,7 +81,7 @@
   </main>
   <nav class="bottom-nav desktop-sidebar" aria-label="메인 메뉴"><div class="sidebar-brand"><a href="#home" aria-label="차곡차곡 홈"><span class="sidebar-brand-mark"><svg class="icon"><use href="#i-leaf"/></svg></span><span class="sidebar-app-name">차곡차곡</span></a><p>하루하루 쌓이는 공부 기록</p></div><button class="nav-item active" data-view="home" aria-current="page"><svg class="icon"><use href="#i-home"/></svg><span>홈</span></button><button class="nav-item" data-view="goals"><svg class="icon"><use href="#i-target"/></svg><span>시험</span></button><button class="nav-item" data-view="stats"><svg class="icon"><use href="#i-chart"/></svg><span>통계</span></button><button class="nav-item" data-view="more"><svg class="icon"><use href="#i-menu"/></svg><span>더보기</span></button><div class="sidebar-footer"><picture class="sidebar-illustration" aria-hidden="true"><source media="(min-width:1024px)" srcset="assets/sidebar-bear-tree.png"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="" width="1448" height="1086" decoding="async"></picture><p>오늘의 작은 공부도<br>차곡차곡 자라고 있어요.</p><small>v2.0.0</small></div></nav>
 </div>
-<dialog id="app-dialog" class="app-dialog" aria-labelledby="dialog-title"><div class="dialog-header"><h2 id="dialog-title"></h2><button class="icon-button" data-close aria-label="닫기"><svg class="icon"><use href="#i-close"/></svg></button></div><div id="dialog-content"></div></dialog>
+<dialog id="app-dialog" class="app-dialog" aria-labelledby="dialog-title"><div class="dialog-header"><h2 id="dialog-title"></h2><button class="icon-button" data-close aria-label="닫기"><svg class="icon"><use href="#i-close"/></svg></button></div><p id="storage-conflict-notice" class="storage-conflict-notice" role="alert" hidden></p><div id="dialog-content"></div></dialog>
 <div id="toast" class="toast" role="status" aria-live="polite"></div>
 </body>
 </html>

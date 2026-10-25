@@ -1,0 +1,58 @@
+{
+  "legacy": [
+    {
+      "path": "reference/v1/app.js",
+      "unchanged": true
+    },
+    {
+      "path": "reference/v1/favicon.svg",
+      "unchanged": true
+    },
+    {
+      "path": "reference/v1/fonts/LINESeedKR-Bd.woff2",
+      "unchanged": true
+    },
+    {
+      "path": "reference/v1/fonts/LINESeedKR-Rg.woff2",
+      "unchanged": true
+    },
+    {
+      "path": "reference/v1/index.html",
+      "unchanged": true
+    },
+    {
+      "path": "reference/v1/style.css",
+      "unchanged": true
+    }
+  ],
+  "pairs": [
+    {
+      "path": "app.js",
+      "equal": true
+    },
+    {
+      "path": "review-plan.js",
+      "equal": true
+    },
+    {
+      "path": "study-data.js",
+      "equal": true
+    },
+    {
+      "path": "storage-guard.js",
+      "equal": true
+    },
+    {
+      "path": "index.html",
+      "equal": true
+    }
+  ],
+  "literalNewlineFilesChecked": [
+    "style.css",
+    "dist/style.css",
+    "PROGRESS.md",
+    "docs/TODO-changes.md",
+    "docs/stage4-review-proposal.md"
+  ],
+  "literalNewlinesRemaining": []
+}

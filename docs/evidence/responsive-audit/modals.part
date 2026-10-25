@@ -1,0 +1,15 @@
+
+ if(phase==='modals'){
+  const modes=['study-plan','record','review','material','memo','review-settings','review-date','settings','archive','material-menu','review-plan','exam-edit','exam-pause','exam-archive','exam-resit'];
+  for(const [w,h] of [[320,400],[375,600],[430,840],[680,400],[768,600],[1024,400],[1440,900]]){
+   await viewport(w,h);await go('home');
+   for(const mode of modes){
+    const expr=mode==='exam-edit'?"openExamDialog('edit','g0')":mode==='exam-pause'?"openExamDialog('status','g0','paused')":mode==='exam-archive'?"openExamDialog('status','g0','archived')":mode==='exam-resit'?"openExamDialog('resit','g0')":"openDialog("+JSON.stringify(mode)+",'m1',"+(mode==='material')+")";
+    await c.evaluate(expr);const info=await take({phase:'modal',mode,width:w,viewportHeight:h});
+    const reach=await c.evaluate("(()=>{const d=document.querySelector('dialog[open]');const b=d.querySelector('.dialog-actions button[type=submit]')||[...d.querySelectorAll('button')].at(-1);if(!b)return null;b.scrollIntoView({block:'end',behavior:'instant'});const r=b.getBoundingClientRect(),x=r.left+r.width/2,y=r.top+r.height/2,e=document.elementFromPoint(x,y);return {text:b.textContent.trim(),x,y,height:r.height,visible:y>=0&&y<innerHeight&&x>=0&&x<innerWidth,hit:!!e&&(e===b||b.contains(e)),dialogScroll:d.scrollTop};})()");
+    info.actionReach=reach;if((w===320||w===1024||w===1440)&&['study-plan','review','material','exam-pause','exam-archive','exam-edit','archive'].includes(mode)){await c.evaluate('dialog.scrollTop=0');await capture('modal-'+mode+'-'+w+'x'+h);}
+    await c.evaluate('dialog.close()');
+   }console.log('modals rendered',w,h);
+  }
+  for(const [w,h] of [[320,300],[1024,300],[1440,400]]){await viewport(w,h);for(const view of views){await go(view);const info=await take({phase:'short-window',view,width:w,viewportHeight:h});await c.evaluate("document.querySelector('.nav-item:last-of-type').scrollIntoView({block:'nearest',behavior:'instant'})");info.navReach=await c.evaluate("(()=>{const e=document.querySelector('.nav-item:last-of-type'),r=e.getBoundingClientRect();return {top:r.top,bottom:r.bottom,height:r.height,inView:r.top>=0&&r.bottom<=innerHeight};})()");await capture('short-'+view+'-'+w+'x'+h);}}
+ }

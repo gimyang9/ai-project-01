@@ -36,6 +36,7 @@
       if(m.reviewSettings!==undefined){
         const settings=m.reviewSettings;check(settings&&typeof settings==='object'&&!Array.isArray(settings));
         check(settings.dailyAmount===undefined||settings.dailyAmount===null||positive(settings.dailyAmount),'하루 복습량은 1 이상의 정수로 입력해 주세요.');
+        if(settings.focusCycles!==undefined){check(Array.isArray(settings.focusCycles));for(const c of settings.focusCycles)check(text(c.id)&&text(c.goalId)&&date(c.startDate)&&date(c.createdDate)&&['auto','manual'].includes(c.mode)&&(c.mode==='auto'?c.manualStart==='':date(c.manualStart)),'집중 복습 회차를 확인해 주세요.');}
         if(settings.schedules!==undefined){check(Array.isArray(settings.schedules));for(const r of settings.schedules)check(positive(r.start)&&positive(r.end)&&r.start<=r.end&&r.end<=m.total&&text(r.unit)&&date(r.date)&&date(r.setDate)&&integer(r.afterSequence),'직접 지정한 복습 날짜와 범위를 확인해 주세요.');}
       }
       check(Array.isArray(m.records)&&Array.isArray(m.reviews)&&Array.isArray(m.roundHistory)&&m.roundHistory.length===m.round-1);

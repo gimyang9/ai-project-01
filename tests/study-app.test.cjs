@@ -1,14 +1,15 @@
 // Application wiring smoke tests with a minimal DOM adapter, not browser/layout QA.
 const test=require('node:test'),assert=require('node:assert/strict'),vm=require('node:vm'),fs=require('node:fs'),crypto=require('node:crypto');
 const D=require('../dist/study-data.js');
-function boot(entries={}){
+function boot(entries={},options={}){
+ const windowListeners=new Map();
  const map=new Map(Object.entries(entries)),elements=new Map();
  function element(id){if(!elements.has(id))elements.set(id,{id,style:{},value:'',textContent:'',innerHTML:'',hidden:false,dataset:{},classList:{add(){},remove(){},toggle(){}},setAttribute(){},removeAttribute(){},addEventListener(){},focus(){},querySelector(){return element(id+' child');},querySelectorAll(){return [];},showModal(){this.open=true;},close(){this.open=false;},scrollTop:0});return elements.get(id);}
  const document={getElementById:element,querySelector:element,querySelectorAll:()=>[],addEventListener(){},activeElement:null};
- const context=vm.createContext({document,console,Date,Intl,crypto,location:{hash:''},history:{replaceState(){}},setTimeout:()=>1,clearTimeout(){},localStorage:{getItem:k=>map.get(k)??null,setItem:(k,v)=>map.set(k,v)},addEventListener(){},scrollTo(){}});
+ const context=vm.createContext({document,console,Date:options.Date||Date,Intl,crypto,location:{hash:''},history:{replaceState(){}},setTimeout:()=>1,clearTimeout(){},localStorage:{getItem:k=>map.get(k)??null,setItem:(k,v)=>map.set(k,v)},addEventListener(type,fn){windowListeners.set(type,fn);},scrollTo(){}});
  context.window=context;
- for(const name of ['streak.js','exam-management.js','study-data.js','learning-plan.js','review-plan.js','study-stats.js','app.js'])vm.runInContext(fs.readFileSync('dist/'+name,'utf8'),context,{filename:name});
- return {map,element,run:code=>vm.runInContext(code,context),context};
+ for(const name of ['streak.js','exam-management.js','study-data.js','learning-plan.js','review-plan.js','study-stats.js','storage-guard.js','app.js'])vm.runInContext(fs.readFileSync('dist/'+name,'utf8'),context,{filename:name});
+ return {map,element,dispatchWindow:type=>windowListeners.get(type)?.(),run:code=>vm.runInContext(code,context),context};
 }
 const submit=(app,mode,id='',record='')=>app.run(`submitStudyForm({preventDefault(){},target:{dataset:{studyForm:${JSON.stringify(mode)},material:${JSON.stringify(id)},record:${JSON.stringify(record)}},querySelector(){return null;},querySelectorAll(){return [];}}})`);
 test('real app initialises empty, shows registration/settings dialogs and persists form submissions on reload',()=>{
@@ -196,4 +197,17 @@ test('five plant stages retain first completion and render the stored family in 
  const saved=JSON.parse(a.map.get(D.KEY)),family=saved.study.materials[0].growthState.family;
  a.run("commitStudy({type:'archive',id:'m',archived:true},'ok');openDialog('archive')");
  assert.match(a.element('dialog-content').innerHTML,new RegExp('growth-'+family+' stage-4'));
+});
+
+test('day rollover refreshes schedules without changing input, modal, filters or stored data',()=>{
+ let clock='2026-10-26T12:00:00+09:00';class FixedDate extends Date{constructor(...args){super(...(args.length?args:[clock]));}static now(){return new Date(clock).getTime();}}
+ const a=boot({}, {Date:FixedDate});
+ a.run("commitStudy({type:'material',material:{id:'m',name:'Day',type:'book',unit:'pages',total:100,targetDate:'2026-10-30'}},'ok')");
+ a.run("commitStudy({type:'record',id:'m',record:{id:'r',date:'2026-10-20',position:20},today:'2026-10-26'},'ok')");
+ a.run("commitStudy({type:'review-date',id:'m',start:1,end:20,date:'2026-10-27',today:'2026-10-26'},'ok');renderStats('quarter');openDialog('memo','m')");
+ a.element('material-note').value='unsaved input';const raw=a.map.get(D.KEY),dialog=a.element('app-dialog'),content=a.element('dialog-content').innerHTML;
+ assert.match(a.element('home-date').textContent,/26/);assert.equal(a.run('activeReviewPlans().length'),0);
+ clock='2026-10-27T12:00:00+09:00';a.dispatchWindow('focus');
+ assert.match(a.element('home-date').textContent,/27/);assert.ok(a.run('activeReviewPlans().length')>0);assert.equal(dialog.open,true);assert.equal(a.element('material-note').value,'unsaved input');
+ assert.equal(a.element('dialog-content').innerHTML,content);assert.equal(a.map.get(D.KEY),raw);assert.equal(a.run('statsPeriod'),'quarter');assert.equal(a.run('refreshForDayChange()'),false);
 });

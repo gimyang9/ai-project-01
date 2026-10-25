@@ -1,0 +1,18 @@
+{
+  "index.html": "9b04d06af27962e8f6e548ba1af5df7f1e5d6aa51d8399bb5d96a3faf4478799",
+  "dist/index.html": "9b04d06af27962e8f6e548ba1af5df7f1e5d6aa51d8399bb5d96a3faf4478799",
+  "app.js": "a4037cfda220b0bdcad135f6c4ceaa120448e30168217491c987149e674f56d0",
+  "dist/app.js": "a4037cfda220b0bdcad135f6c4ceaa120448e30168217491c987149e674f56d0",
+  "study-data.js": "7cbf5b20647b47ad9a58bca72792f2eba6087c1733bfbddc72c176e7346ae7e0",
+  "dist/study-data.js": "7cbf5b20647b47ad9a58bca72792f2eba6087c1733bfbddc72c176e7346ae7e0",
+  "exam-management.js": "f2c7ed4029103664823439d5fb777066af233a69e4f7d98dcda2a33a5ee7b6fc",
+  "dist/exam-management.js": "f2c7ed4029103664823439d5fb777066af233a69e4f7d98dcda2a33a5ee7b6fc",
+  "learning-plan.js": "8131927433190943b18353836d3e34414fe80f1d2458c77f5db681f9629d539b",
+  "dist/learning-plan.js": "8131927433190943b18353836d3e34414fe80f1d2458c77f5db681f9629d539b",
+  "review-plan.js": "a8644f6a209bd0e33ba6dda64652a524d8b2f273dc698b04444ab6f1e61c04ed",
+  "dist/review-plan.js": "a8644f6a209bd0e33ba6dda64652a524d8b2f273dc698b04444ab6f1e61c04ed",
+  "storage-guard.js": "69a7aeeddc098f6edd2d82afda4658670e697ef8d38368e58269068ccc75941a",
+  "dist/storage-guard.js": "69a7aeeddc098f6edd2d82afda4658670e697ef8d38368e58269068ccc75941a",
+  "style.css": "382cfa651f2efe9e0bd7d10db183df0e664676f9b06f55e58c973d0efd73737e",
+  "dist/style.css": "9d8e0b08201f7ee21dc774289be45dbf6e898e0cfb57da3f8131e76f252f41d5"
+}

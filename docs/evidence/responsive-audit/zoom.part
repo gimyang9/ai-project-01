@@ -1,0 +1,23 @@
+
+ if(phase==='zoom'){
+  await c.send('Emulation.clearDeviceMetricsOverride');const target=await c.send('Target.createTarget',{url:'chrome://settings/'}),settings=await connect(process.argv[2],target.targetId);await pause(700);
+  const windowId=(await c.send('Browser.getWindowForTarget')).windowId;
+  for(const physical of [680,1024,1440,1920]){
+   await settings.evaluate('chrome.settingsPrivate.setDefaultZoom(1)');await c.send('Browser.setWindowBounds',{windowId,bounds:{width:physical+22,height:998}});await pause(100);
+   for(const zoom of [.8,.9,1,1.1,1.25,1.5,2]){
+    await settings.evaluate('chrome.settingsPrivate.setDefaultZoom('+zoom+')');const actualZoom=await settings.evaluate('new Promise(r=>chrome.settingsPrivate.getDefaultZoom(r))');await c.send('Page.bringToFront');await pause(100);
+    for(const view of views){await go(view);await take({phase:'browser-zoom',view,requestedPhysicalWidth:physical,zoom,actualZoom});}
+    if(physical===1024||physical===1440){await go('home');await capture('zoom-home-'+physical+'-'+Math.round(zoom*100));}
+    for(const mode of ['study-plan','review','exam-edit','exam-archive']){
+     await c.evaluate(mode==='exam-edit'?"openExamDialog('edit','g0')":mode==='exam-archive'?"openExamDialog('status','g0','archived')":"openDialog("+JSON.stringify(mode)+",'m1')");
+     const info=await take({phase:'zoom-modal',mode,requestedPhysicalWidth:physical,zoom,actualZoom});
+     info.actionReach=await c.evaluate("(()=>{const b=document.querySelector('dialog[open] .dialog-actions button[type=submit]');if(!b)return null;b.scrollIntoView({block:'end',behavior:'instant'});const r=b.getBoundingClientRect(),e=document.elementFromPoint(r.x+r.width/2,r.y+r.height/2);return {height:r.height,visible:r.y>=0&&r.bottom<=innerHeight,hit:!!e&&(e===b||b.contains(e))};})()");
+     if(physical===1024&&zoom===2){await c.evaluate('dialog.scrollTop=0');await capture('zoom-modal-'+mode+'-1024-200');}
+     await c.evaluate('dialog.close()');
+    }
+   }console.log('actual browser zoom tested',physical,'80..200%');
+  }
+  await settings.evaluate('chrome.settingsPrivate.setDefaultZoom(1)');await c.send('Page.bringToFront');
+  for(const view of views){await go(view);for(const direction of ['grow','shrink']){let ww=Array.from({length:41},(_,i)=>320+40*i);if(direction==='shrink')ww.reverse();for(const width of ww){await c.send('Browser.setWindowBounds',{windowId,bounds:{width:width+22,height:838}});await pause(20);await take({phase:'native-window-sweep',view,direction,requestedWidth:width});}}console.log('native window grow/shrink',view);}
+  await c.send('Target.closeTarget',{targetId:target.targetId});
+ }

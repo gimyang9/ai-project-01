@@ -1,0 +1,19 @@
+
+ if(phase==='evidence'){
+  for(const w of [320,375,430,680,768,1024,1440,1920]){
+   await viewport(w,840);await go('goals');await c.evaluate("document.querySelectorAll('.linked-toggle[aria-expanded=false]').forEach(b=>b.click())");const info=await take({phase:'expanded-goal-evidence',view:'goals',width:w});
+   await c.evaluate("(()=>{const e=[...document.querySelectorAll('.linked-materials strong')].find(e=>e.textContent.startsWith('VeryLong'));if(e){const r=e.getBoundingClientRect();window.scrollTo({top:r.y+scrollY-180,left:0,behavior:'instant'})}})()");if([320,1024,1440].includes(w))await capture('issue-linked-name-'+w);
+   await go('stats');await c.evaluate("statsGroup='exam';renderStats('month');document.querySelector('.proportion-panel').scrollIntoView({block:'center',behavior:'instant'})");const stats=await take({phase:'stats-name-evidence',view:'stats',width:w});
+   stats.textRanges=await c.evaluate("(()=>{const panel=document.querySelector('.proportion-panel');return [...panel.querySelectorAll('.proportion-list li')].map(li=>{const span=li.querySelector('span'),b=li.querySelector('b'),range=document.createRange();range.selectNodeContents(span);return {name:span.textContent,span:span.getBoundingClientRect().toJSON(),ink:range.getBoundingClientRect().toJSON(),percentage:b.getBoundingClientRect().toJSON()};})})()");
+   if([320,1024,1440].includes(w))await capture('issue-stats-name-'+w);
+  }
+  await c.send('Emulation.clearDeviceMetricsOverride');const t=await c.send('Target.createTarget',{url:'chrome://settings/'}),settings=await connect(process.argv[2],t.targetId);await pause(500);const windowId=(await c.send('Browser.getWindowForTarget')).windowId;
+  for(const physical of [680,1024,1440]){await c.send('Browser.setWindowBounds',{windowId,bounds:{width:physical+22,height:998}});
+   for(const zoom of [1,1.25,1.5,2]){
+    await settings.evaluate('chrome.settingsPrivate.setDefaultZoom('+zoom+')');await c.send('Page.bringToFront');await pause(80);
+    await go('goals');await c.evaluate("document.querySelectorAll('.linked-toggle[aria-expanded=false]').forEach(b=>b.click())");await take({phase:'expanded-goal-zoom',view:'goals',requestedPhysicalWidth:physical,zoom});
+    await go('stats');await c.evaluate("statsGroup='exam';renderStats('month')");await take({phase:'stats-name-zoom',view:'stats',requestedPhysicalWidth:physical,zoom});
+    if(physical===1024&&zoom===2){await c.evaluate("document.querySelector('.proportion-panel').scrollIntoView({block:'center',behavior:'instant'})");await capture('issue-stats-name-zoom200');}
+   }
+  }await settings.evaluate('chrome.settingsPrivate.setDefaultZoom(1)');await c.send('Target.closeTarget',{targetId:t.targetId});
+ }

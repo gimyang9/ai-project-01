@@ -1,0 +1,29 @@
+
+ if(phase==='regression'){
+  const saved=await c.evaluate("localStorage.getItem('chagok-v2-data-v1')");
+  for(const w of [320,375,430,680,681,767,768,1023,1024,1150,1151,1280,1399,1400,1440,1920]){
+   await viewport(w,840);await go('home');
+   const info=await take({phase:'summary',view:'home',width:w});
+   info.cards=await c.evaluate("[...document.querySelectorAll('.summary-card')].map(e=>({height:e.getBoundingClientRect().height,scrollHeight:e.scrollHeight,clientHeight:e.clientHeight}))");
+   assert.ok(Math.abs(info.cards[0].height-info.cards[1].height)<1);
+   await c.evaluate("document.getElementById('today-list').style.display='none'");
+   info.withoutList=await c.evaluate("[...document.querySelectorAll('.summary-card')].map(e=>e.getBoundingClientRect().height)");
+   assert.ok(info.withoutList.every((h,i)=>Math.abs(h-info.cards[i].height)<1));
+   await c.evaluate("document.getElementById('today-list').style.display='';document.querySelector('.exam-summary strong').textContent='LongExamNameWithoutSpaces'.repeat(4)");
+   info.longTitle=await take({phase:'summary-long-title',view:'home',width:w});
+   info.longCardHeights=await c.evaluate("[...document.querySelectorAll('.summary-card')].map(e=>e.getBoundingClientRect().height)");
+   assert.ok(Math.abs(info.longCardHeights[0]-info.longCardHeights[1])<1);assert.equal(info.longTitle.overflow,false);
+   await c.evaluate('renderExamSummary()');if([320,681,1024,1151,1440].includes(w))await capture('summary-after-'+w);
+  }
+  for(const [w,h] of [[320,300],[375,300],[430,400],[1024,300],[1440,400]]){
+   await viewport(w,h);await go('home');
+   for(const mode of ['paused','archived']){
+    await c.evaluate("openExamDialog('status','g0',"+JSON.stringify(mode)+")");
+    const info=await take({phase:'short-modal-assert',mode,width:w,viewportHeight:h});
+    const d=info.dialog;for(let n=0;n<4;n++){await c.send('Input.dispatchMouseEvent',{type:'mouseWheel',x:d.x+d.w/2,y:Math.min(h-35,d.y+90),deltaX:0,deltaY:800});await pause(60);}
+    info.wheelReach=await c.evaluate("(()=>{const d=document.querySelector('dialog[open]'),b=d.querySelector('button[type=submit]'),r=b.getBoundingClientRect(),e=document.elementFromPoint(r.x+r.width/2,r.y+r.height/2);return {visible:r.y>=0&&r.bottom<=innerHeight,hit:e===b||b.contains(e),dialogScroll:d.scrollTop,overlap:Math.max(0,d.querySelector('.exam-choice-list').getBoundingClientRect().bottom-d.querySelector('.exam-choice-help').getBoundingClientRect().top)};})()");
+    assert.ok(info.wheelReach.visible&&info.wheelReach.hit);assert.equal(info.wheelReach.overlap,0);await capture('short-modal-after-'+mode+'-'+w+'x'+h);await c.evaluate('dialog.close()');
+   }
+  }
+  assert.equal(await c.evaluate("localStorage.getItem('chagok-v2-data-v1')"),saved);
+ }

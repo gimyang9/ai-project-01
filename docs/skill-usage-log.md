@@ -639,3 +639,254 @@
   ],
   "id": "CG-SKILL-027"
 }
+
+
+## CG-SKILL-028 — 2026-10-26
+
+{
+  "id": "CG-SKILL-028",
+  "date": "2026-10-26",
+  "skill": "chagok-data-guard",
+  "skill_source": "skills/chagok-data-guard/SKILL.md",
+  "task": "6단계 검증 및 사용자 승인된 결함 수정",
+  "todo_refs": [
+    "6-1",
+    "6-2",
+    "6-3",
+    "6-4",
+    "6-5",
+    "6-6",
+    "6-7",
+    "6-8",
+    "6-9",
+    "6-10",
+    "6-11",
+    "6-12"
+  ],
+  "actions": [
+    "두 창 저장 충돌 차단 및 입력 보존",
+    "집중 복습 원본 완료·평가 보존 및 새 대상 구분",
+    "승인된 날짜 갱신·배포본 배너 통일",
+    "승인된 잘못된 줄바꿈 정리",
+    "166개 자동 테스트와 격리 Chrome 합성 흐름 검증",
+    "원본 v1 6개 파일 해시 보존 확인"
+  ],
+  "evidence": [
+    "docs/stage6-validation.md",
+    "docs/evidence/stage6/test-results.json",
+    "docs/evidence/stage6/browser-results.json",
+    "docs/evidence/stage6/final-source-check.json"
+  ],
+  "result": "limited",
+  "outcome": "6-2~6-11 합성 검증 완료. 6-1·6-12 실제 사용자 자료 대조 대기.",
+  "limitations": [
+    "실제 사용자 백업 전환·대조 미수행",
+    "이번 변경 실제 Safari 검증 미수행",
+    "학습 계획 모달 원본/배포본 CSS 차이 처리 승인 대기",
+    "점검 스크립트 실행 정책 제한: Node 해시와 직접 점검으로 보조 확인",
+    "Web Locks 미지원 환경의 동시 저장 원자성 보장 제한",
+    "커밋·배포 미수행"
+  ]
+}
+
+
+## CG-SKILL-029
+
+{
+  "id": "CG-SKILL-029",
+  "date": "2026-10-26",
+  "skill": "chagok-data-guard",
+  "skill_source": "skills/chagok-data-guard/SKILL.md",
+  "task": "승인된 학습 계획 모달 CSS 통일",
+  "todo_refs": [
+    "6-11"
+  ],
+  "actions": [
+    "배포본 단일 모달 규칙을 작업 원본 기준으로 통일",
+    "PWA 빌드·166개 테스트·Chrome3개 화면 검증",
+    "학습·저장 JS 해시 보존 확인"
+  ],
+  "evidence": [
+    "docs/evidence/stage6/modal-browser-results.json",
+    "docs/evidence/stage6/modal-source-check.json",
+    "docs/evidence/stage6/final-tests.tap"
+  ],
+  "result": "passed",
+  "outcome": "내용 맞춤 높이·화면 높이 제한·세로 스크롤 검증 통과",
+  "limitations": [
+    "실제 Safari 검증 별도",
+    "실제 사용자 자료6-1·6-12 대기",
+    "커밋·배포 미수행"
+  ]
+}
+
+
+## CG-SKILL-030 — 전체 UI 테스트
+
+{
+  "id": "CG-SKILL-030",
+  "date": "2026-10-26",
+  "skill": "chagok-data-guard",
+  "skill_source": "skills/chagok-data-guard/SKILL.md",
+  "task": "전체 화면 반응형 UI 테스트·문제 분석만 수행",
+  "todo_refs": [
+    "6-11"
+  ],
+  "actions": [
+    "격리 Chrome 배포본 렌더링",
+    "10개 주요 너비·16px 양방향 구간·실제 창 크기 왕복",
+    "Chrome 실제 페이지 확대80/90/100/110/125/150/200%",
+    "15종 모달·펼친 자료·통계 기간·긴 이름·휠 입력 점검",
+    "2092개 측정·159장 화면 수집",
+    "앱 소스166개 해시 변경 없음 확인",
+    "실제 UI 결함으로6-11 재확인 대기 표시"
+  ],
+  "evidence": [
+    "docs/responsive-ui-audit.md",
+    "docs/evidence/responsive-audit/index.html",
+    "docs/evidence/responsive-audit/source-after.json",
+    "docs/evidence/responsive-audit/widths-results.json",
+    "docs/evidence/responsive-audit/modals-results.json",
+    "docs/evidence/responsive-audit/zoom-results.json",
+    "docs/evidence/responsive-audit/investigate-results.json",
+    "docs/evidence/responsive-audit/evidence-results.json"
+  ],
+  "result": "failed",
+  "outcome": "UI 결함6건과 낮은 우선순위 여백 제안1건 확인. 테스트·분석 완료, 수정은 사용자 승인 대기.",
+  "limitations": [
+    "Chrome headless: GUI에서 창을 손으로 끄는 수동 점검 미수행",
+    "네이티브 창 최소너비512px,320~430px은 뷰포트 에뮬레이션",
+    "실제 iPhone Safari·WebKit·키보드·안전 영역·핀치 줌 미검증",
+    "실제 사용자 자료를 사용하지 않음",
+    "앱 코드·에셋·빌드 수정 및 커밋·배포 없음"
+  ]
+}
+
+
+## CG-SKILL-031 — 승인된 반응형 UI 수정
+
+{
+  "id": "CG-SKILL-031",
+  "date": "2026-10-26",
+  "skill": "chagok-data-guard",
+  "skill_source": "skills/chagok-data-guard/SKILL.md",
+  "task": "승인된 R1·R3~R7 반영 및 R2 독립 제안 미리보기 제작",
+  "todo_refs": [
+    "6-11",
+    "R1",
+    "R2",
+    "R3",
+    "R4",
+    "R5",
+    "R6",
+    "R7"
+  ],
+  "actions": [
+    "R1 자연 높이와 낮은 화면 단일 모달 스크롤",
+    "R3~R6 이름 줄바꿈·체크박스/숫자 위치 보존·통계 내부 폭 대응",
+    "R7 요약 카드 동일 콘텐츠 높이 및 목록 높이 영향 제거",
+    "R2 원본 비율·빈 영역 방지·연속 카메라 미리보기만 제작",
+    "PWA 셸 재생성 및166개 테스트 통과",
+    "Chrome2134개 UI 측정·231개 배너 제안 샘플",
+    "합성 데이터 저장·백업 왕복·오프라인·두 창 충돌 회귀",
+    "앱/계산/저장 JS·HTML·실제 배너 CSS 보존 해시와 규칙 비교"
+  ],
+  "evidence": [
+    "docs/responsive-ui-fixes.md",
+    "docs/evidence/responsive-fixes/index.html",
+    "docs/evidence/responsive-fixes/after.json",
+    "docs/evidence/responsive-fixes/tests.json",
+    "docs/evidence/responsive-fixes/browser-results.json",
+    "docs/evidence/responsive-fixes/regression-results.json",
+    "docs/evidence/responsive-fixes/r2-preview-results.json",
+    "previews/banner-camera-r2/index.html"
+  ],
+  "result": "limited",
+  "outcome": "승인된6건 실제 수정·검증 완료. R2는 제안 미리보기 완료 후 실제 적용 승인 대기.",
+  "limitations": [
+    "R2 실제 배너 미적용: 사용자 승인 대기",
+    "실제 Safari·키보드·안전 영역·핀치 줌 미검증",
+    "실제 사용자 자료 전환6-1·6-12 대기",
+    "스킬 PS 점검 대신 Node 소스 해시·호출 코드와 격리 실행으로 검증",
+    "커밋·게시·배포 미수행"
+  ]
+}
+
+
+## CG-SKILL-032 — R2 직접 조작 미리보기
+
+{
+  "id": "CG-SKILL-032",
+  "date": "2026-10-26",
+  "skill": "chagok-data-guard",
+  "skill_source": "skills/chagok-data-guard/SKILL.md",
+  "task": "R2 직접 드래그 가능한 반응형 검토 페이지 제작만 수행",
+  "todo_refs": [
+    "R2",
+    "6-11"
+  ],
+  "actions": [
+    "현재 dist 홈 배너 구조 복제 일치 확인·dist CSS 직접 로드",
+    "1:1 프레임·오른쪽 포인터 드래그·실제 CSS 너비·브라우저 연동",
+    "기존/개선 및 배너 단독/실제 앱 배치 전환",
+    "공통 컨테이너 카메라 CSS를 별도 폴더에 제작",
+    "Chrome 포인터1px 왕복361개와 총452개 샘플·실제 확대80~200% 검증",
+    "앱 파일162개 변경 전후 해시 동일 확인",
+    "저장 기능/실제 앱 스크립트를 로드하지 않는 읽기 전용 페이지 확인"
+  ],
+  "evidence": [
+    "previews/banner-camera-r2-live/index.html",
+    "docs/banner-camera-live-review.md",
+    "docs/evidence/banner-camera-live/results.json",
+    "docs/evidence/banner-camera-live/after.json",
+    "docs/evidence/banner-camera-live/source.json"
+  ],
+  "result": "passed",
+  "outcome": "직접 조작 검토 페이지 제작·Chrome 검증 완료. 실제 앱과 dist는 변경하지 않았고 최종 적용 승인 대기.",
+  "limitations": [
+    "실제 Safari/WebKit·iOS 키보드·안전 영역 미검증",
+    "실제 사용자 자료로 테스트하지 않음",
+    "앱 적용·커밋·게시·PWA 재빌드 없음",
+    "PowerShell 점검 도구 대신 Node 소스 해시와 실행 증거로 검증"
+  ]
+}
+
+
+## CG-SKILL-033 — R2 최종 승인 반영
+
+{
+  "id": "CG-SKILL-033",
+  "date": "2026-10-26",
+  "skill": "chagok-data-guard",
+  "skill_source": "skills/chagok-data-guard/SKILL.md",
+  "task": "최종 승인된 R2 배너를 원본·배포본에 실제 적용",
+  "todo_refs": [
+    "R2",
+    "6-11"
+  ],
+  "actions": [
+    "승인 카메라 CSS와 camera-continuous 클래스를 원본/dist에 연결",
+    "실시간 미리보기도 배포본 CSS 파일을 직접 공유",
+    "PWA29개 셸 재생성·자동 테스트166개 통과",
+    "Chrome463개 배너 측정·1px 양방향 구간·실제 확대80~200%·미리보기 좌표 일치 검증",
+    "합성 저장·백업/복원·오프라인 카메라 CSS·두 창 충돌 흐름 재검증",
+    "기본CSS·계산/저장JS·이미지/로고 보존 해시 비교"
+  ],
+  "evidence": [
+    "banner-camera.css",
+    "dist/banner-camera.css",
+    "docs/banner-camera-applied.md",
+    "docs/evidence/banner-camera-applied/tests.json",
+    "docs/evidence/banner-camera-applied/results.json",
+    "docs/evidence/banner-camera-applied/after.json",
+    "docs/evidence/banner-camera-applied/browser-results.json"
+  ],
+  "result": "passed",
+  "outcome": "승인된 R2 실제 적용 및 Chrome·오프라인 기능 검증 완료. 원본 데이터와 계산·저장 코드 보존.",
+  "limitations": [
+    "실제 Safari·소프트 키보드·안전 영역 미검증",
+    "실제 사용자 자료6-1·6-12 전환 대조 별도 대기",
+    "PS 경계 도구 대신 Node 해시와 격리 실행 근거 사용",
+    "Git 커밋·게시·배포 미수행"
+  ]
+}

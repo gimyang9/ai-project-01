@@ -1,0 +1,201 @@
+{
+  "app": "chagok-v2",
+  "backupVersion": 1,
+  "createdAt": "2026-10-26T03:00:00.000Z",
+  "data": {
+    "app": "chagok-v2",
+    "version": 1,
+    "study": {
+      "version": 1,
+      "recordSequence": 7,
+      "materials": [
+        {
+          "id": "legacy",
+          "name": "이전 자료 · 통합 점검",
+          "type": "book",
+          "unit": "페이지",
+          "total": 100,
+          "current": 100,
+          "round": 3,
+          "note": "이전 메모",
+          "records": [],
+          "roundHistory": [
+            {
+              "round": 1,
+              "total": 100,
+              "unit": "페이지",
+              "completedDate": "2026-09-01",
+              "records": [
+                {
+                  "id": "old-h1",
+                  "date": "2026-09-01",
+                  "position": 100,
+                  "sequence": 0,
+                  "custom": "keep"
+                }
+              ]
+            },
+            {
+              "round": 2,
+              "total": 100,
+              "unit": "페이지",
+              "completedDate": "2026-10-26",
+              "records": [
+                {
+                  "id": "old-r1",
+                  "date": "2026-10-01",
+                  "position": 20,
+                  "sequence": 2,
+                  "amount": 20
+                },
+                {
+                  "id": "old-r2",
+                  "date": "2026-10-02",
+                  "position": 50,
+                  "sequence": 3,
+                  "amount": 30
+                },
+                {
+                  "id": "7bd8f0b9-ad82-4516-8554-ef311defbee6",
+                  "date": "2026-10-26",
+                  "understanding": "보통",
+                  "position": 100,
+                  "sequence": 5,
+                  "createdAt": "2026-10-26T03:00:00.000Z",
+                  "unit": "페이지",
+                  "total": 100,
+                  "amount": 50
+                }
+              ]
+            }
+          ],
+          "reviews": [
+            {
+              "id": "old-v1",
+              "date": "2026-10-03",
+              "start": 10,
+              "end": 30,
+              "total": 100,
+              "unit": "페이지",
+              "sequence": 4
+            },
+            {
+              "id": "bce901f3-c665-4aaa-abe9-42d8d71aff3b",
+              "date": "2026-10-26",
+              "understanding": "어려움",
+              "start": 20,
+              "end": 50,
+              "sequence": 6,
+              "createdAt": "2026-10-26T03:00:00.000Z",
+              "total": 100,
+              "unit": "페이지"
+            }
+          ],
+          "custom": {
+            "keep": true
+          },
+          "growthState": {
+            "family": "tree",
+            "completed": true
+          },
+          "reviewSettings": {
+            "focusCycles": [
+              {
+                "id": "exam-0f14cdc1b61594b358c701886d47d923:0",
+                "goalId": "exam-0f14cdc1b61594b358c701886d47d923",
+                "startDate": "2026-09-09",
+                "mode": "auto",
+                "manualStart": "",
+                "createdDate": "2026-10-26"
+              }
+            ]
+          },
+          "beforeArchiveStatus": "active",
+          "archived": false
+        },
+        {
+          "id": "a20f43f0-2970-4d40-82da-9ecfb43d3801",
+          "name": "추가 강의",
+          "type": "lecture",
+          "unit": "강",
+          "total": 20,
+          "targetDate": "",
+          "round": 1,
+          "records": [],
+          "reviews": [],
+          "roundHistory": [],
+          "note": "",
+          "archived": false,
+          "growthState": {
+            "family": "tree",
+            "completed": false
+          }
+        }
+      ]
+    },
+    "exams": {
+      "app": "chagok-preview-exams",
+      "version": 2,
+      "goals": [
+        {
+          "id": "exam-0f14cdc1b61594b358c701886d47d923",
+          "status": "active",
+          "note": "",
+          "icon": "target",
+          "name": "통합 시험",
+          "date": "2026-11-10",
+          "materialIds": [
+            "legacy",
+            "a20f43f0-2970-4d40-82da-9ecfb43d3801"
+          ],
+          "learningDays": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5
+          ],
+          "focusMode": "auto",
+          "focusDate": "",
+          "daysOff": [],
+          "continuedMaterialIds": []
+        },
+        {
+          "id": "undated",
+          "name": "날짜 없는 시험",
+          "date": "",
+          "status": "active",
+          "note": "",
+          "materialIds": [
+            "legacy"
+          ],
+          "learningDays": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6
+          ],
+          "daysOff": [],
+          "focusMode": "auto",
+          "focusDate": "",
+          "continuedMaterialIds": []
+        }
+      ],
+      "priorityGoalId": null,
+      "materialSettings": {
+        "legacy": {
+          "manualStatus": "active",
+          "autoPausedBy": []
+        },
+        "a20f43f0-2970-4d40-82da-9ecfb43d3801": {
+          "manualStatus": "active",
+          "autoPausedBy": []
+        }
+      }
+    }
+  }
+}

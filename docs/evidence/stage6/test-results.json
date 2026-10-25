@@ -1,0 +1,7 @@
+{
+  "command": "node --test --test-reporter=tap tests/exam-management.test.cjs tests/final-integration.test.cjs tests/learning-plan.test.cjs tests/pwa.test.cjs tests/review-foundation.test.cjs tests/review-plan.test.cjs tests/streak.test.cjs tests/study-app.test.cjs tests/study-data.test.cjs tests/study-stats.test.cjs",
+  "exit": 0,
+  "tests": 166,
+  "pass": 166,
+  "fail": 0
+}

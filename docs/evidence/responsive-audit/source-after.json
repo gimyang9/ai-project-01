@@ -1,0 +1,47 @@
+{
+  "date": "2026-10-26",
+  "trackedSourceFilesCompared": 166,
+  "changedAppFiles": [],
+  "phases": [
+    {
+      "phase": "widths",
+      "measurements": 1175,
+      "screenshots": 60,
+      "runtimeErrors": [],
+      "missingRequests": []
+    },
+    {
+      "phase": "modals",
+      "measurements": 120,
+      "screenshots": 36,
+      "runtimeErrors": [],
+      "missingRequests": []
+    },
+    {
+      "phase": "zoom",
+      "measurements": 662,
+      "screenshots": 18,
+      "runtimeErrors": [],
+      "missingRequests": []
+    },
+    {
+      "phase": "investigate",
+      "measurements": 95,
+      "screenshots": 38,
+      "runtimeErrors": [],
+      "missingRequests": []
+    },
+    {
+      "phase": "evidence",
+      "measurements": 40,
+      "screenshots": 7,
+      "runtimeErrors": [],
+      "missingRequests": []
+    }
+  ],
+  "totalMeasurements": 2092,
+  "totalScreenshots": 159,
+  "findings": 7,
+  "fixesApplied": false,
+  "actualSafariTested": false
+}

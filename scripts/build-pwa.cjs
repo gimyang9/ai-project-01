@@ -1,7 +1,7 @@
 /* Rebuild before publishing; discover each root/dist shell's actual local assets. */
 const fs=require('fs'),path=require('path'),crypto=require('crypto');
 const base=path.resolve(__dirname,'..');
-const core=['index.html','style.css','app.js','streak.js','exam-management.js','study-data.js','learning-plan.js','review-plan.js','study-stats.js','pwa.js','manifest.webmanifest'];
+const core=['index.html','style.css','app.js','streak.js','exam-management.js','study-data.js','learning-plan.js','review-plan.js','study-stats.js','storage-guard.js','pwa.js','manifest.webmanifest'];
 const template=fs.readFileSync(path.join(__dirname,'service-worker-template.js'),'utf8');
 for(const prefix of ['', 'dist']){
  const directory=path.join(base,prefix),files=new Set(core);

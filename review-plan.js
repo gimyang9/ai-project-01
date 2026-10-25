@@ -111,6 +111,34 @@
     for(const r of [...rows].sort(priority)){if(!left)break;const n=Math.min(left,r.end-r.start+1);result.push({...r,end:r.start+n-1});left-=n;}
     return result;
   }
+
+  function lastFocusCycle(material,goal){
+    const row=(material.reviewSettings?.focusCycles||[]).filter(c=>c.goalId===goal.id).at(-1);
+    return row&&row.mode===goal.focusMode&&(goal.focusMode!=='manual'||row.manualStart===goal.focusDate)?row:null;
+  }
+  function stabilize(previous,next,today,study,exam,learning){
+    const output=JSON.parse(JSON.stringify(next));
+    const add=(material,plan,goal)=>{
+      if(!plan?.startDate||(!plan.started&&goal.focusMode!=='manual')||lastFocusCycle(material,goal))return;
+      const cycles=material.reviewSettings?.focusCycles||[];
+      material.reviewSettings={...material.reviewSettings,focusCycles:[...cycles,{id:goal.id+':'+cycles.length,goalId:goal.id,startDate:plan.startDate,mode:goal.focusMode,manualStart:goal.focusMode==='manual'?goal.focusDate:'',createdDate:today}]};
+    };
+    // Capture the already-started previous plan before a new review changes its speed.
+    for(const old of previous.study.materials){
+      const material=output.study.materials.find(m=>m.id===old.id);if(!material)continue;
+      const plan=focus(old,derive(old,today,study,learning),previous,today,study,exam,learning);
+      const goal=plan&&previous.exams.goals.find(g=>g.id===plan.goalId);
+      if(plan?.started&&goal)add(material,plan,goal);
+    }
+    // Manual start changes create a separate cycle; resits have separate goal IDs.
+    for(const material of output.study.materials){
+      const plan=focus(material,derive(material,today,study,learning),output,today,study,exam,learning);
+      const goal=plan&&output.exams.goals.find(g=>g.id===plan.goalId);
+      if(goal)add(material,plan,goal);
+    }
+    return output;
+  }
+
   function focus(material,derived,state,today,study,exam,learning){
     const goals=exam.orderedGoals(state.exams).filter(g=>g.status==='active'&&g.date&&g.date>=today&&g.materialIds.includes(material.id)).sort((a,b)=>a.date.localeCompare(b.date));
     const goal=goals[0];if(!goal)return null;
@@ -119,7 +147,8 @@
     const needed=total&&rate.amount?Math.ceil(total/rate.amount):0;
     const buffer=needed?Math.min(POLICY.maxBuffer,Math.max(POLICY.minBuffer,Math.ceil(needed*POLICY.bufferFraction))):0;
     const automaticStart=needed?backwardStart(goal.date,needed+buffer,goal,learning):null;
-    const start=goal.focusMode==='manual'?goal.focusDate:automaticStart;
+    const cycle=lastFocusCycle(material,goal);
+    const start=goal.focusMode==='manual'?goal.focusDate:cycle?.startDate||automaticStart;
     const effectiveStart=start&&start<today?today:start;
     const remainingRows=targets.filter(r=>!start||!r.lastReviewDate||r.lastReviewDate<start);
     const remaining=amount(remainingRows),todayDone=amount(union(derived.reviews.filter(r=>r.date===today).flatMap(r=>intersect([r],1,current))));
@@ -127,11 +156,13 @@
     const todayAllowed=learning.allowed(today,goal),started=!!start&&today>=start&&today<goal.date;
     const daily=rate.amount?Math.ceil(rate.amount):0;
     const requested=started&&todayAllowed?Math.max(0,daily-todayDone):0;
-    return {goalId:goal.id,goalName:goal.name,examDate:goal.date,startDate:start,automaticStart,effectiveStart,
+    const repeatRows=started?targets.filter(r=>r.lastReviewDate&&r.lastReviewDate>=start&&r.dueDate&&r.dueDate<=today).map(r=>({...r,newTarget:true})):[];
+    const recommendations=pick([...remainingRows,...repeatRows].filter(r=>!r.manual||r.dueDate<=today),requested);
+    return {cycleId:cycle?.id||null,completedAmount:total-remaining,repeatRecommendedAmount:amount(recommendations.filter(r=>r.newTarget)),goalId:goal.id,goalName:goal.name,examDate:goal.date,startDate:start,automaticStart,effectiveStart,
       speed:rate,total,remaining,neededDays:needed,bufferDays:buffer,daysLeft,todayDone,todayAllowed,started,
       shortfall:rate.amount?shortage(remainingRows,today,end,start,goal,rate.amount,todayDone,learning):null,
       reason:!total?'no-study':!rate.amount?rate.reason:!start?'no-days':start>=goal.date?'invalid-start':'planned',
-      recommendations:pick(remainingRows.filter(r=>!r.manual||r.dueDate<=today),requested)};
+      recommendations};
   }
   function mergedToday(normal,extra,materialId,today){
     const points=[...new Set([...normal,...extra].flatMap(r=>[r.start,r.end+1]))].sort((a,b)=>a-b),result=[];
@@ -139,9 +170,9 @@
       const start=points[i],end=points[i+1]-1,n=normal.find(r=>r.start<=start&&r.end>=end),f=extra.find(r=>r.start<=start&&r.end>=end);
       if(!n&&!f)continue;
       const sources=[...(n?['regular']:[]),...(f?['focus']:[])],status=n?.dueDate<today?'복습 지연':f?'시험 전 복습':'복습 예정';
-      const r={...(n||f),materialId,start,end,sources,status};
+      const r={...(n||f),newTarget:!!f?.newTarget,materialId,start,end,sources,status};
       const last=result.at(-1);
-      if(last&&last.end+1===start&&last.status===status&&last.sources.join()===sources.join()&&last.dueDate===r.dueDate&&last.understanding===r.understanding)last.end=end;
+      if(last&&last.end+1===start&&last.status===status&&last.sources.join()===sources.join()&&last.dueDate===r.dueDate&&last.newTarget===r.newTarget&&last.understanding===r.understanding)last.end=end;
       else result.push(r);
     }
     return result;
@@ -155,6 +186,6 @@
     });
     return {materials,today:materials.flatMap(m=>m.today).sort(priority)};
   }
-  const api={POLICY,union,amount,interval,derive,speed,backwardStart,priority,pick,focus,mergedToday,build,currentLearned,shortage};
+  const api={stabilize,lastFocusCycle,POLICY,union,amount,interval,derive,speed,backwardStart,priority,pick,focus,mergedToday,build,currentLearned,shortage};
   if(typeof module!=='undefined'&&module.exports)module.exports=api;else root.ReviewPlan=api;
 })(typeof window==='undefined'?this:window);

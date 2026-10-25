@@ -1,0 +1,80 @@
+{
+  "scope": "Chrome isolated synthetic legacy data; fixed date 2026-10-26; project subpath",
+  "legacyBytesPreserved": true,
+  "roundHistoryPreserved": true,
+  "workflow": [
+    "migration",
+    "material registration form",
+    "exam registration form",
+    "shared material pause/resume",
+    "progress/review forms",
+    "next round",
+    "archive/unarchive",
+    "actual statistics",
+    "backup download",
+    "reset",
+    "reload",
+    "file picker restore",
+    "two-window conflict",
+    "simultaneous saves and retry"
+  ],
+  "screens": [
+    {
+      "width": 320,
+      "overflow": false,
+      "summary": "학습 기록1건복습 기록1건기록한 날1일"
+    },
+    {
+      "width": 390,
+      "overflow": false,
+      "summary": "학습 기록1건복습 기록1건기록한 날1일"
+    },
+    {
+      "width": 768,
+      "overflow": false,
+      "summary": "학습 기록1건복습 기록1건기록한 날1일"
+    },
+    {
+      "width": 1023,
+      "overflow": false,
+      "summary": "학습 기록1건복습 기록1건기록한 날1일"
+    },
+    {
+      "width": 1024,
+      "overflow": false,
+      "summary": "학습 기록1건복습 기록1건기록한 날1일"
+    },
+    {
+      "width": 1440,
+      "overflow": false,
+      "summary": "학습 기록1건복습 기록1건기록한 날1일"
+    }
+  ],
+  "backupRoundTripExact": true,
+  "dayRefresh": {
+    "headerUpdated": true,
+    "inputPreserved": true,
+    "modalPreserved": true,
+    "storageUnchanged": true
+  },
+  "offlineAfterCorrections": {
+    "actualReload": true,
+    "imagesLoaded": true,
+    "save": true,
+    "secondReload": true
+  },
+  "conflict": {
+    "inputPreserved": true,
+    "modalPreserved": true,
+    "refreshWarning": true,
+    "newerDataPreserved": true,
+    "simultaneousResults": [
+      true,
+      false
+    ],
+    "retryRetainsBoth": true,
+    "webLocks": true
+  },
+  "errors": [],
+  "missingAssets": []
+}

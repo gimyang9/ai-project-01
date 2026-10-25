@@ -1,0 +1,66 @@
+{
+  "changed": [
+    "style.css",
+    "dist/style.css"
+  ],
+  "productionBannerUnchanged": true,
+  "appLogicHtmlAndStorageModulesUnchanged": true,
+  "phases": [
+    {
+      "phase": "widths",
+      "measurements": 1175,
+      "errors": 0,
+      "missing": 0,
+      "overflows": 0,
+      "horizontalOffenders": 0
+    },
+    {
+      "phase": "modals",
+      "measurements": 120,
+      "errors": 0,
+      "missing": 0,
+      "overflows": 0,
+      "horizontalOffenders": 0
+    },
+    {
+      "phase": "zoom",
+      "measurements": 662,
+      "errors": 0,
+      "missing": 0,
+      "overflows": 0,
+      "horizontalOffenders": 0
+    },
+    {
+      "phase": "investigate",
+      "measurements": 95,
+      "errors": 0,
+      "missing": 0,
+      "overflows": 0,
+      "horizontalOffenders": 0
+    },
+    {
+      "phase": "evidence",
+      "measurements": 40,
+      "errors": 0,
+      "missing": 0,
+      "overflows": 0,
+      "horizontalOffenders": 0
+    },
+    {
+      "phase": "regression",
+      "measurements": 42,
+      "errors": 0,
+      "missing": 0,
+      "overflows": 0,
+      "horizontalOffenders": 0
+    }
+  ],
+  "tests": {
+    "command": "node --test --test-reporter=tap tests/exam-management.test.cjs tests/final-integration.test.cjs tests/learning-plan.test.cjs tests/pwa.test.cjs tests/review-foundation.test.cjs tests/review-plan.test.cjs tests/streak.test.cjs tests/study-app.test.cjs tests/study-data.test.cjs tests/study-stats.test.cjs",
+    "exit": 0,
+    "tests": 166,
+    "pass": 166,
+    "fail": 0
+  },
+  "r2ProductionApproved": false
+}

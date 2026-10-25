@@ -1,0 +1,15 @@
+{
+  "existingSourceChanges": [
+    "index.html",
+    "dist/index.html"
+  ],
+  "baseCssLogicStorageAndImagesUnchanged": true,
+  "rootDistCameraIdentical": true,
+  "approvedPreviewRulesIdentical": true,
+  "measurements": 463,
+  "previewParity": true,
+  "maxGap": 0,
+  "runtimeErrors": [],
+  "missing": [],
+  "cacheIncludesCamera": true
+}

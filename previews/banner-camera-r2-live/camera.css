@@ -1,0 +1,27 @@
+/* Shared candidate component. Approval required before loading this in the app. */
+.home-intro .forest-banner.camera-continuous{
+ height:auto;min-height:0;max-height:none;aspect-ratio:auto;
+ container:approved-banner / inline-size;
+}
+.home-intro .forest-banner.camera-continuous::before{
+ content:"";display:block;width:100%;height:0;padding-top:min(41.6666666667%,210px);
+ box-sizing:content-box;pointer-events:none;
+}
+.home-intro .forest-banner.camera-continuous .forest-image{
+ width:max(calc(100cqw + 2px),clamp(440px,calc(188.8888888889cqw - 164.4444444444px),1120px));
+ height:auto;min-width:0;max-width:none;
+ left:78%;right:auto;top:58%;bottom:auto;
+ transform:translate(-78%,-58%);
+ object-fit:contain;object-position:center;transition:none;
+}
+.home-intro .forest-banner.camera-continuous .forest-copy{
+ left:calc(clamp(6px,calc(33.75cqw - 215.9px),100px) + clamp(0px,calc(97.2222222222cqw - 910px),140px));
+ right:auto;top:clamp(33px,calc(29px + 1.25cqw),38px);
+ width:clamp(126px,calc(38.6111111111cqw + 2.4444444444px),265px);
+ max-width:none;padding:0;transform:none;transition:none;
+}
+.home-intro .forest-banner.camera-continuous .banner-cottage{
+ --cottage-h:min(245px,46.511627907cqw);
+ right:clamp(-12px,calc(6cqw - 37.8px),12px);
+ transition:none;
+}

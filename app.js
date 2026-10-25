@@ -25,17 +25,42 @@ function refreshData(){
 }
 function renderStorageNote(){
   const note=document.querySelector('.preview-note');
+  if(storageConflict){note.textContent=storageConflictMessage;return;}
   note.textContent=studyLoad.writable?'자료·학습 기록·시험은 이 브라우저에 저장됩니다.':studyLoad.error+' 설정에서 백업 파일을 복원할 수 있어요.';
 }
-function persistData(next,message,recovery=false){
-  if(!studyLoad.writable&&!recovery){notify(studyLoad.error);return false;}
-  try{
-    dataState=recovery&&!studyLoad.writable?studyAPI.recover(window.localStorage,next,examAPI):studyAPI.save(window.localStorage,next,examAPI);
-    studyLoad.writable=true;studyLoad.error=null;
-  }
-  catch(error){notify(error.message||'저장하지 못했어요. 기존 데이터는 유지됩니다.');return false;}
-  refreshData();notify(message);return true;
+
+const storageConflictMessage='다른 창에서 데이터가 변경되어 저장을 중단했어요. 현재 입력은 유지됩니다. 새로고침하면 미저장 입력이 사라지니 먼저 복사해 주세요.';
+let storageConflict=false,saveGuard=null;
+try{saveGuard=StorageGuard.create(window.localStorage,studyAPI.KEY,(['https:','http:'].includes(location.protocol)?window.navigator?.locks:undefined));}catch{}
+function reportStorageConflict(){
+ storageConflict=true;
+ $('storage-conflict-notice').textContent=storageConflictMessage;$('storage-conflict-notice').hidden=false;
+ renderStorageNote();notify(storageConflictMessage);
 }
+window.addEventListener('storage',event=>{if(saveGuard?.observe(event))reportStorageConflict();});
+function finishCommit(result,onSuccess){
+ if(result&&typeof result.then==='function')return result.then(ok=>{if(ok)onSuccess();return ok;});
+ if(result)onSuccess();return result;
+}
+function persistData(next,message,recovery=false){
+ if(storageConflict){reportStorageConflict();return false;}
+ if(!studyLoad.writable&&!recovery){notify(studyLoad.error);return false;}
+ const failure=error=>{
+  if(error.code==='CHAGOK_CONFLICT')reportStorageConflict();
+  else notify(error.code==='CHAGOK_SAVE_BUSY'?'다른 저장 작업이 진행 중이에요. 잠시 후 다시 저장해 주세요.':error.message||'저장하지 못했어요. 기존 데이터는 유지됩니다.');
+  return false;
+ };
+ try{
+  if(!saveGuard)saveGuard=StorageGuard.create(window.localStorage,studyAPI.KEY,(['https:','http:'].includes(location.protocol)?window.navigator?.locks:undefined));
+  const result=saveGuard.run(()=>{
+   const prepared=recovery?next:ReviewPlan.stabilize(dataState,next,localToday(),studyAPI,examAPI,LearningPlan);
+   return recovery&&!studyLoad.writable?studyAPI.recover(window.localStorage,prepared,examAPI):studyAPI.save(window.localStorage,prepared,examAPI);
+  });
+  const success=saved=>{dataState=saved;studyLoad.writable=true;studyLoad.error=null;refreshData();notify(message);return true;};
+  return result&&typeof result.then==='function'?result.then(success,failure):success(result);
+ }catch(error){return failure(error);}
+}
+
 function commitStudy(action,message){
   if(!studyLoad.writable){notify(studyLoad.error);return false;}
   try{return persistData(studyAPI.update(dataState,action,examAPI),message);}
@@ -73,12 +98,12 @@ function reviewFocusText(plan,unit){
   if(plan.reason==='invalid-start')return '집중 복습 시작일을 시험 전 날짜로 확인해 주세요.';
   if(!plan.speed.amount)return '복습 속도를 계산할 기록이 없어요.';
   const label=plan.speed.reason==='initial'?'초기 추정':plan.speed.reason==='manual'?'직접 설정':'최근 기록 기준';
-  return `${label} 하루 ${Math.round(plan.speed.amount*100)/100}${unit} · 시작 ${plan.startDate}${plan.effectiveStart!==plan.startDate?' (오늘부터)':''}${plan.shortfall?' · 시험 전 '+plan.shortfall+unit+' 부족 예상':''}`;
+  return `${plan.completedAmount&&plan.remaining===0?'기존 집중 범위 완료 · ':''}${plan.repeatRecommendedAmount?'새 복습 '+plan.repeatRecommendedAmount+unit+' · ':''}${label} 하루 ${Math.round(plan.speed.amount*100)/100}${unit} · 시작 ${plan.startDate}${plan.effectiveStart!==plan.startDate?' (오늘부터)':''}${plan.shortfall?' · 시험 전 '+plan.shortfall+unit+' 부족 예상':''}`;
 }
 function reviewRow(plan,material,upcoming=false){
   const date=plan.dueDate||'';
   const labels=upcoming?['복습 예정']:plan.sources.includes('focus')&&plan.status==='복습 지연'?['복습 지연','시험 전 복습']:[plan.status];
-  return `<article class="review-plan-item"><h3>${escapeHTML(material.name)}</h3><p>${plan.start}–${plan.end}${escapeHTML(material.unit)}${date?' · '+escapeHTML(date):''}${plan.manual?' · 직접 지정':''}</p><div class="review-plan-actions">${labels.map(label=>`<span class="badge ${label==='복습 지연'?'clay':'sage'}">${label}</span>`).join('')}<button class="text-link" data-dialog="review" data-material="${escapeHTML(material.id)}" data-review-start="${plan.start}" data-review-end="${plan.end}">복습 기록${icon('chevron')}</button><button class="subtle-button" data-dialog="review-date" data-material="${escapeHTML(material.id)}" data-review-start="${plan.start}" data-review-end="${plan.end}" data-review-due="${escapeHTML(date)}">날짜 변경</button></div></article>`;
+  return `<article class="review-plan-item"><h3>${escapeHTML(material.name)}</h3><p>${plan.start}–${plan.end}${escapeHTML(material.unit)}${date?' · '+escapeHTML(date):''}${plan.manual?' · 직접 지정':''}</p><div class="review-plan-actions">${plan.newTarget?'<span class="badge cream">새 복습 대상</span>':''}${labels.map(label=>`<span class="badge ${label==='복습 지연'?'clay':'sage'}">${label}</span>`).join('')}<button class="text-link" data-dialog="review" data-material="${escapeHTML(material.id)}" data-review-start="${plan.start}" data-review-end="${plan.end}">복습 기록${icon('chevron')}</button><button class="subtle-button" data-dialog="review-date" data-material="${escapeHTML(material.id)}" data-review-start="${plan.start}" data-review-end="${plan.end}" data-review-due="${escapeHTML(date)}">날짜 변경</button></div></article>`;
 }
 function reviewListMarkup(){
   const snapshot=currentReviews(),today=localToday();
@@ -109,6 +134,7 @@ function notify(message) {
 }
 
 function showView(view, focus = false) {
+  refreshForDayChange();
   if (!['home','goals','stats','more','detail'].includes(view)) view = 'home';
   if (dialog.open) dialog.close();
   currentView = view;
@@ -469,7 +495,7 @@ function submitExamForm(event) {
   else if(mode==='delete')action={type:'delete',id};
   else if(mode==='status')action={type:'status',id,status:form.dataset.status,continuedMaterialIds:Array.from(form.querySelectorAll('[name="continue-material"]:checked'),el=>el.value)};
   else return;
-  if(commitExam(action,mode==='delete'?'시험을 삭제했어요. 학습 기록은 유지됩니다.':'시험 변경 사항을 저장했어요.'))dialog.close();
+  finishCommit(commitExam(action,mode==='delete'?'시험을 삭제했어요. 학습 기록은 유지됩니다.':'시험 변경 사항을 저장했어요.'),()=>dialog.close());
 }
 
 function updateMaterialType(type, selectedUnit) {
@@ -515,19 +541,19 @@ function submitStudyForm(event){
   else if(mode==='next-round')action={type:'next-round',id};
   else if(mode==='delete-record'||mode==='delete-review')action={type:mode,id,recordId:form.dataset.record};
   else if(mode==='restore'){
-    if(pendingRestore&&persistData(pendingRestore,'백업 데이터를 복원했어요.',true)){pendingRestore=null;dialog.close();showView('home');}
+    if(pendingRestore)finishCommit(persistData(pendingRestore,'백업 데이터를 복원했어요.',true),()=>{pendingRestore=null;dialog.close();showView('home');});
     return;
   }else if(mode==='reset'){
-    if(persistData(studyAPI.envelope(studyAPI.emptyStudy(),studyAPI.emptyExams()),'학습 자료·기록·시험을 초기화했어요.',true)){dialog.close();showView('home');}
+    finishCommit(persistData(studyAPI.envelope(studyAPI.emptyStudy(),studyAPI.emptyExams()),'학습 자료·기록·시험을 초기화했어요.',true),()=>{dialog.close();showView('home');});
     return;
   }else return;
-  if(commitStudy(action,'저장했어요.')){
+  return finishCommit(commitStudy(action,'저장했어요.'),()=>{
     dialog.close();
     if(currentView==='detail'){
       if(['delete'].includes(mode))showView('home');
       else {openDetail(id);if(mode.includes('review'))renderDetailTab('review');else if(mode==='plan')renderDetailTab('basic');}
     }
-  }
+  });
 }
 
 function handleStudyButton(button){
@@ -552,7 +578,7 @@ function handleStudyButton(button){
   if(button.hasAttribute('data-restore')){$('restore-file').click();return true;}
   if(button.dataset.archiveMaterial||button.dataset.unarchiveMaterial){
     const id=button.dataset.archiveMaterial||button.dataset.unarchiveMaterial;
-    if(commitStudy({type:'archive',id,archived:!!button.dataset.archiveMaterial},button.dataset.archiveMaterial?'자료와 이력을 보관했어요.':'자료를 다시 꺼냈어요.')){dialog.close();if(currentView==='detail')showView('home');}
+    finishCommit(commitStudy({type:'archive',id,archived:!!button.dataset.archiveMaterial},button.dataset.archiveMaterial?'자료와 이력을 보관했어요.':'자료를 다시 꺼냈어요.'),()=>{dialog.close();if(currentView==='detail')showView('home');});
     return true;
   }
   if(button.dataset.editEntry){
@@ -591,8 +617,8 @@ document.addEventListener('click',(event)=>{
   if (!button) return;
   if(handleStudyButton(button))return;
   if (button.dataset.examDialog) return openExamDialog(button.dataset.examDialog,button.dataset.goal,button.dataset.status);
-  if (button.dataset.examPriority) {if(commitExam({type:'priority',id:button.dataset.examPriority},'우선 시험 설정을 저장했어요.')) dialog.close();return;}
-  if (button.dataset.materialStatus) {if(commitExam({type:'material-status',id:button.dataset.material,status:button.dataset.materialStatus},'자료 상태를 저장했어요.'))dialog.close();return;}
+  if (button.dataset.examPriority) {finishCommit(commitExam({type:'priority',id:button.dataset.examPriority},'우선 시험 설정을 저장했어요.'),()=>dialog.close());return;}
+  if (button.dataset.materialStatus) {finishCommit(commitExam({type:'material-status',id:button.dataset.material,status:button.dataset.materialStatus},'자료 상태를 저장했어요.'),()=>dialog.close());return;}
 
   if (button.dataset.view) return showView(button.dataset.view,true);
   if (button.hasAttribute('data-close')) return dialog.close();
@@ -643,6 +669,25 @@ dialog.addEventListener('close',()=>{
   if(dialogReturnFocus?.isConnected) dialogReturnFocus.focus({preventScroll:true});
 });
 window.addEventListener('hashchange',()=>showView(location.hash.slice(1),true));
+
+
+let displayedDay=localToday(),dayRefreshTimer;
+function refreshForDayChange(){
+ const today=localToday();if(today===displayedDay)return false;
+ displayedDay=today;reviewCache=null;
+ renderHomeWelcome();renderToday();renderReviewSummary();renderExamSummary();
+ renderMaterials(materialFilter);renderGoals(goalFilter);renderStats(statsPeriod);renderCalendar();
+ return true;
+}
+function scheduleDayRefresh(){
+ clearTimeout(dayRefreshTimer);
+ const now=new Date(),next=new Date(now.getFullYear(),now.getMonth(),now.getDate()+1);
+ const delay=Math.max(1000,Math.min(2147483647,next.getTime()-now.getTime()+50));
+ dayRefreshTimer=setTimeout(()=>{refreshForDayChange();scheduleDayRefresh();},delay);
+}
+window.addEventListener('focus',()=>{refreshForDayChange();scheduleDayRefresh();});
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'){refreshForDayChange();scheduleDayRefresh();}});
+scheduleDayRefresh();
 
 $('archive-count').textContent=demoArchivedMaterials.length;
 $('archive-count').setAttribute('aria-label',`보관 자료 ${demoArchivedMaterials.length}개`);

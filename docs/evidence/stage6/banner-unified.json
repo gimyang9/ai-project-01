@@ -1,0 +1,15 @@
+{
+  "basis": "dist layered banner",
+  "copiedImages": [
+    "assets/home-banner-garden-background.png",
+    "assets/home-banner-cottage-bear.png",
+    "assets/home-logo-approved.png"
+  ],
+  "previousRootPreserved": "docs/evidence/stage6/banner-before",
+  "unrelatedModalCssDifferencePreserved": true,
+  "literalNewlineCorrection": [
+    "style.css",
+    "dist/style.css",
+    "PROGRESS.md"
+  ]
+}
