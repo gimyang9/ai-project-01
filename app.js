@@ -6,8 +6,13 @@ const icon = (name, extra = '') => `<svg class="icon ${extra}" aria-hidden="true
 const escapeHTML = (value) => String(value).replace(/[&<>"']/g, (c) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const studyAPI=StudyData;
 const examAPI=ExamManagement;
+const applicationContext=window.AppContext||null;
+let appStorage;
+try{appStorage=applicationContext?applicationContext.storage:window.localStorage;}catch{}
+let appLocks=applicationContext?applicationContext.locks:(['https:','http:'].includes(location.protocol)?window.navigator?.locks:undefined);
+let restoreReading=false;
 let studyLoad;
-try {studyLoad=studyAPI.load(window.localStorage,examAPI);}
+try {studyLoad=studyAPI.load(appStorage,examAPI);}
 catch {studyLoad={state:studyAPI.envelope(studyAPI.emptyStudy(),studyAPI.emptyExams()),writable:false,error:'브라우저 저장소를 사용할 수 없어요.'};}
 let dataState=studyLoad.state;
 let examState=dataState.exams;
@@ -26,12 +31,12 @@ function refreshData(){
 function renderStorageNote(){
   const note=document.querySelector('.preview-note');
   if(storageConflict){note.textContent=storageConflictMessage;return;}
-  note.textContent=studyLoad.writable?'자료·학습 기록·시험은 이 브라우저에 저장됩니다.':studyLoad.error+' 설정에서 백업 파일을 복원할 수 있어요.';
+  note.textContent=applicationContext?.test?'가상 테스트 데이터를 사용 중입니다.':studyLoad.writable?'자료·학습 기록·시험은 이 브라우저에 저장됩니다.':studyLoad.error+' 설정에서 백업 파일을 복원할 수 있어요.';
 }
 
 const storageConflictMessage='다른 창에서 데이터가 변경되어 저장을 중단했어요. 현재 입력은 유지됩니다. 새로고침하면 미저장 입력이 사라지니 먼저 복사해 주세요.';
 let storageConflict=false,saveGuard=null;
-try{saveGuard=StorageGuard.create(window.localStorage,studyAPI.KEY,(['https:','http:'].includes(location.protocol)?window.navigator?.locks:undefined));}catch{}
+try{saveGuard=StorageGuard.create(appStorage,studyAPI.KEY,appLocks);}catch{}
 function reportStorageConflict(){
  storageConflict=true;
  $('storage-conflict-notice').textContent=storageConflictMessage;$('storage-conflict-notice').hidden=false;
@@ -46,16 +51,18 @@ function persistData(next,message,recovery=false){
  if(storageConflict){reportStorageConflict();return false;}
  if(!studyLoad.writable&&!recovery){notify(studyLoad.error);return false;}
  const failure=error=>{
+  if(applicationContext?.transactional)saveGuard=null;
   if(error.code==='CHAGOK_CONFLICT')reportStorageConflict();
   else notify(error.code==='CHAGOK_SAVE_BUSY'?'다른 저장 작업이 진행 중이에요. 잠시 후 다시 저장해 주세요.':error.message||'저장하지 못했어요. 기존 데이터는 유지됩니다.');
   return false;
  };
  try{
-  if(!saveGuard)saveGuard=StorageGuard.create(window.localStorage,studyAPI.KEY,(['https:','http:'].includes(location.protocol)?window.navigator?.locks:undefined));
-  const result=saveGuard.run(()=>{
-   const prepared=recovery?next:ReviewPlan.stabilize(dataState,next,localToday(),studyAPI,examAPI,LearningPlan);
-   return recovery&&!studyLoad.writable?studyAPI.recover(window.localStorage,prepared,examAPI):studyAPI.save(window.localStorage,prepared,examAPI);
+  if(!saveGuard)saveGuard=StorageGuard.create(appStorage,studyAPI.KEY,appLocks);
+  const write=()=>saveGuard.run(()=>{
+   const prepared=recovery?next:ReviewPlan.stabilize(dataState,LearningPlan.stabilize(dataState,next,localToday(),studyAPI,examAPI),localToday(),studyAPI,examAPI,LearningPlan);
+   return recovery&&!studyLoad.writable?studyAPI.recover(appStorage,prepared,examAPI):studyAPI.save(appStorage,prepared,examAPI);
   });
+  const result=applicationContext?.commit?applicationContext.commit(write):write();
   const success=saved=>{dataState=saved;studyLoad.writable=true;studyLoad.error=null;refreshData();notify(message);return true;};
   return result&&typeof result.then==='function'?result.then(success,failure):success(result);
  }catch(error){return failure(error);}
@@ -63,12 +70,12 @@ function persistData(next,message,recovery=false){
 
 function commitStudy(action,message){
   if(!studyLoad.writable){notify(studyLoad.error);return false;}
-  try{return persistData(studyAPI.update(dataState,action,examAPI),message);}
+  try{return persistData(studyAPI.update(dataState,{today:localToday(),...action},examAPI),message);}
   catch(error){notify(error.message);return false;}
 }
 let goalFilter='all';
 let materialFilter='all';
-const localToday=()=>{const d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;};
+const localToday=()=>{if(applicationContext?.today)return applicationContext.today();const d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;};
 const ddayLabel=days=>days===null?'':days===0?'D-Day':days>0?`D−${days}`:`D+${Math.abs(days)}`;
 const examDateLabel=date=>date?new Intl.DateTimeFormat('ko-KR',{year:'numeric',month:'2-digit',day:'2-digit',weekday:'short'}).format(new Date(date+'T12:00:00')):'시험일 미정';
 function materialExamInfo(m) {
@@ -120,8 +127,8 @@ function renderExamSummary(){
 }
 let selectedMaterial = demoMaterials[0] || null;
 let currentView = 'home';
-let calendarMonth = new Date().getMonth();
-let calendarYear = new Date().getFullYear();
+let calendarMonth = Number(localToday().slice(5,7))-1;
+let calendarYear = Number(localToday().slice(0,4));
 let toastTimer;
 let dialogReturnFocus;
 const dialog = $('app-dialog');
@@ -193,7 +200,7 @@ function renderMaterials(filter = 'all') {
 }
 
 function renderHomeWelcome() {
-  const today = new Date();
+  const today = new Date(localToday()+'T12:00:00');
   const time = $('home-date');
   time.dateTime = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}`;
   time.textContent = new Intl.DateTimeFormat('ko-KR',{month:'long',day:'numeric',weekday:'short'}).format(today);
@@ -403,7 +410,7 @@ function openDialog(type, materialId, editing = false) {
     content=`<p class="dialog-material-name">${escapeHTML(m.name)}</p><form data-study-form="review-date" data-material="${escapeHTML(m.id)}"><div class="form-row"><div class="form-field"><label for="review-schedule-start">시작 위치</label><input id="review-schedule-start" type="number" min="1" max="${m.total}" step="1" inputmode="numeric" required></div><div class="form-field"><label for="review-schedule-end">끝 위치</label><input id="review-schedule-end" type="number" min="1" max="${m.total}" step="1" inputmode="numeric" required></div></div><div class="form-field"><label for="review-schedule-date">복습 날짜 <small>(선택사항)</small></label><input id="review-schedule-date" type="date"><p class="field-help">비워 두면 이 범위의 자동 복습 날짜로 돌아가요.</p></div>${dialogFooter('저장')}</form>`;
   } else if (type === 'settings') {
     title = '설정';
-    content = `<section class="settings-block"><h3>학습 데이터 백업</h3><button class="button secondary" data-backup>백업 파일 저장</button></section><section class="settings-block"><h3>학습 데이터 복원</h3><input id="restore-file" type="file" accept="application/json,.json" hidden><button class="button secondary" data-restore>백업 파일 선택</button></section><button class="reset-button" data-dialog="reset">초기화</button>`;
+    content = `${applicationContext?.settings?applicationContext.settings():''}<section class="settings-block settings-data"><h3>학습 데이터 관리</h3><input id="restore-file" type="file" accept="application/json,.json" hidden><div class="settings-data-actions"><button class="button secondary" data-backup>백업 파일 저장</button><button class="button secondary" data-restore>백업 파일 선택</button></div></section><button class="reset-button" data-dialog="reset">초기화</button>`;
   } else if (type === 'reset') {
     title = '학습 데이터를 초기화할까요?';
     content = `<p class="dialog-intro">2.0 학습 자료·기록·메모·시험을 모두 초기화합니다. 필요한 데이터는 먼저 백업해 주세요. 보존된 1.0 원본 저장값은 유지됩니다.${studyLoad.writable?'':' 읽지 못한 저장값은 별도 보존한 뒤 초기화합니다.'}</p><form data-study-form="reset">${dialogFooter('초기화',true)}</form>`;
@@ -424,6 +431,7 @@ function openDialog(type, materialId, editing = false) {
   if (!alreadyOpen) dialogReturnFocus = document.activeElement;
   $('dialog-title').textContent = title;
   $('dialog-content').innerHTML = content;
+  if(type==='settings')applicationContext?.updateSettings?.();
   if (type === 'material') {
     updateMaterialType(editing ? m.typeKey : 'book',editing ? m.unit : '페이지');
     if (editing && m.typeKey === 'other') {$('custom-unit').value=m.unit;$('total-unit').textContent=m.unit;}
@@ -570,8 +578,8 @@ function handleStudyButton(button){
   if(button.hasAttribute('data-backup')){
     if(!studyLoad.writable){notify(studyLoad.error);return true;}
     try{
-      const backup=studyAPI.backup(dataState,examAPI),url=URL.createObjectURL(new Blob([JSON.stringify(backup,null,2)],{type:'application/json'}));
-      const link=document.createElement('a');link.href=url;link.download=`chagok-backup-${localToday()}.json`;document.body.append(link);link.click();link.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);notify('자료·기록·시험 백업을 내려받습니다.');
+      const original=studyAPI.backup(dataState,examAPI),backup=applicationContext?.exportBackup?applicationContext.exportBackup(original):original,url=URL.createObjectURL(new Blob([JSON.stringify(backup,null,2)],{type:'application/json'}));
+      const link=document.createElement('a');link.href=url;link.download=applicationContext?.backupName?applicationContext.backupName():`chagok-backup-${localToday()}.json`;document.body.append(link);link.click();link.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);notify('자료·기록·시험 백업을 내려받습니다.');
     }catch(error){notify(error.message);}
     return true;
   }
@@ -607,9 +615,9 @@ function handleStudyButton(button){
 async function readRestore(input){
   const file=input.files[0];input.value='';if(!file)return;
   try{
-    const backup=JSON.parse(await file.text());pendingRestore=studyAPI.restore(backup,dataState,examAPI);
+    restoreReading=true;let backup=JSON.parse(await file.text());if(applicationContext?.importBackup)backup=applicationContext.importBackup(backup);pendingRestore=studyAPI.restore(backup,dataState,examAPI);
     presentExamDialog('백업 데이터를 복원할까요?',`<p class="dialog-intro">학습 자료 ${pendingRestore.study.materials.length}개와 기록·메모를 백업 내용으로 교체합니다. ${backup.app==='study-progress'?(studyLoad.writable?'1.0 백업에는 시험이 없어 현재 시험은 유지합니다.':'1.0 백업에는 시험이 없어 복원 후 시험 목록은 비어 있습니다.'):'시험과 자료 상태도 백업 내용으로 교체합니다.'} ${studyLoad.writable?'필요한 현재 데이터는 먼저 백업해 주세요.':'읽지 못한 기존 저장값은 별도 보존한 뒤 복원합니다.'}</p><form data-study-form="restore">${dialogFooter('복원',true)}</form>`);
-  }catch(error){pendingRestore=null;notify('백업 형식이나 기록이 올바르지 않아요. 현재 데이터는 변경하지 않았습니다.');}
+  }catch(error){pendingRestore=null;notify('백업 형식이나 기록이 올바르지 않아요. 현재 데이터는 변경하지 않았습니다.');}finally{restoreReading=false;}
 }
 
 document.addEventListener('click',(event)=>{
@@ -666,6 +674,7 @@ dialog.addEventListener('click',(event)=>{
   if(event.clientX<rect.left||event.clientX>rect.right||event.clientY<rect.top||event.clientY>rect.bottom) dialog.close();
 });
 dialog.addEventListener('close',()=>{
+  pendingRestore=null;
   if(dialogReturnFocus?.isConnected) dialogReturnFocus.focus({preventScroll:true});
 });
 window.addEventListener('hashchange',()=>showView(location.hash.slice(1),true));
@@ -697,3 +706,13 @@ renderStorageNote();
 showView(location.hash.slice(1)||'home');
 if(studyLoad.error)notify(studyLoad.error);
 else if(studyLoad.migrated)notify('1.0 자료와 기록을 가져왔어요. 기존 저장 데이터는 그대로 보존했습니다.');
+
+function activateDataContext(){
+ appStorage=applicationContext.storage;appLocks=applicationContext.locks;studyLoad=studyAPI.load(appStorage,examAPI);dataState=studyLoad.state;
+ saveGuard=null;storageConflict=false;pendingRestore=null;$('storage-conflict-notice').hidden=true;
+ try{saveGuard=StorageGuard.create(appStorage,studyAPI.KEY,appLocks);}catch{}
+ selectedMaterial=null;$('view-detail').replaceChildren();refreshData();
+ if(currentView==='detail'){showView('home');openDialog('settings');}
+ applicationContext.updateSettings?.();
+}
+if(applicationContext?.ready)applicationContext.ready({activate:activateDataContext,state:()=>dataState,busy:()=>!!saveGuard?.busy||restoreReading,pending:()=>pendingRestore!==null,notify});

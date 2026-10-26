@@ -1,0 +1,136 @@
+✔ approved example: 100 remaining / 5 days = 20, exam day excluded (3.2816ms)
+✔ material target overrides even earlier exam date and includes target day (0.6203ms)
+✔ earliest active exam controls shared material once, priority changes ordering only (9.124ms)
+✔ independent/no-date materials get no invented quota; own target uses all calendar days (0.4799ms)
+✔ weekday and individual days off reduce divisor; rest today yields no assignment (0.312ms)
+✔ no available day, today exam, elapsed deadline never divide by zero (0.3574ms)
+✔ active shared exam releases automatic pause, direct pause/archive excluded from tasks (1.8261ms)
+✖ progress edits/deletions recalculate derived quotas without changing plan/manual exam fields (2.3407ms)
+✔ actual material record span 0 days selects 0-day window (0.31ms)
+✔ actual material record span 1 days selects 0-day window (0.2911ms)
+✔ actual material record span 6 days selects 0-day window (0.1778ms)
+✔ actual material record span 7 days selects 7-day window (0.1645ms)
+✔ actual material record span 13 days selects 7-day window (0.1231ms)
+✔ actual material record span 14 days selects 14-day window (0.1762ms)
+✔ actual material record span 27 days selects 14-day window (0.1792ms)
+✔ actual material record span 28 days selects 28-day window (0.1203ms)
+✔ actual material record span 60 days selects 28-day window (0.1166ms)
+✔ averages include days without study and do not use exam preparation duration (0.2929ms)
+✔ latest window excludes older amounts and reviews, including overlapping review ranges (0.2834ms)
+✔ no recent progress means no completion estimate, independent of required quota (0.1626ms)
+✔ historical rounds count for material lifetime and speed, partial reviews never establish lifetime (0.2692ms)
+✔ history of a different unit is not added to current-unit average (0.143ms)
+✖ manual target persists through progress and backup; today done is subtracted only from manual target (1.4286ms)
+✔ invalid manual amounts rejected, completion yields zero without fictitious estimate (0.7726ms)
+✔ calendar arithmetic handles leap days, years, huge horizons and duplicate rest dates (0.1129ms)
+✔ plans and estimates never mutate source study history, raw evaluations or exam schedules (0.2437ms)
+✔ same-day progress uses deltas, not sum of positions; mean never counts duplicate days as extra time (0.1561ms)
+✔ unrepresentable finish date yields explicit no-estimate result instead of crashing (0.1919ms)
+✔ real app initialises empty, shows registration/settings dialogs and persists form submissions on reload (37.0409ms)
+✔ app archive badge, unarchive, delete confirmation, and reset use live storage (4.871ms)
+✔ blocked initial load surfaces error; explicit reset preserves unreadable data before recovery (5.0961ms)
+✔ failed real-app save retains visible and in-memory state (2.4589ms)
+✔ file restore stages data for confirmation and commits only after submission (3.6017ms)
+✖ resit UI stages only original linked materials and commits selected ids with days off (10.4861ms)
+✔ approved plans render quota and adaptive estimate; manual form persists and survives reload (11.9905ms)
+✔ failed manual-plan save keeps original plan; clearing it restores automatic quota (4.1021ms)
+✔ compact plan modal keeps stored unit/value, removes long explanation, and limits styling to this modal (3.6566ms)
+✔ modal status keeps rest independent, prioritises actionable warnings, and never mutates calculations (2.865ms)
+✔ home today-list shows concise remaining/state only for all requested plan cases (2.1349ms)
+✔ home manual target completion and short warnings preserve original detailed labels (1.6787ms)
+✔ material heading and filters reflect live unarchived data across changes and reload (9.6124ms)
+✔ review UI shows merged ranges, prefills one completion, and stores only one history row (8.0902ms)
+✔ manual review quantity/date forms persist independently and survive app reload (8.046ms)
+✔ stats UI refreshes after writes and calendar shows actual names and scheduled ranges (4.9454ms)
+✔ five plant stages retain first completion and render the stored family in archive (5.371ms)
+✔ day rollover refreshes schedules without changing input, modal, filters or stored data (5.7692ms)
+ℹ tests 46
+ℹ suites 0
+ℹ pass 43
+ℹ fail 3
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 234.0976
+
+✖ failing tests:
+
+test at tests\learning-plan.test.cjs:36:1
+✖ progress edits/deletions recalculate derived quotas without changing plan/manual exam fields (2.3407ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  20 !== 16
+  
+      at TestContext.<anonymous> (D:\Projects\project-v2-upload\tests\learning-plan.test.cjs:38:97)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 20,
+    expected: 16,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests\learning-plan.test.cjs:65:1
+✖ manual target persists through progress and backup; today done is subtracted only from manual target (1.4286ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  14 !== 19
+  
+      at TestContext.<anonymous> (D:\Projects\project-v2-upload\tests\learning-plan.test.cjs:69:107)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 14,
+    expected: 19,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests\study-app.test.cjs:55:1
+✖ resit UI stages only original linked materials and commits selected ids with days off (10.4861ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  ... Skipped lines
+  
+    {
+      materials: [
+        {
+          archived: false,
+          current: 5,
+  ...
+            date: '2026-10-26',
+  +         initialAmount: 1,
+  +         signature: '{"total":10,"unit":"페이지","round":1,"target":"","active":[{"id":"exam-4c989531c033ff39f47e4a2d26f00cd8","date":"2026-12-01","learningDays":[0,1],"daysOff":["2026-11-01","2026-11-08"]}],"status":"active","manual":null,"previous":5}'
+  -         initialAmount: null,
+  -         signature: '{"total":10,"unit":"페이지","round":1,"target":"","active":[],"status":"paused","manual":null,"previous":5}'
+          },
+          growthState: {
+            completed: false,
+            family: 'tree'
+          },
+  
+      at TestContext.<anonymous> (D:\Projects\project-v2-upload\tests\study-app.test.cjs:64:273)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: { version: 1, materials: [ [Object] ], recordSequence: 1 },
+    expected: { version: 1, materials: [ [Object] ], recordSequence: 1 },
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }

@@ -1,7 +1,0 @@
-{
-  "command": "node --test --test-reporter=tap tests/streak.test.cjs tests/exam-management.test.cjs tests/study-data.test.cjs tests/study-app.test.cjs tests/learning-plan.test.cjs tests/review-foundation.test.cjs tests/review-plan.test.cjs",
-  "tests": 135,
-  "passed": 135,
-  "failed": 0,
-  "exitCode": 0
-}

@@ -32,6 +32,7 @@
       check(m.note===undefined||typeof m.note==='string');check(m.targetDate===undefined||m.targetDate===''||date(m.targetDate));
       check(m.archived===undefined||typeof m.archived==='boolean');
       check(m.manualDailyAmount===undefined||m.manualDailyAmount===null||positive(m.manualDailyAmount),'직접 정한 하루 분량은 1 이상의 정수로 입력해 주세요.');
+      if(m.dailyPlan!==undefined)check(m.dailyPlan&&date(m.dailyPlan.date)&&typeof m.dailyPlan.signature==='string'&&(m.dailyPlan.initialAmount===null||integer(m.dailyPlan.initialAmount))&&integer(m.dailyPlan.creditedBefore),'오늘 학습 계획 정보를 확인해 주세요.');
       if(m.growthState!==undefined)check(m.growthState&&['flower','tree','cactus','mushroom'].includes(m.growthState.family)&&typeof m.growthState.completed==='boolean','식물 성장 상태를 확인해 주세요.');
       if(m.reviewSettings!==undefined){
         const settings=m.reviewSettings;check(settings&&typeof settings==='object'&&!Array.isArray(settings));

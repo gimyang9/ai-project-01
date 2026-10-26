@@ -1,0 +1,157 @@
+{
+  "results": [
+    {
+      "name": "all28 scenario packages and checkpoint expectations in Chrome",
+      "pass": true,
+      "value": {
+        "scenarios": 28,
+        "assertions": 354
+      }
+    },
+    {
+      "name": "render and durable save year",
+      "pass": true,
+      "value": {
+        "materials": 24,
+        "records": 1200,
+        "saveMs": 52.10000002384186,
+        "ok": true,
+        "persisted": true,
+        "metrics": {
+          "started": 36.699999928474426,
+          "calls": {
+            "review": {
+              "count": 2,
+              "ms": 23
+            },
+            "learning": {
+              "count": 6,
+              "ms": 3.1000001430511475
+            },
+            "statistics": {
+              "count": 4,
+              "ms": 5.299999833106995
+            }
+          },
+          "startupMs": 77.89999997615814
+        },
+        "loadMs": 248
+      }
+    },
+    {
+      "name": "render and durable save large-5000",
+      "pass": true,
+      "value": {
+        "materials": 50,
+        "records": 5000,
+        "saveMs": 401.90000009536743,
+        "ok": true,
+        "persisted": true,
+        "metrics": {
+          "started": 35.700000047683716,
+          "calls": {
+            "review": {
+              "count": 2,
+              "ms": 210.80000007152557
+            },
+            "learning": {
+              "count": 6,
+              "ms": 7.0000001192092896
+            },
+            "statistics": {
+              "count": 4,
+              "ms": 15.599999785423279
+            }
+          },
+          "startupMs": 172.5
+        },
+        "loadMs": 311
+      }
+    },
+    {
+      "name": "render and durable save large-20000",
+      "pass": true,
+      "value": {
+        "materials": 100,
+        "records": 20000,
+        "saveMs": 2079.6999999284744,
+        "ok": true,
+        "persisted": true,
+        "metrics": {
+          "started": 36.700000047683716,
+          "calls": {
+            "review": {
+              "count": 2,
+              "ms": 1220.5000001192093
+            },
+            "learning": {
+              "count": 6,
+              "ms": 14.899999976158142
+            },
+            "statistics": {
+              "count": 4,
+              "ms": 54.5
+            }
+          },
+          "startupMs": 851.8999999761581
+        },
+        "loadMs": 1292
+      }
+    },
+    {
+      "name": "render and durable save large-50000",
+      "pass": true,
+      "value": {
+        "materials": 250,
+        "records": 50000,
+        "saveMs": 5501.399999976158,
+        "ok": true,
+        "persisted": true,
+        "metrics": {
+          "started": 42.800000071525574,
+          "calls": {
+            "review": {
+              "count": 2,
+              "ms": 2969.899999976158
+            },
+            "learning": {
+              "count": 6,
+              "ms": 39.199999928474426
+            },
+            "statistics": {
+              "count": 4,
+              "ms": 159.40000009536743
+            }
+          },
+          "startupMs": 2088.399999976158
+        },
+        "loadMs": 3150
+      }
+    },
+    {
+      "name": "PWA cache is developer scoped and offline reload works",
+      "pass": true,
+      "value": {
+        "scope": "http://127.0.0.1:50521/dev/",
+        "controller": true,
+        "caches": [
+          "chagok-v2-shell:http%3A%2F%2F127.0.0.1%3A50521%2Fdev%2F:dev-3101c204e0835fe9"
+        ]
+      }
+    },
+    {
+      "name": "two actual tabs: stale save fails, test form retained",
+      "pass": true,
+      "value": {
+        "ok": false,
+        "value": "111",
+        "open": true,
+        "current": 105,
+        "notice": true
+      }
+    }
+  ],
+  "errors": [],
+  "environment": "Windows headless Chrome; synthetic datasets; local HTTP server",
+  "physicalSafari": false
+}

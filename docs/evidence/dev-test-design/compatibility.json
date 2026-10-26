@@ -1,0 +1,82 @@
+{
+  "readOnlySyntheticMemory": true,
+  "appCodeModified": false,
+  "backupRoundTrip": true,
+  "legacyLoad": {
+    "writable": true,
+    "migrated": true,
+    "originalUnchanged": true
+  },
+  "legacyRestoreKeepsExams": true,
+  "developerWrapperRejectedByCurrentRestore": true,
+  "dailyExample": {
+    "remainingBefore": 100,
+    "availableDays": 5,
+    "before": 20,
+    "todayStudied": 5,
+    "autoAfter": 19,
+    "manual20After": 15,
+    "desiredAfterPolicy": "확인 필요"
+  },
+  "forecast": [
+    {
+      "span": 6,
+      "window": 0,
+      "speed": null,
+      "date": null
+    },
+    {
+      "span": 7,
+      "window": 7,
+      "speed": 10,
+      "date": "2026-11-05"
+    },
+    {
+      "span": 13,
+      "window": 7,
+      "speed": 10,
+      "date": "2026-11-05"
+    },
+    {
+      "span": 14,
+      "window": 14,
+      "speed": 10,
+      "date": "2026-11-05"
+    },
+    {
+      "span": 27,
+      "window": 14,
+      "speed": 10,
+      "date": "2026-11-05"
+    },
+    {
+      "span": 28,
+      "window": 28,
+      "speed": 10,
+      "date": "2026-11-05"
+    }
+  ],
+  "overlap": {
+    "reviewRecords": 2,
+    "rawReviewVolume": 41,
+    "recentUnion": 30,
+    "speed": 4.285714285714286
+  },
+  "focusAllDays": {
+    "needed": 6,
+    "buffer": 2,
+    "start": "2026-11-02"
+  },
+  "focusWithRest": {
+    "needed": 6,
+    "buffer": 2,
+    "start": "2026-10-28"
+  },
+  "proposedLongFixtureCalendar": {
+    "yearDays": 365,
+    "yearActivityDays": 240,
+    "quarterDays": 91,
+    "quarterActivityDays": 60,
+    "note": "달력 수만 확인. 실제 장기 데이터 세트는 미생성."
+  }
+}

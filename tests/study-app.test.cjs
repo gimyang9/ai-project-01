@@ -61,7 +61,7 @@ test('resit UI stages only original linked materials and commits selected ids wi
  a.run("openExamDialog('resit','old')");assert.match(a.element('dialog-content').innerHTML,/다시|함께 사용/);assert.match(a.element('dialog-content').innerHTML,/data-exam-form="resit"/);
  for(const [id,value] of Object.entries({'goal-name':'재응시','goal-date':'2026-12-01','focus-mode':'auto','focus-date':'','exam-days-off':'2026-11-01,\n2026-11-08'}))a.element(id).value=value;
  a.run(`submitExamForm({preventDefault(){},target:{dataset:{goal:'old',examForm:'resit'},querySelectorAll(selector){return selector.includes('goal-material')?[{value:'m'}]:[{value:'0'},{value:'1'}];}}})`);
- const state=JSON.parse(a.map.get(D.KEY));assert.equal(state.exams.goals.length,2);assert.equal(state.exams.goals[0].status,'archived');assert.equal(state.exams.goals[1].sourceGoalId,'old');assert.deepEqual(state.exams.goals[1].daysOff,['2026-11-01','2026-11-08']);assert.deepEqual(state.study,studyBefore);
+ const state=JSON.parse(a.map.get(D.KEY));assert.equal(state.exams.goals.length,2);assert.equal(state.exams.goals[0].status,'archived');assert.equal(state.exams.goals[1].sourceGoalId,'old');assert.deepEqual(state.exams.goals[1].daysOff,['2026-11-01','2026-11-08']);const strip=x=>({...x,materials:x.materials.map(({dailyPlan,...m})=>m)});assert.deepEqual(strip(state.study),strip(studyBefore));
 });
 test('approved plans render quota and adaptive estimate; manual form persists and survives reload',()=>{
  const a=boot();a.run("Date=class extends Date{constructor(...args){super(...(args.length?args:['2026-10-25T12:00:00']));}}");

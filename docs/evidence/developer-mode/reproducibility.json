@@ -1,0 +1,121 @@
+{
+  "results": [
+    {
+      "file": "calendar.json",
+      "same": true
+    },
+    {
+      "file": "catalogue.json",
+      "same": true
+    },
+    {
+      "file": "daily.json",
+      "same": true
+    },
+    {
+      "file": "empty.json",
+      "same": true
+    },
+    {
+      "file": "focus-cycle.json",
+      "same": true
+    },
+    {
+      "file": "focus-rest.json",
+      "same": true
+    },
+    {
+      "file": "focus.json",
+      "same": true
+    },
+    {
+      "file": "forecast-13.json",
+      "same": true
+    },
+    {
+      "file": "forecast-14.json",
+      "same": true
+    },
+    {
+      "file": "forecast-27.json",
+      "same": true
+    },
+    {
+      "file": "forecast-28.json",
+      "same": true
+    },
+    {
+      "file": "forecast-6.json",
+      "same": true
+    },
+    {
+      "file": "forecast-7.json",
+      "same": true
+    },
+    {
+      "file": "initial.json",
+      "same": true
+    },
+    {
+      "file": "large-20000.json",
+      "same": true
+    },
+    {
+      "file": "large-5000.json",
+      "same": true
+    },
+    {
+      "file": "large-50000.json",
+      "same": true
+    },
+    {
+      "file": "legacy.json",
+      "same": true
+    },
+    {
+      "file": "manual.json",
+      "same": true
+    },
+    {
+      "file": "mixed.json",
+      "same": true
+    },
+    {
+      "file": "no-recent.json",
+      "same": true
+    },
+    {
+      "file": "overlap.json",
+      "same": true
+    },
+    {
+      "file": "pause.json",
+      "same": true
+    },
+    {
+      "file": "quarter.json",
+      "same": true
+    },
+    {
+      "file": "regular.json",
+      "same": true
+    },
+    {
+      "file": "rest.json",
+      "same": true
+    },
+    {
+      "file": "review-zero.json",
+      "same": true
+    },
+    {
+      "file": "rounds.json",
+      "same": true
+    },
+    {
+      "file": "year.json",
+      "same": true
+    }
+  ],
+  "pass": true
+}

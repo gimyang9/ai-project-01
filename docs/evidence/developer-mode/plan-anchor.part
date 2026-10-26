@@ -1,0 +1,17 @@
+  function signature(state,material,today,study,exam){
+    const active=state.exams.goals.filter(g=>g.status==='active'&&g.materialIds.includes(material.id)).map(g=>({id:g.id,date:g.date,learningDays:[...g.learningDays].sort(),daysOff:[...(g.daysOff||[])].sort()})).sort((a,b)=>a.id.localeCompare(b.id));
+    const previous=study.calculate(material.records,material.total).filter(r=>r.date<today).at(-1)?.position||0;
+    return JSON.stringify({total:material.total,unit:material.unit,round:material.round,target:material.targetDate||'',active,status:exam.materialStatus(state.exams,material.id),manual:material.manualDailyAmount||null,previous});
+  }
+  function stabilize(previous,next,today,study,exam){
+    const output=JSON.parse(JSON.stringify(next)),oldPlans=build(previous,today,study,exam);
+    for(const m of output.study.materials){
+      const old=previous.study.materials.find(x=>x.id===m.id),p=oldPlans.find(x=>x.id===m.id),sig=signature(output,m,today,study,exam);
+      if(old&&p&&signature(previous,old,today,study,exam)===sig)m.dailyPlan={date:today,signature:sig,initialAmount:p.initialDaily,creditedBefore:p.creditedBefore};
+      else{
+        const fresh=build({...output,study:{...output.study,materials:[{...m,dailyPlan:undefined}]}},today,study,exam)[0];
+        if(fresh)m.dailyPlan={date:today,signature:sig,initialAmount:old?fresh.requiredCurrent:fresh.initialDaily,creditedBefore:old?fresh.todayDone:0};
+      }
+    }
+    return output;
+  }

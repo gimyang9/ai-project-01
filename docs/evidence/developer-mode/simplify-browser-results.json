@@ -1,0 +1,271 @@
+{
+  "results": [
+    {
+      "name": "OFF default shows real data, settings has only2 mode buttons",
+      "pass": true,
+      "value": {
+        "test": false,
+        "name": "실제 자료 표식",
+        "buttons": 2,
+        "extra": 0,
+        "pressed": "true"
+      }
+    },
+    {
+      "name": "ON replaces whole app without navigation or reload",
+      "pass": true,
+      "value": {
+        "test": true,
+        "count": 7,
+        "goals": 3,
+        "token": "preserved",
+        "home": true,
+        "records": 127,
+        "calendar": 35,
+        "press": "true"
+      }
+    },
+    {
+      "name": "test edit/delete/progress and detail use virtual storage only",
+      "pass": true,
+      "value": true
+    },
+    {
+      "name": "reload retains test mode and changes, no real-data fallback",
+      "pass": true,
+      "value": true
+    },
+    {
+      "name": "OFF restores exact real data and preserves current stats screen",
+      "pass": true,
+      "value": true
+    },
+    {
+      "name": "repeated OFF/ON starts same initial7-material history",
+      "pass": true,
+      "value": true
+    },
+    {
+      "name": "backup wrapper and existing restore affect test environment only",
+      "pass": true,
+      "value": {
+        "app": "chagok-dev-backup",
+        "rejected": true,
+        "note": "restored test"
+      }
+    },
+    {
+      "name": "test reset clears only virtual data; OFF restores real; ON resets seed",
+      "pass": true,
+      "value": true
+    },
+    {
+      "name": "test write failure rolls back state and session snapshot",
+      "pass": true,
+      "value": {
+        "ok": false,
+        "same": true,
+        "raw": true,
+        "memory": true
+      }
+    },
+    {
+      "name": "switch blocked during unsaved form and asynchronous real save",
+      "pass": true,
+      "value": true
+    },
+    {
+      "name": "320/375/430/768/1024/1440 switch fits one row,32px targets",
+      "pass": true,
+      "value": [
+        {
+          "width": 320,
+          "scroll": 320,
+          "dialog": 284,
+          "dialogScroll": 284,
+          "buttons": [
+            {
+              "y": 267,
+              "h": 32,
+              "right": 226
+            },
+            {
+              "y": 267,
+              "h": 32,
+              "right": 266
+            }
+          ],
+          "titleRight": 125.8125,
+          "left": 185,
+          "actions": {
+            "by": 394.984375,
+            "ry": 394.984375,
+            "right": 269,
+            "card": 282,
+            "title": "학습 데이터 관리"
+          }
+        },
+        {
+          "width": 375,
+          "scroll": 375,
+          "dialog": 339,
+          "dialogScroll": 339,
+          "buttons": [
+            {
+              "y": 267,
+              "h": 32,
+              "right": 281
+            },
+            {
+              "y": 267,
+              "h": 32,
+              "right": 321
+            }
+          ],
+          "titleRight": 125.8125,
+          "left": 240,
+          "actions": {
+            "by": 394.984375,
+            "ry": 394.984375,
+            "right": 324,
+            "card": 337,
+            "title": "학습 데이터 관리"
+          }
+        },
+        {
+          "width": 430,
+          "scroll": 430,
+          "dialog": 394,
+          "dialogScroll": 394,
+          "buttons": [
+            {
+              "y": 267,
+              "h": 32,
+              "right": 336
+            },
+            {
+              "y": 267,
+              "h": 32,
+              "right": 376
+            }
+          ],
+          "titleRight": 125.8125,
+          "left": 295,
+          "actions": {
+            "by": 394.984375,
+            "ry": 394.984375,
+            "right": 379,
+            "card": 392,
+            "title": "학습 데이터 관리"
+          }
+        },
+        {
+          "width": 768,
+          "scroll": 768,
+          "dialog": 478,
+          "dialogScroll": 478,
+          "buttons": [
+            {
+              "y": 268,
+              "h": 32,
+              "right": 545
+            },
+            {
+              "y": 268,
+              "h": 32,
+              "right": 585
+            }
+          ],
+          "titleRight": 254.8125,
+          "left": 504,
+          "actions": {
+            "by": 395.984375,
+            "ry": 395.984375,
+            "right": 588,
+            "card": 601,
+            "title": "학습 데이터 관리"
+          }
+        },
+        {
+          "width": 1024,
+          "scroll": 1024,
+          "dialog": 478,
+          "dialogScroll": 478,
+          "buttons": [
+            {
+              "y": 268,
+              "h": 32,
+              "right": 673
+            },
+            {
+              "y": 268,
+              "h": 32,
+              "right": 713
+            }
+          ],
+          "titleRight": 382.8125,
+          "left": 632,
+          "actions": {
+            "by": 395.984375,
+            "ry": 395.984375,
+            "right": 716,
+            "card": 729,
+            "title": "학습 데이터 관리"
+          }
+        },
+        {
+          "width": 1440,
+          "scroll": 1440,
+          "dialog": 478,
+          "dialogScroll": 478,
+          "buttons": [
+            {
+              "y": 268,
+              "h": 32,
+              "right": 881
+            },
+            {
+              "y": 268,
+              "h": 32,
+              "right": 921
+            }
+          ],
+          "titleRight": 590.8125,
+          "left": 840,
+          "actions": {
+            "by": 395.984375,
+            "ry": 395.984375,
+            "right": 924,
+            "card": 937,
+            "title": "학습 데이터 관리"
+          }
+        }
+      ]
+    },
+    {
+      "name": "normal PWA offline: switch and seed are cached",
+      "pass": true,
+      "value": true
+    },
+    {
+      "name": "cancelled restore does not leave mode switch blocked",
+      "pass": true,
+      "value": true
+    },
+    {
+      "name": "corrupt test snapshot fails closed; OFF recovers original real state",
+      "pass": true,
+      "value": true
+    },
+    {
+      "name": "old developer-only database removed; unrelated database retained",
+      "pass": true,
+      "value": [
+        "unrelated-sentinel-db"
+      ]
+    }
+  ],
+  "errors": [],
+  "environment": "Windows headless Chrome; isolated profile; synthetic real/test data; dist app",
+  "physicalSafari": false
+}

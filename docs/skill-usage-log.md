@@ -890,3 +890,68 @@
     "Git 커밋·게시·배포 미수행"
   ]
 }
+
+
+## CG-SKILL-034 — 개발자 테스트 데이터 기획
+
+{
+  "id": "CG-SKILL-034",
+  "date": "2026-10-26",
+  "skill": "chagok-data-guard",
+  "skill_source": "skills/chagok-data-guard/SKILL.md",
+  "task": "개발자 테스트 데이터 시스템 기획 및 현행 호환성 읽기 전용 확인",
+  "todo_refs": [
+    "별도 기획: 개발자 테스트 데이터"
+  ],
+  "actions": [
+    "실제 저장 키·자동 마이그레이션·백업/복원·충돌 감시 호출 경로 점검",
+    "JSON 단독/독립 모드·실사용LS/테스트IDB·별도origin 비교 제안",
+    "장기 누적·엣지 케이스·독립 정답·고정 기준일·모드 전환·출력 분리 설계",
+    "현재 API를 합성 메모리로 호출해 백업 왕복·1.0 원본보존·개발 포장형 거절 확인",
+    "앱 코드28개 해시 변경 없음 확인"
+  ],
+  "evidence": [
+    "docs/developer-test-data-proposal.md",
+    "docs/evidence/dev-test-design/compatibility.json",
+    "docs/evidence/dev-test-design/source-check.json"
+  ],
+  "result": "passed",
+  "outcome": "기획안과 현행 형식 호환성 확인 완료. 설계·정책 승인 대기이며 구현은 진행하지 않음.",
+  "limitations": [
+    "새 개발 모드·IndexedDB 저장소·UI·전환은 미구현·미검증",
+    "실제 사용자 저장소를 읽거나 수정하지 않음",
+    "실제 iPhone Safari/PWA·PC 신규 모드 실사용 검증 미수행",
+    "독립 장기 JSON·정답 파일은 아직 생성하지 않음",
+    "자동 권장량 기록 후 재계산 정책 별도 확인 필요",
+    "PS 경계 스크립트 대신 소스 해시·코드/인메모리 실행으로 확인"
+  ]
+}
+
+
+## CG-SKILL-035 · 2026-10-26
+
+- 스킬: skills/chagok-data-guard/SKILL.md
+- 작업: 승인된 JSON28종·독립 개발 모드·최초 권장량 차감 구현(DEV-DATA-01~07).
+- 실행: Node200/200,Chrome28시나리오354정답,실제 진도 폼·실사용키 보존·IDB실패·두탭충돌·오프라인·대량5천/2만/5만.
+- 근거: docs/developer-test-data-implementation.md 및 docs/evidence/developer-mode/의 결과 파일.
+- 결과: limited. 구현/합성검증 완료, 실제 iPhone Safari/사용자1.0 대조 대기. 5만건 저장/갱신 약5.5초. PS 경계 도구는 실행 정책 차단으로 해시·실제 저장 경로 검증으로 대체. 커밋·게시 없음.
+
+
+## CG-SKILL-036 · 2026-10-26
+
+- 스킬: skills/chagok-data-guard/SKILL.md
+- 작업: 최신 요청의 실제 배포 앱 OFF/ON 간소화. 기존 DEV-DATA 다중 시나리오 설계 대체.
+- 실행: Node172건·Chrome15개 검증,실제 설정스위치·기록/삭제·반복전환·리로드·백업/복원/초기화·실패롤백·오프라인·모바일/PC.
+- 결과: limited. 실사용LS 바이트보존·테스트전용DB만 삭제·무관DB보존. 계산 모듈 및1.0 원본 해시 동일. dev/dev-dist/28종JSON/관리코드/개발빌드 제거,일반dist 포함.
+- 근거: docs/evidence/developer-mode/simplify-{before,after}.json,simplify-tests.tap,simplify-browser-results.json,설정 스크린샷.
+- 한계: 실제 iPhone Safari/PWA·게시 주소·사용자1.0 대조 미검증. PS 경계 도구의 실행정책 제한은 소스 해시/호출검토와 합성 저장 실행으로 대체. 커밋·게시 없음.
+
+
+## CG-SKILL-037 · 2026-10-26
+
+설정 UI 간결화에 skills/chagok-data-guard/SKILL.md 적용. 스위치 약27% 축소·학습 데이터 관리 카드로 통합·텍스트 버튼 나란히 배치. 기존 입력ID와 동작·초기화 스타일·계산/저장 유지. Node172건·Chrome15개검증(320~1440px,백업/복원/초기화·격리·오프라인) 통과. 근거: docs/evidence/developer-mode/settings-compact-tests.tap,simplify-browser-results.json,simple-settings-375.png. 결과 limited: 실제 Safari/게시 주소 미검증. 커밋·게시 없음.
+
+
+## CG-SKILL-038 · 2026-10-26
+
+skills/chagok-data-guard/SKILL.md 적용: 개발자 테스트 영역에 기존 settings-block 카드 재사용. 12px 패딩과 제목 여백 정리. 스위치/저장/계산 동작 유지. Chrome320~1440px 및15개 기능 회귀 통과. 근거: docs/evidence/developer-mode/simplify-browser-results.json,simple-settings-375.png. 결과 limited: 실제 Safari 미검증. root/dist/PWA 반영.

@@ -35,7 +35,7 @@ test('active shared exam releases automatic pause, direct pause/archive excluded
 });
 test('progress edits/deletions recalculate derived quotas without changing plan/manual exam fields',()=>{
  const s=state([m()],[g('a','2026-10-30',{focusMode:'manual',focusDate:'2026-10-26'})]);
- const progressed=D.update(s,{type:'record',id:'m',record:record('r',today,20),today},E);assert.equal(plans(progressed)[0].requiredDaily,16);
+ const progressed=D.update(s,{type:'record',id:'m',record:record('r',today,20),today},E);assert.equal(plans(progressed)[0].requiredDaily,20);assert.equal(plans(progressed)[0].amount,0);
  const removed=D.update(progressed,{type:'delete-record',id:'m',recordId:'r'},E);assert.equal(plans(removed)[0].requiredDaily,20);assert.equal(removed.exams.goals[0].focusDate,'2026-10-26');
 });
 for(const [span,window] of [[0,0],[1,0],[6,0],[7,7],[13,7],[14,14],[27,14],[28,28],[60,28]])test(`actual material record span ${span} days selects ${window}-day window`,()=>{
@@ -62,11 +62,11 @@ test('historical rounds count for material lifetime and speed, partial reviews n
 test('history of a different unit is not added to current-unit average',()=>{
  const material=m('m',{round:2,roundHistory:[{round:1,total:100,unit:'문제',completedDate:'2026-10-01',records:[record('history','2026-10-01',100)]}],records:[record('current',today,28,1)]});assert.equal(plans(state([material]))[0].forecast.recentAmount,28);
 });
-test('manual target persists through progress and backup; today done is subtracted only from manual target',()=>{
+test('manual target persists through progress and backup; today done is subtracted from the automatic day-start quota too',()=>{
  let s=D.update(state([m()],[g('a','2026-10-30')]),{type:'plan',id:'m',amount:10},E);assert.equal(plans(s)[0].amount,10);assert.equal(plans(s)[0].manualShortfall,50);
  s=D.update(s,{type:'record',id:'m',record:record('r',today,6),today},E);assert.equal(plans(s)[0].amount,4);assert.equal(s.study.materials[0].manualDailyAmount,10);
  assert.deepEqual(D.restore(D.backup(s,E),state(),E),s);
- s=D.update(s,{type:'plan',id:'m',amount:null},E);assert.equal(plans(s)[0].manualDailyAmount,null);assert.equal(plans(s)[0].amount,19);
+ s=D.update(s,{type:'plan',id:'m',amount:null},E);assert.equal(plans(s)[0].manualDailyAmount,null);assert.equal(plans(s)[0].amount,14);
 });
 test('invalid manual amounts rejected, completion yields zero without fictitious estimate',()=>{
  for(const amount of [0,-1,1.2,'10'])assert.throws(()=>D.update(state(),{type:'plan',id:'m',amount},E));
