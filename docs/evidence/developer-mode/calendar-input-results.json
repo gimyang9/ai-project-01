@@ -117,13 +117,13 @@
       ]
     },
     {
-      "name": "touch mobile: 46px cells and7px gaps retained",
+      "name": "touch mobile: 44px cells and7px gaps retained",
       "pass": true,
       "value": [
         {
           "width": 320,
-          "height": 46,
-          "grid": 258,
+          "height": 44,
+          "grid": 248,
           "gap": "7px",
           "fine": false,
           "hover": false,
@@ -132,8 +132,8 @@
         },
         {
           "width": 375,
-          "height": 46,
-          "grid": 258,
+          "height": 44,
+          "grid": 248,
           "gap": "7px",
           "fine": false,
           "hover": false,
@@ -142,13 +142,82 @@
         },
         {
           "width": 430,
-          "height": 46,
-          "grid": 258,
+          "height": 44,
+          "grid": 248,
           "gap": "7px",
           "fine": false,
           "hover": false,
           "coarse": true,
           "scroll": 430
+        }
+      ]
+    },
+    {
+      "name": "mobile upper whitespace decreases; number size unchanged; markers and rows fit",
+      "pass": true,
+      "value": [
+        {
+          "width": 320,
+          "before": {
+            "height": 46,
+            "top": 16.5625,
+            "bottom": 28.5625,
+            "markerTop": 37,
+            "markerBottom": 42,
+            "font": "11.8px",
+            "grid": 258
+          },
+          "after": {
+            "height": 44,
+            "top": 14.0625,
+            "bottom": 26.0625,
+            "markerTop": 35,
+            "markerBottom": 40,
+            "font": "11.8px",
+            "grid": 248
+          }
+        },
+        {
+          "width": 375,
+          "before": {
+            "height": 46,
+            "top": 16.5625,
+            "bottom": 28.5625,
+            "markerTop": 37,
+            "markerBottom": 42,
+            "font": "11.8px",
+            "grid": 258
+          },
+          "after": {
+            "height": 44,
+            "top": 14.0625,
+            "bottom": 26.0625,
+            "markerTop": 35,
+            "markerBottom": 40,
+            "font": "11.8px",
+            "grid": 248
+          }
+        },
+        {
+          "width": 430,
+          "before": {
+            "height": 46,
+            "top": 16.5625,
+            "bottom": 28.5625,
+            "markerTop": 37,
+            "markerBottom": 42,
+            "font": "11.8px",
+            "grid": 258
+          },
+          "after": {
+            "height": 44,
+            "top": 14.0625,
+            "bottom": 26.0625,
+            "markerTop": 35,
+            "markerBottom": 40,
+            "font": "11.8px",
+            "grid": 248
+          }
         }
       ]
     },

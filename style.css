@@ -369,10 +369,10 @@ body:has(#view-more:not([hidden])) .preview-note{margin-top:18px}
 .record-highlight{animation:record-highlight 1.8s ease-out}@keyframes record-highlight{0%,40%{background:#e1e9cf;box-shadow:0 0 0 5px #e1e9cf}100%{background:transparent;box-shadow:none}}
 @media(prefers-reduced-motion:reduce){.record-highlight{animation:none;outline:2px solid #627c50}}
 
-.calendar-panel .calendar-grid button,.calendar-panel .calendar-grid .blank{min-height:46px;height:46px;aspect-ratio:auto}
+.calendar-panel .calendar-grid button,.calendar-panel .calendar-grid .blank{min-height:44px;height:44px;aspect-ratio:auto}
 
 /* Calendar framing and a single selection border; mobile cell geometry is preserved. */
-.calendar-panel .calendar-grid button{border:1px solid transparent;outline:0;box-shadow:none}
+.calendar-panel .calendar-grid button{border:1px solid transparent;outline:0;box-shadow:none;padding-bottom:3px}
 .calendar-panel .calendar-grid button.today{background:#e9eddc;color:#3f5e34;font-weight:700}
 .calendar-panel .calendar-grid button.selected{border-color:#45603a;outline:0;box-shadow:none}
 .calendar-panel .calendar-grid button:focus-visible{outline:2px solid #9bab77;outline-offset:2px}

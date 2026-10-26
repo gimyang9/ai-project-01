@@ -995,3 +995,8 @@ skills/chagok-data-guard/SKILL.md 적용. root/dist 캘린더 범례의 ‘채�
 ## CG-SKILL-046 · 2026-10-26
 
 skills/chagok-data-guard/SKILL.md 적용. 연월13→13.65px·배경none유지,기존입력/드롭다운/이동버튼/CSS삭제. 연도화살표+4×3월그리드·즉시선택/닫기·활성월·외부/Escape/포커스복귀. PC/모바일팝오버경계와날짜셀35/46·원본저장값불변 확인.177테스트 및Chrome3검증통과. 근거: docs/evidence/developer-mode/month-grid-results.json,month-grid-tests.tap,month-grid-375/1440.png. 결과limited: 실제Safari미검증. root/dist/PWA반영.
+
+
+## CG-SKILL-047 · 2026-10-26
+
+skills/chagok-data-guard/SKILL.md 적용. 사용자확인: 좁은모바일은가로44px보다기존7열·높이44px우선. 모바일46→44px고정(하한때문에실제약4.3%축소),숫자위여백약15%축소. PC35px·간격·강조·기능유지. Chrome입력별4검증 및PWA4테스트통과. 5주높이258→248px,글자/표시겹침없음. 근거: docs/evidence/developer-mode/calendar-input-results.json,calendar-mobile-pwa.tap. 결과limited: 실제Safari미검증. root/dist/PWA반영.

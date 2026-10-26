@@ -1,0 +1,34 @@
+TAP version 13
+# Subtest: PWA shell revision matches every referenced local file and project-relative manifest
+ok 1 - PWA shell revision matches every referenced local file and project-relative manifest
+  ---
+  duration_ms: 12.2021
+  type: 'test'
+  ...
+# Subtest: dist/PWA shell revision matches every referenced local file and project-relative manifest
+ok 2 - dist/PWA shell revision matches every referenced local file and project-relative manifest
+  ---
+  duration_ms: 12.8597
+  type: 'test'
+  ...
+# Subtest: worker install/activate/cache fetch stays scoped and never forces an update or caches data requests
+ok 3 - worker install/activate/cache fetch stays scoped and never forces an update or caches data requests
+  ---
+  duration_ms: 2.9259
+  type: 'test'
+  ...
+# Subtest: all actual local HTML/CSS assets including separate banner layers are precached
+ok 4 - all actual local HTML/CSS assets including separate banner layers are precached
+  ---
+  duration_ms: 1.6239
+  type: 'test'
+  ...
+1..4
+# tests 4
+# suites 0
+# pass 4
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 131.7594
