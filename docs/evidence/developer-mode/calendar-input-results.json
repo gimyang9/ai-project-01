@@ -1,0 +1,163 @@
+{
+  "results": [
+    {
+      "name": "desktop mouse: same35px cells and same row spacing from375 to1920",
+      "pass": true,
+      "value": [
+        {
+          "width": 375,
+          "height": 35,
+          "grid": 199,
+          "gap": "6px 8px",
+          "fine": true,
+          "hover": true,
+          "coarse": false,
+          "scroll": 360
+        },
+        {
+          "width": 512,
+          "height": 35,
+          "grid": 199,
+          "gap": "6px 8px",
+          "fine": true,
+          "hover": true,
+          "coarse": false,
+          "scroll": 497
+        },
+        {
+          "width": 608,
+          "height": 35,
+          "grid": 199,
+          "gap": "6px 8px",
+          "fine": true,
+          "hover": true,
+          "coarse": false,
+          "scroll": 593
+        },
+        {
+          "width": 680,
+          "height": 35,
+          "grid": 199.00006103515625,
+          "gap": "6px 8px",
+          "fine": true,
+          "hover": true,
+          "coarse": false,
+          "scroll": 665
+        },
+        {
+          "width": 768,
+          "height": 35,
+          "grid": 199,
+          "gap": "6px 8px",
+          "fine": true,
+          "hover": true,
+          "coarse": false,
+          "scroll": 753
+        },
+        {
+          "width": 900,
+          "height": 35,
+          "grid": 199,
+          "gap": "6px 8px",
+          "fine": true,
+          "hover": true,
+          "coarse": false,
+          "scroll": 885
+        },
+        {
+          "width": 1023,
+          "height": 35,
+          "grid": 199,
+          "gap": "6px 8px",
+          "fine": true,
+          "hover": true,
+          "coarse": false,
+          "scroll": 1008
+        },
+        {
+          "width": 1024,
+          "height": 35,
+          "grid": 199,
+          "gap": "6px 8px",
+          "fine": true,
+          "hover": true,
+          "coarse": false,
+          "scroll": 1009
+        },
+        {
+          "width": 1280,
+          "height": 35,
+          "grid": 199,
+          "gap": "6px 8px",
+          "fine": true,
+          "hover": true,
+          "coarse": false,
+          "scroll": 1265
+        },
+        {
+          "width": 1440,
+          "height": 35,
+          "grid": 199,
+          "gap": "6px 8px",
+          "fine": true,
+          "hover": true,
+          "coarse": false,
+          "scroll": 1425
+        },
+        {
+          "width": 1920,
+          "height": 35,
+          "grid": 199,
+          "gap": "6px 8px",
+          "fine": true,
+          "hover": true,
+          "coarse": false,
+          "scroll": 1905
+        }
+      ]
+    },
+    {
+      "name": "touch mobile: 46px cells and7px gaps retained",
+      "pass": true,
+      "value": [
+        {
+          "width": 320,
+          "height": 46,
+          "grid": 258,
+          "gap": "7px",
+          "fine": false,
+          "hover": false,
+          "coarse": true,
+          "scroll": 320
+        },
+        {
+          "width": 375,
+          "height": 46,
+          "grid": 258,
+          "gap": "7px",
+          "fine": false,
+          "hover": false,
+          "coarse": true,
+          "scroll": 375
+        },
+        {
+          "width": 430,
+          "height": 46,
+          "grid": 258,
+          "gap": "7px",
+          "fine": false,
+          "hover": false,
+          "coarse": true,
+          "scroll": 430
+        }
+      ]
+    },
+    {
+      "name": "narrow desktop month/date/Today and popover still work",
+      "pass": true,
+      "value": true
+    }
+  ],
+  "errors": [],
+  "physicalSafari": false
+}

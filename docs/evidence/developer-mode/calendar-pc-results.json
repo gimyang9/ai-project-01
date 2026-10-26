@@ -1,0 +1,122 @@
+{
+  "results": [
+    {
+      "name": "mobile cells/gaps unchanged; desktop31.5px fixed height with760px cap",
+      "pass": true,
+      "value": [
+        {
+          "width": 320,
+          "gridWidth": 243,
+          "gridLeft": 31,
+          "cellHeight": 44,
+          "cellWidth": 50.59375,
+          "gap": "7px",
+          "scroll": 305
+        },
+        {
+          "width": 375,
+          "gridWidth": 290,
+          "gridLeft": 35,
+          "cellHeight": 44,
+          "cellWidth": 50.59375,
+          "gap": "7px",
+          "scroll": 360
+        },
+        {
+          "width": 430,
+          "gridWidth": 345,
+          "gridLeft": 35,
+          "cellHeight": 44,
+          "cellWidth": 50.59375,
+          "gap": "7px",
+          "scroll": 415
+        },
+        {
+          "width": 768,
+          "gridWidth": 647,
+          "gridLeft": 53,
+          "cellHeight": 44,
+          "cellWidth": 85.5625,
+          "gap": "8px",
+          "scroll": 753
+        },
+        {
+          "width": 1023,
+          "gridWidth": 879.984375,
+          "gridLeft": 64,
+          "cellHeight": 44,
+          "cellWidth": 118.859375,
+          "gap": "8px",
+          "scroll": 1008
+        },
+        {
+          "width": 1024,
+          "gridWidth": 628.984375,
+          "gridLeft": 330,
+          "cellHeight": 31.5,
+          "cellWidth": 83,
+          "gap": "6px 8px",
+          "scroll": 1009
+        },
+        {
+          "width": 1280,
+          "gridWidth": 760,
+          "gridLeft": 392.484375,
+          "cellHeight": 31.5,
+          "cellWidth": 101.71875,
+          "gap": "6px 8px",
+          "scroll": 1265
+        },
+        {
+          "width": 1440,
+          "gridWidth": 760,
+          "gridLeft": 472.484375,
+          "cellHeight": 31.5,
+          "cellWidth": 101.71875,
+          "gap": "6px 8px",
+          "scroll": 1425
+        },
+        {
+          "width": 1920,
+          "gridWidth": 760,
+          "gridLeft": 712.484375,
+          "cellHeight": 31.5,
+          "cellWidth": 101.71875,
+          "gap": "6px 8px",
+          "scroll": 1905
+        }
+      ]
+    },
+    {
+      "name": "single thin selection, soft today, local month/day title, no caption",
+      "pass": true,
+      "value": {
+        "outline": "0px",
+        "shadow": "none",
+        "border": "1px",
+        "title": "10월 26일의 학습 기록",
+        "caption": false,
+        "todayColor": "rgb(233, 237, 220)"
+      }
+    },
+    {
+      "name": "month popover and Today/date navigation remain functional",
+      "pass": true,
+      "value": true
+    },
+    {
+      "name": "month button has no background in all interaction states; group label removed",
+      "pass": true,
+      "value": {
+        "label": "",
+        "name": "학습 비중 집계 기준",
+        "options": [
+          "시험별",
+          "자료별"
+        ]
+      }
+    }
+  ],
+  "errors": [],
+  "physicalSafari": false
+}

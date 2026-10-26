@@ -1,0 +1,1072 @@
+TAP version 13
+# Subtest: approved daily amount:20 minus5, rebase10, minus3; backup reload unchanged
+ok 1 - approved daily amount:20 minus5, rebase10, minus3; backup reload unchanged
+  ---
+  duration_ms: 29.2568
+  type: 'test'
+  ...
+# Subtest: old backup fallback subtracts actual daily amount without mutating raw state
+ok 2 - old backup fallback subtracts actual daily amount without mutating raw state
+  ---
+  duration_ms: 1.911
+  type: 'test'
+  ...
+# Subtest: single virtual history is consistent, modest, varied and repeatable
+ok 3 - single virtual history is consistent, modest, varied and repeatable
+  ---
+  duration_ms: 168.2897
+  type: 'test'
+  ...
+# Subtest: virtual history follows real date across year and month boundaries
+ok 4 - virtual history follows real date across year and month boundaries
+  ---
+  duration_ms: 56.0163
+  type: 'test'
+  ...
+# Subtest: real restore rejects test wrapper while normal backup remains compatible
+ok 5 - real restore rejects test wrapper while normal backup remains compatible
+  ---
+  duration_ms: 0.5859
+  type: 'test'
+  ...
+# Subtest: published app includes only the single switch and fixed data, no separate dev build
+ok 6 - published app includes only the single switch and fixed data, no separate dev build
+  ---
+  duration_ms: 0.6902
+  type: 'test'
+  ...
+# Subtest: only one priority; switch and release
+ok 7 - only one priority; switch and release
+  ---
+  duration_ms: 1.5669
+  type: 'test'
+  ...
+# Subtest: pause selections protect chosen, shared-active and manually paused materials
+ok 8 - pause selections protect chosen, shared-active and manually paused materials
+  ---
+  duration_ms: 0.2478
+  type: 'test'
+  ...
+# Subtest: both exams paused, restarting either restores shared only
+ok 9 - both exams paused, restarting either restores shared only
+  ---
+  duration_ms: 0.2658
+  type: 'test'
+  ...
+# Subtest: manual pause during auto pause stays paused after resume
+ok 10 - manual pause during auto pause stays paused after resume
+  ---
+  duration_ms: 1.6269
+  type: 'test'
+  ...
+# Subtest: archive differs from pause and clears priority without deleting history or memo
+ok 11 - archive differs from pause and clears priority without deleting history or memo
+  ---
+  duration_ms: 2.183
+  type: 'test'
+  ...
+# Subtest: deleting paused goal releases automatic pause; material settings remain
+ok 12 - deleting paused goal releases automatic pause; material settings remain
+  ---
+  duration_ms: 0.4875
+  type: 'test'
+  ...
+# Subtest: no date, D-Day, today and elapsed exam dates
+ok 13 - no date, D-Day, today and elapsed exam dates
+  ---
+  duration_ms: 0.1309
+  type: 'test'
+  ...
+# Subtest: edit preserves legacy fields and manual schedule
+ok 14 - edit preserves legacy fields and manual schedule
+  ---
+  duration_ms: 1.0858
+  type: 'test'
+  ...
+# Subtest: save/read round trip; isolated key
+ok 15 - save/read round trip; isolated key
+  ---
+  duration_ms: 0.5004
+  type: 'test'
+  ...
+# Subtest: corrupt/future store is not overwritten
+ok 16 - corrupt/future store is not overwritten
+  ---
+  duration_ms: 0.3279
+  type: 'test'
+  ...
+# Subtest: storage failure throws before caller commits state
+ok 17 - storage failure throws before caller commits state
+  ---
+  duration_ms: 0.3289
+  type: 'test'
+  ...
+# Subtest: invalid dates, duplicate ids and manual date missing rejected
+ok 18 - invalid dates, duplicate ids and manual date missing rejected
+  ---
+  duration_ms: 0.1879
+  type: 'test'
+  ...
+# Subtest: priority orders recommendation without duplicating shared ids
+ok 19 - priority orders recommendation without duplicating shared ids
+  ---
+  duration_ms: 0.1789
+  type: 'test'
+  ...
+# Subtest: days off round-trip with schedules and memo; invalid and duplicate dates rejected
+ok 20 - days off round-trip with schedules and memo; invalid and duplicate dates rejected
+  ---
+  duration_ms: 0.354
+  type: 'test'
+  ...
+# Subtest: resit creates separate exam with selected original ids and leaves original archived exam unchanged
+ok 21 - resit creates separate exam with selected original ids and leaves original archived exam unchanged
+  ---
+  duration_ms: 0.3493
+  type: 'test'
+  ...
+# Subtest: resit rejects reused exam id, missing source and material not linked to source
+ok 22 - resit rejects reused exam id, missing source and material not linked to source
+  ---
+  duration_ms: 0.1916
+  type: 'test'
+  ...
+# Subtest: new pause defaults keep none, including previously flagged legacy materials
+ok 23 - new pause defaults keep none, including previously flagged legacy materials
+  ---
+  duration_ms: 0.2602
+  type: 'test'
+  ...
+# Subtest: legacy paused/archive states migrated without changing records or current availability
+ok 24 - legacy paused/archive states migrated without changing records or current availability
+  ---
+  duration_ms: 0.2485
+  type: 'test'
+  ...
+# Subtest: legacy raw JSON preserved once before first v2 write
+ok 25 - legacy raw JSON preserved once before first v2 write
+  ---
+  duration_ms: 0.2346
+  type: 'test'
+  ...
+# Subtest: failed preservation write prevents migration overwrite
+ok 26 - failed preservation write prevents migration overwrite
+  ---
+  duration_ms: 0.1828
+  type: 'test'
+  ...
+# Subtest: checking manually paused material never resumes it
+ok 27 - checking manually paused material never resumes it
+  ---
+  duration_ms: 0.1372
+  type: 'test'
+  ...
+# Subtest: choice is per exam; another pause does not erase it
+ok 28 - choice is per exam; another pause does not erase it
+  ---
+  duration_ms: 0.1765
+  type: 'test'
+  ...
+# Subtest: repeated pause/resume starts with fresh selections and no accumulating reasons
+ok 29 - repeated pause/resume starts with fresh selections and no accumulating reasons
+  ---
+  duration_ms: 0.5397
+  type: 'test'
+  ...
+# Subtest: link changes while paused recompute against current active exams
+ok 30 - link changes while paused recompute against current active exams
+  ---
+  duration_ms: 0.2046
+  type: 'test'
+  ...
+# Subtest: unlink removes stale selection; reattached material is not silently kept
+ok 31 - unlink removes stale selection; reattached material is not silently kept
+  ---
+  duration_ms: 0.1867
+  type: 'test'
+  ...
+# Subtest: new material linked to inactive exam defaults paused; active exam resumes it
+ok 32 - new material linked to inactive exam defaults paused; active exam resumes it
+  ---
+  duration_ms: 0.3111
+  type: 'test'
+  ...
+# Subtest: archive supports per-material keep; resume restores automatic states only
+ok 33 - archive supports per-material keep; resume restores automatic states only
+  ---
+  duration_ms: 0.1425
+  type: 'test'
+  ...
+# Subtest: unlinked exams pause/resume without affecting any material
+ok 34 - unlinked exams pause/resume without affecting any material
+  ---
+  duration_ms: 0.1431
+  type: 'test'
+  ...
+# Subtest: unlinked choice is rejected; JSON round trip retains per-exam selections
+ok 35 - unlinked choice is rejected; JSON round trip retains per-exam selections
+  ---
+  duration_ms: 0.2722
+  type: 'test'
+  ...
+# Subtest: stale tab cannot replace newer data and stays blocked until a fresh guard is created
+ok 36 - stale tab cannot replace newer data and stays blocked until a fresh guard is created
+  ---
+  duration_ms: 1.7506
+  type: 'test'
+  ...
+# Subtest: storage event blocks changes while unrelated keys and other storage areas do not
+ok 37 - storage event blocks changes while unrelated keys and other storage areas do not
+  ---
+  duration_ms: 0.1984
+  type: 'test'
+  ...
+# Subtest: normal and failed saves retain the existing synchronous fallback and retry behaviour
+ok 38 - normal and failed saves retain the existing synchronous fallback and retry behaviour
+  ---
+  duration_ms: 0.3892
+  type: 'test'
+  ...
+# Subtest: cross-window Web Lock serializes overlapping requests and prevents stale retry
+ok 39 - cross-window Web Lock serializes overlapping requests and prevents stale retry
+  ---
+  duration_ms: 0.7063
+  type: 'test'
+  ...
+# Subtest: busy same-window operation is rejected without duplicate submissions
+ok 40 - busy same-window operation is rejected without duplicate submissions
+  ---
+  duration_ms: 0.4229
+  type: 'test'
+  ...
+# Subtest: automatic focus completion stays complete when a new review makes speed much faster
+ok 41 - automatic focus completion stays complete when a new review makes speed much faster
+  ---
+  duration_ms: 17.5748
+  type: 'test'
+  ...
+# Subtest: a due repeat is a new target without reopening prior focus completion
+ok 42 - a due repeat is a new target without reopening prior focus completion
+  ---
+  duration_ms: 3.3808
+  type: 'test'
+  ...
+# Subtest: moving manual start forward starts new targets while preserving earlier cycle and original reviews
+ok 43 - moving manual start forward starts new targets while preserving earlier cycle and original reviews
+  ---
+  duration_ms: 3.1297
+  type: 'test'
+  ...
+# Subtest: same exam date change keeps completed coverage; resit uses new exam cycle and preserves history
+ok 44 - same exam date change keeps completed coverage; resit uses new exam cycle and preserves history
+  ---
+  duration_ms: 3.2407
+  type: 'test'
+  ...
+# Subtest: focus-cycle metadata survives backup and old backup remains loadable
+ok 45 - focus-cycle metadata survives backup and old backup remains loadable
+  ---
+  duration_ms: 3.5291
+  type: 'test'
+  ...
+# Subtest: end-to-end synthetic legacy migration retains bytes, IDs, rounds, reviews, manual settings and restore/reset boundaries
+ok 46 - end-to-end synthetic legacy migration retains bytes, IDs, rounds, reviews, manual settings and restore/reset boundaries
+  ---
+  duration_ms: 5.3806
+  type: 'test'
+  ...
+# Subtest: observed external change blocks even if another writer later restores the same raw value
+ok 47 - observed external change blocks even if another writer later restores the same raw value
+  ---
+  duration_ms: 0.1803
+  type: 'test'
+  ...
+# Subtest: approved example: 100 remaining / 5 days = 20, exam day excluded
+ok 48 - approved example: 100 remaining / 5 days = 20, exam day excluded
+  ---
+  duration_ms: 3.3856
+  type: 'test'
+  ...
+# Subtest: material target overrides even earlier exam date and includes target day
+ok 49 - material target overrides even earlier exam date and includes target day
+  ---
+  duration_ms: 1.1313
+  type: 'test'
+  ...
+# Subtest: earliest active exam controls shared material once, priority changes ordering only
+ok 50 - earliest active exam controls shared material once, priority changes ordering only
+  ---
+  duration_ms: 16.348
+  type: 'test'
+  ...
+# Subtest: independent/no-date materials get no invented quota; own target uses all calendar days
+ok 51 - independent/no-date materials get no invented quota; own target uses all calendar days
+  ---
+  duration_ms: 0.5129
+  type: 'test'
+  ...
+# Subtest: weekday and individual days off reduce divisor; rest today yields no assignment
+ok 52 - weekday and individual days off reduce divisor; rest today yields no assignment
+  ---
+  duration_ms: 0.2828
+  type: 'test'
+  ...
+# Subtest: no available day, today exam, elapsed deadline never divide by zero
+ok 53 - no available day, today exam, elapsed deadline never divide by zero
+  ---
+  duration_ms: 0.3588
+  type: 'test'
+  ...
+# Subtest: active shared exam releases automatic pause, direct pause/archive excluded from tasks
+ok 54 - active shared exam releases automatic pause, direct pause/archive excluded from tasks
+  ---
+  duration_ms: 1.2144
+  type: 'test'
+  ...
+# Subtest: progress edits/deletions recalculate derived quotas without changing plan/manual exam fields
+ok 55 - progress edits/deletions recalculate derived quotas without changing plan/manual exam fields
+  ---
+  duration_ms: 1.4281
+  type: 'test'
+  ...
+# Subtest: actual material record span 0 days selects 0-day window
+ok 56 - actual material record span 0 days selects 0-day window
+  ---
+  duration_ms: 0.433
+  type: 'test'
+  ...
+# Subtest: actual material record span 1 days selects 0-day window
+ok 57 - actual material record span 1 days selects 0-day window
+  ---
+  duration_ms: 0.4028
+  type: 'test'
+  ...
+# Subtest: actual material record span 6 days selects 0-day window
+ok 58 - actual material record span 6 days selects 0-day window
+  ---
+  duration_ms: 0.3471
+  type: 'test'
+  ...
+# Subtest: actual material record span 7 days selects 7-day window
+ok 59 - actual material record span 7 days selects 7-day window
+  ---
+  duration_ms: 0.3872
+  type: 'test'
+  ...
+# Subtest: actual material record span 13 days selects 7-day window
+ok 60 - actual material record span 13 days selects 7-day window
+  ---
+  duration_ms: 0.347
+  type: 'test'
+  ...
+# Subtest: actual material record span 14 days selects 14-day window
+ok 61 - actual material record span 14 days selects 14-day window
+  ---
+  duration_ms: 0.2183
+  type: 'test'
+  ...
+# Subtest: actual material record span 27 days selects 14-day window
+ok 62 - actual material record span 27 days selects 14-day window
+  ---
+  duration_ms: 0.1849
+  type: 'test'
+  ...
+# Subtest: actual material record span 28 days selects 28-day window
+ok 63 - actual material record span 28 days selects 28-day window
+  ---
+  duration_ms: 0.4218
+  type: 'test'
+  ...
+# Subtest: actual material record span 60 days selects 28-day window
+ok 64 - actual material record span 60 days selects 28-day window
+  ---
+  duration_ms: 0.3012
+  type: 'test'
+  ...
+# Subtest: averages include days without study and do not use exam preparation duration
+ok 65 - averages include days without study and do not use exam preparation duration
+  ---
+  duration_ms: 0.3789
+  type: 'test'
+  ...
+# Subtest: latest window excludes older amounts and reviews, including overlapping review ranges
+ok 66 - latest window excludes older amounts and reviews, including overlapping review ranges
+  ---
+  duration_ms: 0.4541
+  type: 'test'
+  ...
+# Subtest: no recent progress means no completion estimate, independent of required quota
+ok 67 - no recent progress means no completion estimate, independent of required quota
+  ---
+  duration_ms: 0.2684
+  type: 'test'
+  ...
+# Subtest: historical rounds count for material lifetime and speed, partial reviews never establish lifetime
+ok 68 - historical rounds count for material lifetime and speed, partial reviews never establish lifetime
+  ---
+  duration_ms: 0.4701
+  type: 'test'
+  ...
+# Subtest: history of a different unit is not added to current-unit average
+ok 69 - history of a different unit is not added to current-unit average
+  ---
+  duration_ms: 0.2498
+  type: 'test'
+  ...
+# Subtest: manual target persists through progress and backup; today done is subtracted from the automatic day-start quota too
+ok 70 - manual target persists through progress and backup; today done is subtracted from the automatic day-start quota too
+  ---
+  duration_ms: 1.7534
+  type: 'test'
+  ...
+# Subtest: invalid manual amounts rejected, completion yields zero without fictitious estimate
+ok 71 - invalid manual amounts rejected, completion yields zero without fictitious estimate
+  ---
+  duration_ms: 1.1161
+  type: 'test'
+  ...
+# Subtest: calendar arithmetic handles leap days, years, huge horizons and duplicate rest dates
+ok 72 - calendar arithmetic handles leap days, years, huge horizons and duplicate rest dates
+  ---
+  duration_ms: 0.1566
+  type: 'test'
+  ...
+# Subtest: plans and estimates never mutate source study history, raw evaluations or exam schedules
+ok 73 - plans and estimates never mutate source study history, raw evaluations or exam schedules
+  ---
+  duration_ms: 0.4219
+  type: 'test'
+  ...
+# Subtest: same-day progress uses deltas, not sum of positions; mean never counts duplicate days as extra time
+ok 74 - same-day progress uses deltas, not sum of positions; mean never counts duplicate days as extra time
+  ---
+  duration_ms: 0.2597
+  type: 'test'
+  ...
+# Subtest: unrepresentable finish date yields explicit no-estimate result instead of crashing
+ok 75 - unrepresentable finish date yields explicit no-estimate result instead of crashing
+  ---
+  duration_ms: 0.2974
+  type: 'test'
+  ...
+# Subtest: PWA shell revision matches every referenced local file and project-relative manifest
+ok 76 - PWA shell revision matches every referenced local file and project-relative manifest
+  ---
+  duration_ms: 21.1129
+  type: 'test'
+  ...
+# Subtest: dist/PWA shell revision matches every referenced local file and project-relative manifest
+ok 77 - dist/PWA shell revision matches every referenced local file and project-relative manifest
+  ---
+  duration_ms: 22.1251
+  type: 'test'
+  ...
+# Subtest: worker install/activate/cache fetch stays scoped and never forces an update or caches data requests
+ok 78 - worker install/activate/cache fetch stays scoped and never forces an update or caches data requests
+  ---
+  duration_ms: 3.5999
+  type: 'test'
+  ...
+# Subtest: all actual local HTML/CSS assets including separate banner layers are precached
+ok 79 - all actual local HTML/CSS assets including separate banner layers are precached
+  ---
+  duration_ms: 2.3719
+  type: 'test'
+  ...
+# Subtest: optional understanding survives progress/review save, reload and backup for every supported value
+ok 80 - optional understanding survives progress/review save, reload and backup for every supported value
+  ---
+  duration_ms: 10.6497
+  type: 'test'
+  ...
+# Subtest: understanding edit retains record identity, original time, sequence and unknown fields
+ok 81 - understanding edit retains record identity, original time, sequence and unknown fields
+  ---
+  duration_ms: 1.4262
+  type: 'test'
+  ...
+# Subtest: starting next round preserves original assessments and partial reviews
+ok 82 - starting next round preserves original assessments and partial reviews
+  ---
+  duration_ms: 1.309
+  type: 'test'
+  ...
+# Subtest: invalid understanding fails transaction without mutating input
+ok 83 - invalid understanding fails transaction without mutating input
+  ---
+  duration_ms: 1.0717
+  type: 'test'
+  ...
+# Subtest: same-day review assessments retain distinct IDs and deterministic saved order
+ok 84 - same-day review assessments retain distinct IDs and deterministic saved order
+  ---
+  duration_ms: 12.0271
+  type: 'test'
+  ...
+# Subtest: approved intervals use constants, round halves, and enforce 1..180 days
+ok 85 - approved intervals use constants, round halves, and enforce 1..180 days
+  ---
+  duration_ms: 1.5807
+  type: 'test'
+  ...
+# Subtest: new evaluations split overlap without changing source ratings/progress/round
+ok 86 - new evaluations split overlap without changing source ratings/progress/round
+  ---
+  duration_ms: 17.5585
+  type: 'test'
+  ...
+# Subtest: overlapping reviews retain correct latest assessment separately on each interval
+ok 87 - overlapping reviews retain correct latest assessment separately on each interval
+  ---
+  duration_ms: 2.8909
+  type: 'test'
+  ...
+# Subtest: same-day saved sequence beats createdAt; duplicate sequence falls back deterministically
+ok 88 - same-day saved sequence beats createdAt; duplicate sequence falls back deterministically
+  ---
+  duration_ms: 0.8637
+  type: 'test'
+  ...
+# Subtest: record edit/delete replays affected range and leaves disjoint segment values unchanged
+ok 89 - record edit/delete replays affected range and leaves disjoint segment values unchanged
+  ---
+  duration_ms: 1.2512
+  type: 'test'
+  ...
+# Subtest: missed due date remains overdue; next schedule uses actual completion day
+ok 90 - missed due date remains overdue; next schedule uses actual completion day
+  ---
+  duration_ms: 1.8529
+  type: 'test'
+  ...
+# Subtest: unselected rating uses normal policy without overwriting original blank
+ok 91 - unselected rating uses normal policy without overwriting original blank
+  ---
+  duration_ms: 0.467
+  type: 'test'
+  ...
+# Subtest: future rows and never-learned reviews are excluded from automatic schedules and speed
+ok 92 - future rows and never-learned reviews are excluded from automatic schedules and speed
+  ---
+  duration_ms: 0.5697
+  type: 'test'
+  ...
+# Subtest: next round retains previous memory, but focus target and initial speed use current-round progress only
+ok 93 - next round retains previous memory, but focus target and initial speed use current-round progress only
+  ---
+  duration_ms: 1.3784
+  type: 'test'
+  ...
+# Subtest: incompatible historical units do not get relabeled or converted
+ok 94 - incompatible historical units do not get relabeled or converted
+  ---
+  duration_ms: 0.813
+  type: 'test'
+  ...
+# Subtest: initial review estimate is 10 percent of learned amount, not whole total
+ok 95 - initial review estimate is 10 percent of learned amount, not whole total
+  ---
+  duration_ms: 1.1469
+  type: 'test'
+  ...
+# Subtest: record-span windows are 7/14/28 days and include idle days
+ok 96 - record-span windows are 7/14/28 days and include idle days
+  ---
+  duration_ms: 1.2472
+  type: 'test'
+  ...
+# Subtest: overlapping same-day reviews count union volume once when estimating speed
+ok 97 - overlapping same-day reviews count union volume once when estimating speed
+  ---
+  duration_ms: 0.6981
+  type: 'test'
+  ...
+# Subtest: zero recent review and manual daily override behave independently
+ok 98 - zero recent review and manual daily override behave independently
+  ---
+  duration_ms: 0.9174
+  type: 'test'
+  ...
+# Subtest: focus buffer follows approved ceil 20 percent and 1..7 day limits
+ok 99 - focus buffer follows approved ceil 20 percent and 1..7 day limits
+  ---
+  duration_ms: 1.9042
+  type: 'test'
+  ...
+# Subtest: focus starts backward over permitted weekdays/holidays, excluding exam day
+ok 100 - focus starts backward over permitted weekdays/holidays, excluding exam day
+  ---
+  duration_ms: 0.4046
+  type: 'test'
+  ...
+# Subtest: manual focus start wins; a passed start recommends from today without losing prior completions
+ok 101 - manual focus start wins; a passed start recommends from today without losing prior completions
+  ---
+  duration_ms: 0.8285
+  type: 'test'
+  ...
+# Subtest: closest non-past active exam wins, including undated/multiple linked exams
+ok 102 - closest non-past active exam wins, including undated/multiple linked exams
+  ---
+  duration_ms: 1.7788
+  type: 'test'
+  ...
+# Subtest: hard ranges first, then oldest ranges; focus never targets unlearned pages
+ok 103 - hard ranges first, then oldest ranges; focus never targets unlearned pages
+  ---
+  duration_ms: 2.0335
+  type: 'test'
+  ...
+# Subtest: focus shortage reflects available days; today exam and rest day assign no extra ranges
+ok 104 - focus shortage reflects available days; today exam and rest day assign no extra ranges
+  ---
+  duration_ms: 1.4235
+  type: 'test'
+  ...
+# Subtest: regular plus focus overlap is a single nonoverlapping today list
+ok 105 - regular plus focus overlap is a single nonoverlapping today list
+  ---
+  duration_ms: 0.7032
+  type: 'test'
+  ...
+# Subtest: completing combined recommendation once makes one original record and reduces both plans
+ok 106 - completing combined recommendation once makes one original record and reduces both plans
+  ---
+  duration_ms: 1.5877
+  type: 'test'
+  ...
+# Subtest: manual dates override automation and are consumed only on covered completed ranges
+ok 107 - manual dates override automation and are consumed only on covered completed ranges
+  ---
+  duration_ms: 1.7083
+  type: 'test'
+  ...
+# Subtest: manual dates remain authoritative over focus picks
+ok 108 - manual dates remain authoritative over focus picks
+  ---
+  duration_ms: 1.0194
+  type: 'test'
+  ...
+# Subtest: manual date overwrite and automatic reset only change the requested intersection
+ok 109 - manual date overwrite and automatic reset only change the requested intersection
+  ---
+  duration_ms: 2.8298
+  type: 'test'
+  ...
+# Subtest: review settings backup round trip retains unknown fields, old backups need no new fields
+ok 110 - review settings backup round trip retains unknown fields, old backups need no new fields
+  ---
+  duration_ms: 1.8443
+  type: 'test'
+  ...
+# Subtest: paused/archive states exclude recommendations while stored data stays untouched
+ok 111 - paused/archive states exclude recommendations while stored data stays untouched
+  ---
+  duration_ms: 0.8481
+  type: 'test'
+  ...
+# Subtest: future progress cannot inflate initial review capacity or focus targets
+ok 112 - future progress cannot inflate initial review capacity or focus targets
+  ---
+  duration_ms: 0.4186
+  type: 'test'
+  ...
+# Subtest: manual schedules after exam are reported as unavailable instead of overwritten
+ok 113 - manual schedules after exam are reported as unavailable instead of overwritten
+  ---
+  duration_ms: 0.6322
+  type: 'test'
+  ...
+# Subtest: review settings save failure keeps old data, backup and manual schedule unchanged
+ok 114 - review settings save failure keeps old data, backup and manual schedule unchanged
+  ---
+  duration_ms: 0.5957
+  type: 'test'
+  ...
+# Subtest: today display also places difficult and older ranges before newer easy ranges
+ok 115 - today display also places difficult and older ranges before newer easy ranges
+  ---
+  duration_ms: 0.6457
+  type: 'test'
+  ...
+# Subtest: internal success streak resets on difficulty and is derived without writing original records
+ok 116 - internal success streak resets on difficulty and is derived without writing original records
+  ---
+  duration_ms: 0.9456
+  type: 'test'
+  ...
+# Subtest: shortfall uses actual fractional speed and never penalises over-completion twice
+ok 117 - shortfall uses actual fractional speed and never penalises over-completion twice
+  ---
+  duration_ms: 0.1653
+  type: 'test'
+  ...
+# Subtest: same-day duplicates count once
+ok 118 - same-day duplicates count once
+  ---
+  duration_ms: 2.0056
+  type: 'test'
+  ...
+# Subtest: streak remains available before today is recorded
+ok 119 - streak remains available before today is recorded
+  ---
+  duration_ms: 0.1493
+  type: 'test'
+  ...
+# Subtest: a missing yesterday breaks the current streak
+ok 120 - a missing yesterday breaks the current streak
+  ---
+  duration_ms: 0.092
+  type: 'test'
+  ...
+# Subtest: a gap stops traversal
+ok 121 - a gap stops traversal
+  ---
+  duration_ms: 1.5824
+  type: 'test'
+  ...
+# Subtest: future and invalid calendar dates are ignored
+ok 122 - future and invalid calendar dates are ignored
+  ---
+  duration_ms: 0.2303
+  type: 'test'
+  ...
+# Subtest: year boundary remains consecutive
+ok 123 - year boundary remains consecutive
+  ---
+  duration_ms: 0.1944
+  type: 'test'
+  ...
+# Subtest: leap day remains consecutive
+ok 124 - leap day remains consecutive
+  ---
+  duration_ms: 0.1637
+  type: 'test'
+  ...
+# Subtest: calendar days across daylight-saving change remain consecutive
+ok 125 - calendar days across daylight-saving change remain consecutive
+  ---
+  duration_ms: 0.2067
+  type: 'test'
+  ...
+# Subtest: empty data returns zero
+ok 126 - empty data returns zero
+  ---
+  duration_ms: 0.3167
+  type: 'test'
+  ...
+# Subtest: real app initialises empty, shows registration/settings dialogs and persists form submissions on reload
+ok 127 - real app initialises empty, shows registration/settings dialogs and persists form submissions on reload
+  ---
+  duration_ms: 41.3778
+  type: 'test'
+  ...
+# Subtest: app archive badge, unarchive, delete confirmation, and reset use live storage
+ok 128 - app archive badge, unarchive, delete confirmation, and reset use live storage
+  ---
+  duration_ms: 6.9594
+  type: 'test'
+  ...
+# Subtest: blocked initial load surfaces error; explicit reset preserves unreadable data before recovery
+ok 129 - blocked initial load surfaces error; explicit reset preserves unreadable data before recovery
+  ---
+  duration_ms: 2.588
+  type: 'test'
+  ...
+# Subtest: failed real-app save retains visible and in-memory state
+ok 130 - failed real-app save retains visible and in-memory state
+  ---
+  duration_ms: 2.3601
+  type: 'test'
+  ...
+# Subtest: file restore stages data for confirmation and commits only after submission
+ok 131 - file restore stages data for confirmation and commits only after submission
+  ---
+  duration_ms: 4.6476
+  type: 'test'
+  ...
+# Subtest: resit UI stages only original linked materials and commits selected ids with days off
+ok 132 - resit UI stages only original linked materials and commits selected ids with days off
+  ---
+  duration_ms: 10.1176
+  type: 'test'
+  ...
+# Subtest: approved plans render quota and adaptive estimate; manual form persists and survives reload
+ok 133 - approved plans render quota and adaptive estimate; manual form persists and survives reload
+  ---
+  duration_ms: 11.9934
+  type: 'test'
+  ...
+# Subtest: failed manual-plan save keeps original plan; clearing it restores automatic quota
+ok 134 - failed manual-plan save keeps original plan; clearing it restores automatic quota
+  ---
+  duration_ms: 4.0948
+  type: 'test'
+  ...
+# Subtest: compact plan modal keeps stored unit/value, removes long explanation, and limits styling to this modal
+ok 135 - compact plan modal keeps stored unit/value, removes long explanation, and limits styling to this modal
+  ---
+  duration_ms: 4.363
+  type: 'test'
+  ...
+# Subtest: modal status keeps rest independent, prioritises actionable warnings, and never mutates calculations
+ok 136 - modal status keeps rest independent, prioritises actionable warnings, and never mutates calculations
+  ---
+  duration_ms: 3.0707
+  type: 'test'
+  ...
+# Subtest: home today-list shows concise remaining/state only for all requested plan cases
+ok 137 - home today-list shows concise remaining/state only for all requested plan cases
+  ---
+  duration_ms: 4.605
+  type: 'test'
+  ...
+# Subtest: home manual target completion and short warnings preserve original detailed labels
+ok 138 - home manual target completion and short warnings preserve original detailed labels
+  ---
+  duration_ms: 2.2706
+  type: 'test'
+  ...
+# Subtest: material heading and filters reflect live unarchived data across changes and reload
+ok 139 - material heading and filters reflect live unarchived data across changes and reload
+  ---
+  duration_ms: 8.2061
+  type: 'test'
+  ...
+# Subtest: review UI shows merged ranges, prefills one completion, and stores only one history row
+ok 140 - review UI shows merged ranges, prefills one completion, and stores only one history row
+  ---
+  duration_ms: 8.9331
+  type: 'test'
+  ...
+# Subtest: manual review quantity/date forms persist independently and survive app reload
+ok 141 - manual review quantity/date forms persist independently and survive app reload
+  ---
+  duration_ms: 7.5626
+  type: 'test'
+  ...
+# Subtest: stats UI refreshes after writes; inline calendar records exclude scheduled ranges
+ok 142 - stats UI refreshes after writes; inline calendar records exclude scheduled ranges
+  ---
+  duration_ms: 5.7661
+  type: 'test'
+  ...
+# Subtest: five plant stages retain first completion and render the stored family in archive
+ok 143 - five plant stages retain first completion and render the stored family in archive
+  ---
+  duration_ms: 5.6341
+  type: 'test'
+  ...
+# Subtest: day rollover refreshes schedules without changing input, modal, filters or stored data
+ok 144 - day rollover refreshes schedules without changing input, modal, filters or stored data
+  ---
+  duration_ms: 4.9662
+  type: 'test'
+  ...
+# Subtest: chart display range follows all visible bins without changing aggregation end
+ok 145 - chart display range follows all visible bins without changing aggregation end
+  ---
+  duration_ms: 2.1046
+  type: 'test'
+  ...
+# Subtest: migration preserves legacy bytes, IDs, histories, unknown fields and sequences
+ok 146 - migration preserves legacy bytes, IDs, histories, unknown fields and sequences
+  ---
+  duration_ms: 12.7503
+  type: 'test'
+  ...
+# Subtest: new installation is empty, never persists UI fixtures
+ok 147 - new installation is empty, never persists UI fixtures
+  ---
+  duration_ms: 0.1606
+  type: 'test'
+  ...
+# Subtest: corrupt, unsupported legacy or exam source blocks migration without any write
+ok 148 - corrupt, unsupported legacy or exam source blocks migration without any write
+  ---
+  duration_ms: 0.461
+  type: 'test'
+  ...
+# Subtest: migration write failure leaves original dataset available and blocks mutation
+ok 149 - migration write failure leaves original dataset available and blocks mutation
+  ---
+  duration_ms: 0.2759
+  type: 'test'
+  ...
+# Subtest: copy-on-write transaction failure does not mutate current state or saved data
+ok 150 - copy-on-write transaction failure does not mutate current state or saved data
+  ---
+  duration_ms: 1.2274
+  type: 'test'
+  ...
+# Subtest: new/edit material, custom unit, target date, notes, archive and restore persist
+ok 151 - new/edit material, custom unit, target date, notes, archive and restore persist
+  ---
+  duration_ms: 2.1325
+  type: 'test'
+  ...
+# Subtest: material edits retain unknown fields and reject relabelling recorded ranges
+ok 152 - material edits retain unknown fields and reject relabelling recorded ranges
+  ---
+  duration_ms: 0.4526
+  type: 'test'
+  ...
+# Subtest: same date sequence orders progress; backdated edits recalculate deltas only
+ok 153 - same date sequence orders progress; backdated edits recalculate deltas only
+  ---
+  duration_ms: 1.5996
+  type: 'test'
+  ...
+# Subtest: future/invalid dates and fractional/out of range positions rejected
+ok 154 - future/invalid dates and fractional/out of range positions rejected
+  ---
+  duration_ms: 1.043
+  type: 'test'
+  ...
+# Subtest: delete/edit progress recalculates; review ranges may overlap without changing progress/round
+ok 155 - delete/edit progress recalculates; review ranges may overlap without changing progress/round
+  ---
+  duration_ms: 1.1906
+  type: 'test'
+  ...
+# Subtest: invalid review ranges rejected and original state remains unchanged
+ok 156 - invalid review ranges rejected and original state remains unchanged
+  ---
+  duration_ms: 0.8114
+  type: 'test'
+  ...
+# Subtest: next round snapshots original records and units; repeated rounds retain all history
+ok 157 - next round snapshots original records and units; repeated rounds retain all history
+  ---
+  duration_ms: 0.7451
+  type: 'test'
+  ...
+# Subtest: v2 backup round trip includes exams, paused state, archived study and unknown fields
+ok 158 - v2 backup round trip includes exams, paused state, archived study and unknown fields
+  ---
+  duration_ms: 0.9051
+  type: 'test'
+  ...
+# Subtest: legacy backup formats preserve raw history and current exams; malformed files rejected
+ok 159 - legacy backup formats preserve raw history and current exams; malformed files rejected
+  ---
+  duration_ms: 0.3903
+  type: 'test'
+  ...
+# Subtest: deleting a material removes only its exam links and settings, retains other data
+ok 160 - deleting a material removes only its exam links and settings, retains other data
+  ---
+  duration_ms: 0.5609
+  type: 'test'
+  ...
+# Subtest: explicit recovery preserves unreadable original sources, then restores; preservation failure aborts
+ok 161 - explicit recovery preserves unreadable original sources, then restores; preservation failure aborts
+  ---
+  duration_ms: 0.7076
+  type: 'test'
+  ...
+# Subtest: empty statistics contain zero records and never manufacture chart percentages
+ok 162 - empty statistics contain zero records and never manufacture chart percentages
+  ---
+  duration_ms: 3.8556
+  type: 'test'
+  ...
+# Subtest: current week/month and recent calendar months have explicit year-safe boundaries
+ok 163 - current week/month and recent calendar months have explicit year-safe boundaries
+  ---
+  duration_ms: 0.4485
+  type: 'test'
+  ...
+# Subtest: historical rounds and archived materials count once with original units and positive deltas
+ok 164 - historical rounds and archived materials count once with original units and positive deltas
+  ---
+  duration_ms: 11.4958
+  type: 'test'
+  ...
+# Subtest: future and zero-delta entries do not create completed study-day activity
+ok 165 - future and zero-delta entries do not create completed study-day activity
+  ---
+  duration_ms: 0.611
+  type: 'test'
+  ...
+# Subtest: mixed units remain separate, repeated actual review entries are counted as real records
+ok 166 - mixed units remain separate, repeated actual review entries are counted as real records
+  ---
+  duration_ms: 0.9823
+  type: 'test'
+  ...
+# Subtest: multiple exam shares split a record instead of increasing the denominator
+ok 167 - multiple exam shares split a record instead of increasing the denominator
+  ---
+  duration_ms: 1.2386
+  type: 'test'
+  ...
+# Subtest: calendar completion rows and current manual/automatic schedules remain separate
+ok 168 - calendar completion rows and current manual/automatic schedules remain separate
+  ---
+  duration_ms: 1.4258
+  type: 'test'
+  ...
+# Subtest: record edits/deletes and backup restoration produce statistics from the remaining originals
+ok 169 - record edits/deletes and backup restoration produce statistics from the remaining originals
+  ---
+  duration_ms: 0.6154
+  type: 'test'
+  ...
+# Subtest: new materials persist deterministic automatic plants while existing aliases survive
+ok 170 - new materials persist deterministic automatic plants while existing aliases survive
+  ---
+  duration_ms: 0.2885
+  type: 'test'
+  ...
+# Subtest: first completion stays completed after correction/deletion, next round, archive and restore
+ok 171 - first completion stays completed after correction/deletion, next round, archive and restore
+  ---
+  duration_ms: 0.6045
+  type: 'test'
+  ...
+# Subtest: legacy validation/load remains read-compatible and does not rewrite bytes to assign growth
+ok 172 - legacy validation/load remains read-compatible and does not rewrite bytes to assign growth
+  ---
+  duration_ms: 0.2932
+  type: 'test'
+  ...
+# Subtest: failed growth save leaves original plant and records unchanged
+ok 173 - failed growth save leaves original plant and records unchanged
+  ---
+  duration_ms: 0.4057
+  type: 'test'
+  ...
+# Subtest: date lookup includes archived history, original units and rounds; latest first; read only
+ok 174 - date lookup includes archived history, original units and rounds; latest first; read only
+  ---
+  duration_ms: 1.0984
+  type: 'test'
+  ...
+# Subtest: date lookup excludes planned events and reflects edits/deletions without a second store
+ok 175 - date lookup excludes planned events and reflects edits/deletions without a second store
+  ---
+  duration_ms: 0.8094
+  type: 'test'
+  ...
+# Subtest: many same-day mixed-unit records are returned individually by sequence
+ok 176 - many same-day mixed-unit records are returned individually by sequence
+  ---
+  duration_ms: 1.413
+  type: 'test'
+  ...
+# Subtest: legacy review between completed and next round is not assigned a guessed round
+ok 177 - legacy review between completed and next round is not assigned a guessed round
+  ---
+  duration_ms: 0.7488
+  type: 'test'
+  ...
+1..177
+# tests 177
+# suites 0
+# pass 177
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 421.3332

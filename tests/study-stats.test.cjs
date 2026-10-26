@@ -70,3 +70,36 @@ test('failed growth save leaves original plant and records unchanged',()=>{
  const s=seed(),before=structuredClone(s),next=apply(s,{type:'record',id:'m',record:{id:'r',date:today,position:100}});
  assert.throws(()=>D.save({setItem(){throw Error('quota');}},next,E));assert.deepEqual(s,before);
 });
+
+test('date lookup includes archived history, original units and rounds; latest first; read only',()=>{
+ let s=apply(seed(),{type:'record',id:'m',record:{id:'old',date:'2026-09-01',position:100}});
+ s=apply(s,{type:'review',id:'m',record:{id:'v1',date:'2026-09-01',start:1,end:10,round:1}});
+ s=apply(s,{type:'next-round',id:'m'});
+ s=apply(s,{type:'record',id:'m',record:{id:'new',date:'2026-10-20',position:20}});
+ s=apply(s,{type:'review',id:'m',record:{id:'v2',date:'2026-10-20',start:1,end:5}});
+ s=apply(s,{type:'archive',id:'m',archived:true});
+ const raw=JSON.stringify(s),old=S.onDate(s,'2026-09-01',today,D),recent=S.onDate(s,'2026-10-20',today,D);
+ assert.deepEqual(old.map(r=>[r.id,r.round,r.unit]),[['v1',1,'페이지'],['old',1,'페이지']]);
+ assert.deepEqual(recent.map(r=>[r.id,r.round]),[['v2',2],['new',2]]);
+ assert.equal(JSON.stringify(s),raw);assert.equal(s.study.materials[0].archived,true);
+});
+test('date lookup excludes planned events and reflects edits/deletions without a second store',()=>{
+ let s=apply(seed(),{type:'record',id:'m',record:{id:'r',date:today,position:30}});
+ s=apply(s,{type:'review-date',id:'m',start:1,end:10,date:'2026-11-01'});
+ assert.deepEqual(S.onDate(s,'2026-11-01',today,D),[]);
+ s=apply(s,{type:'record',id:'m',record:{id:'r',date:'2026-10-24',position:35}});
+ assert.deepEqual(S.onDate(s,today,today,D),[]);assert.equal(S.onDate(s,'2026-10-24',today,D)[0].amount,35);
+ s=apply(s,{type:'delete-record',id:'m',recordId:'r'});assert.deepEqual(S.onDate(s,'2026-10-24',today,D),[]);
+});
+test('many same-day mixed-unit records are returned individually by sequence',()=>{
+ let s=seed();
+ s=apply(s,{type:'material',material:{id:'lecture',name:'강의',type:'lecture',unit:'강',total:20}});
+ for(let i=1;i<=7;i++)s=apply(s,{type:'record',id:i%2?'m':'lecture',record:{id:'r'+i,date:today,position:i}});
+ const rows=S.onDate(s,today,today,D);assert.equal(rows.length,7);assert.deepEqual(rows.map(r=>r.id),['r7','r6','r5','r4','r3','r2','r1']);assert.deepEqual(new Set(rows.map(r=>r.unit)),new Set(['페이지','강']));
+});
+test('legacy review between completed and next round is not assigned a guessed round',()=>{
+ let s=apply(seed(),{type:'record',id:'m',record:{id:'old',date:'2026-09-01',position:100}});
+ s=apply(s,{type:'review',id:'m',record:{id:'ambiguous',date:'2026-09-01',start:1,end:10}});
+ s=apply(s,{type:'next-round',id:'m'});s=apply(s,{type:'record',id:'m',record:{id:'next',date:today,position:10}});
+ assert.equal(S.onDate(s,'2026-09-01',today,D).find(r=>r.id==='ambiguous').round,null);
+});

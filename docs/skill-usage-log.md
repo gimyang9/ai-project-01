@@ -955,3 +955,43 @@
 ## CG-SKILL-038 · 2026-10-26
 
 skills/chagok-data-guard/SKILL.md 적용: 개발자 테스트 영역에 기존 settings-block 카드 재사용. 12px 패딩과 제목 여백 정리. 스위치/저장/계산 동작 유지. Chrome320~1440px 및15개 기능 회귀 통과. 근거: docs/evidence/developer-mode/simplify-browser-results.json,simple-settings-375.png. 결과 limited: 실제 Safari 미검증. root/dist/PWA 반영.
+
+
+## CG-SKILL-039 · 2026-10-26
+
+skills/chagok-data-guard/SKILL.md 적용: 통계 주간 중복카드 제거·완료기록 인라인 조회·5건/펼치기·연월/오늘 이동·보관/과거회독 상세연결. 원본/저장/계산정책 유지. Node176건·Chrome9흐름·320~1920px 검증 통과. 근거: docs/evidence/developer-mode/stats-tests.tap,stats-browser-results.json,stats-before/after.json,stats-calendar-375/1440.png. 결과 limited: 실제 Safari 미검증. 회독불명 과거복습은 미기록 표시. PS 도구 정책제한은 해시·호출·합성저장값 불변으로 대체. 커밋·게시 없음.
+
+
+## CG-SKILL-040 · 2026-10-26
+
+skills/chagok-data-guard/SKILL.md 적용. PC(1024px+) 날짜 셀44→30px·내부최대760px중앙정렬·단일선강조·기록제목/여백·연월팝오버 정리. 저장/계산구조 변경 없음. Node176건·ChromePC3검증+기존통계9흐름 통과. 320~1023px 모바일/태블릿 셀치수·간격 전후 동일. 근거: docs/evidence/developer-mode/calendar-pc-{before,results}.json,calendar-pc-tests.tap,stats-browser-results.json,calendar-pc-1440.png. 결과 limited: 실제 Safari 미검증. root/dist/PWA 반영,커밋·게시 없음.
+
+
+## CG-SKILL-041 · 2026-10-26
+
+skills/chagok-data-guard/SKILL.md 적용. PC 상단패딩12.5%·차트26%축소·두 카드하단 정렬. 빈 도넛 대신 상태문구·유효0%그룹 유지. 표시기간은 그래프빈 범위와 일치하며 원래 집계종료=오늘 유지. Node177건·Chrome6검증/320~1920px·계산저장7모듈 해시 동일. 근거: docs/evidence/developer-mode/stats-ui-{before,results,source-check}.json,stats-ui-tests.tap,stats-ui-1440.png. 결과 limited: 실제 Safari 미검증,기준별무자료/0%는 입력대조 검증. root/dist/PWA 반영. 커밋·게시 없음.
+
+
+## CG-SKILL-042 · 2026-10-26
+
+skills/chagok-data-guard/SKILL.md 적용: PC셀30→31.5px통일·표시여백·연월버튼 모든상태배경none·기준라벨제거/접근성명칭보존. root/dist/PWA반영. Node177건·Chrome4검증(모바일치수유지,PC높이,인터랙션상태/팝오버)통과. 근거: docs/evidence/developer-mode/calendar-pc-results.json,calendar-label-tests.tap. 결과 limited: 실제Safari미검증. 데이터/계산/저장변경없음.
+
+
+## CG-SKILL-043 · 2026-10-26
+
+skills/chagok-data-guard/SKILL.md 적용. 1024px 미만 PC를 모바일로 취급한 달력조건/검증을 바로잡음. hover/fine-pointer PC는 너비와무관31.5px·동일행간격. Chrome375~1920px 11너비와터치모바일320/375/430(44px·7px)대조통과.177테스트통과. 근거: docs/evidence/developer-mode/calendar-input-results.json,calendar-input-tests.tap,calendar-mouse-608/1440.png. 결과limited: 실제Safari미검증. CSS만수정·저장/계산불변·root/dist/PWA갱신.
+
+
+## CG-SKILL-044 · 2026-10-26
+
+skills/chagok-data-guard/SKILL.md 적용. 확정값 PC35px/모바일46px로 날짜/빈셀height와min-height 고정,aspect-ratio:auto. 간격/기능/데이터유지. Chrome입력별높이·월/날짜/오늘3검증 및PWA테스트통과. 근거: docs/evidence/developer-mode/calendar-input-results.json,calendar-size-pwa.tap. 결과limited: 실제Safari미검증. root/dist/PWA반영.
+
+
+## CG-SKILL-045 · 2026-10-26
+
+skills/chagok-data-guard/SKILL.md 적용. root/dist 캘린더 범례의 ‘채움: 완료 기록’ span만 제거. flex상 나머지 범례가 왼쪽부터 이어져 빈자리 없음. HTML확인·PWA빌드 통과,계산/저장/스타일 변경없음. 결과passed(해당범위),브라우저추가검증없음.
+
+
+## CG-SKILL-046 · 2026-10-26
+
+skills/chagok-data-guard/SKILL.md 적용. 연월13→13.65px·배경none유지,기존입력/드롭다운/이동버튼/CSS삭제. 연도화살표+4×3월그리드·즉시선택/닫기·활성월·외부/Escape/포커스복귀. PC/모바일팝오버경계와날짜셀35/46·원본저장값불변 확인.177테스트 및Chrome3검증통과. 근거: docs/evidence/developer-mode/month-grid-results.json,month-grid-tests.tap,month-grid-375/1440.png. 결과limited: 실제Safari미검증. root/dist/PWA반영.

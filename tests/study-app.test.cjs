@@ -181,14 +181,14 @@ test('manual review quantity/date forms persist independently and survive app re
  a.element('manual-review-amount').value='';submit(a,'review-settings','m');assert.equal(JSON.parse(a.map.get(D.KEY)).study.materials[0].reviewSettings.dailyAmount,null);
 });
 
-test('stats UI refreshes after writes and calendar shows actual names and scheduled ranges',()=>{
+test('stats UI refreshes after writes; inline calendar records exclude scheduled ranges',()=>{
  const a=boot();assert.match(a.element('stats-summary').innerHTML,/>0<span>건/);assert.doesNotMatch(a.element('stats-proportions').innerHTML,/정보처리기사|45%/);
  a.run("commitStudy({type:'material',material:{id:'m',name:'실제 통계 자료',type:'book',unit:'페이지',total:100}},'ok')");
  a.run("commitStudy({type:'record',id:'m',record:{id:'r',date:localToday(),position:20},today:localToday()},'ok')");
  assert.match(a.element('stats-summary').innerHTML,/>1<span>건/);assert.match(a.element('stats-proportions').innerHTML,/100%/);
- a.run("showCalendarDay(localToday())");assert.match(a.element('dialog-content').innerHTML,/실제 통계 자료/);assert.match(a.element('dialog-content').innerHTML,/1–20페이지/);assert.doesNotMatch(a.element('dialog-content').innerHTML,/예시 기록/);
+ a.run("showCalendarDay(localToday())");assert.match(a.element('calendar-records').innerHTML,/실제 통계 자료/);assert.match(a.element('calendar-records').innerHTML,/1–20페이지/);assert.doesNotMatch(a.element('calendar-records').innerHTML,/예시 기록/);
  a.run("commitStudy({type:'review-date',id:'m',start:1,end:10,date:'2026-11-01',today:localToday()},'ok');showCalendarDay('2026-11-01')");
- assert.match(a.element('dialog-content').innerHTML,/복습 예정/);assert.match(a.element('dialog-content').innerHTML,/이날 완료한 기록이 없어요/);
+ assert.match(a.element('calendar-records').innerHTML,/이날의 학습·복습 기록이 없어요/);assert.doesNotMatch(a.element('calendar-records').innerHTML,/복습 예정/);assert.ok(a.run("calendarData()['2026-11-01'].scheduled.length")>0);
 });
 test('five plant stages retain first completion and render the stored family in archive',()=>{
  const a=boot();a.run("commitStudy({type:'material',material:{id:'m',name:'식물',type:'book',unit:'페이지',total:100}},'ok')");
@@ -210,4 +210,20 @@ test('day rollover refreshes schedules without changing input, modal, filters or
  clock='2026-10-27T12:00:00+09:00';a.dispatchWindow('focus');
  assert.match(a.element('home-date').textContent,/27/);assert.ok(a.run('activeReviewPlans().length')>0);assert.equal(dialog.open,true);assert.equal(a.element('material-note').value,'unsaved input');
  assert.equal(a.element('dialog-content').innerHTML,content);assert.equal(a.map.get(D.KEY),raw);assert.equal(a.run('statsPeriod'),'quarter');assert.equal(a.run('refreshForDayChange()'),false);
+});
+
+test('chart display range follows all visible bins without changing aggregation end',()=>{
+ const a=boot();
+ for(const [date,period,end]of [
+  ['2026-01-03','week','2026-01-04'],
+  ['2026-01-03','month','2026-01-07'],
+  ['2024-02-26','month','2024-02-28'],
+  ['2024-02-29','month','2024-02-29'],
+  ['2026-02-28','month','2026-02-28'],
+  ['2024-02-26','quarter','2024-02-29'],
+  ['2026-12-15','half','2026-12-31']
+ ]){
+  const result=a.run("(()=>{const d=StudyStats.period("+JSON.stringify(date)+","+JSON.stringify(period)+",LearningPlan);return {end:chartDisplayEnd(d,"+JSON.stringify(period)+","+JSON.stringify(date)+"),actualEnd:d.end}})()");
+  assert.equal(result.end,end);assert.equal(result.actualEnd,date);
+ }
 });

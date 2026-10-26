@@ -1,0 +1,221 @@
+{
+  "results": [
+    {
+      "name": "PC chart26%/padding12.5% smaller; mobile unchanged; row bottoms aligned",
+      "pass": true,
+      "value": [
+        {
+          "width": 320,
+          "chart": 175,
+          "padding": 13,
+          "number": "24px",
+          "gap": "9px",
+          "scroll": 305,
+          "graph": {
+            "top": 259.515625,
+            "bottom": 578.359375
+          },
+          "proportion": {
+            "top": 593.359375,
+            "bottom": 756.890625
+          }
+        },
+        {
+          "width": 375,
+          "chart": 175,
+          "padding": 13,
+          "number": "24px",
+          "gap": "9px",
+          "scroll": 360,
+          "graph": {
+            "top": 258.75091552734375,
+            "bottom": 577.5946655273438
+          },
+          "proportion": {
+            "top": 592.5946655273438,
+            "bottom": 735.6571655273438
+          }
+        },
+        {
+          "width": 430,
+          "chart": 175,
+          "padding": 13,
+          "number": "24px",
+          "gap": "9px",
+          "scroll": 415,
+          "graph": {
+            "top": 258.75091552734375,
+            "bottom": 577.5946655273438
+          },
+          "proportion": {
+            "top": 592.5946655273438,
+            "bottom": 735.6571655273438
+          }
+        },
+        {
+          "width": 768,
+          "chart": 189.99996948242188,
+          "padding": 16,
+          "number": "27px",
+          "gap": "15px",
+          "scroll": 753,
+          "graph": {
+            "top": 286.9582214355469,
+            "bottom": 633.8019409179688
+          },
+          "proportion": {
+            "top": 286.9582214355469,
+            "bottom": 440.0207214355469
+          }
+        },
+        {
+          "width": 1023,
+          "chart": 189.99996948242188,
+          "padding": 16,
+          "number": "27px",
+          "gap": "15px",
+          "scroll": 1008,
+          "graph": {
+            "top": 286.9582214355469,
+            "bottom": 633.8019409179688
+          },
+          "proportion": {
+            "top": 286.9582214355469,
+            "bottom": 440.0207214355469
+          }
+        },
+        {
+          "width": 1024,
+          "chart": 140.00003051757812,
+          "padding": 14,
+          "number": "27px",
+          "gap": "15px",
+          "scroll": 1009,
+          "graph": {
+            "top": 294.2122497558594,
+            "bottom": 591.0560302734375
+          },
+          "proportion": {
+            "top": 294.2122497558594,
+            "bottom": 591.0560302734375
+          }
+        },
+        {
+          "width": 1280,
+          "chart": 140.00003051757812,
+          "padding": 14,
+          "number": "27px",
+          "gap": "15px",
+          "scroll": 1265,
+          "graph": {
+            "top": 293.5569763183594,
+            "bottom": 590.4007568359375
+          },
+          "proportion": {
+            "top": 293.5569763183594,
+            "bottom": 590.4007568359375
+          }
+        },
+        {
+          "width": 1440,
+          "chart": 140.00003051757812,
+          "padding": 14,
+          "number": "27px",
+          "gap": "15px",
+          "scroll": 1425,
+          "graph": {
+            "top": 293.5569763183594,
+            "bottom": 590.4007568359375
+          },
+          "proportion": {
+            "top": 293.5569763183594,
+            "bottom": 590.4007568359375
+          }
+        },
+        {
+          "width": 1920,
+          "chart": 140,
+          "padding": 14,
+          "number": "27px",
+          "gap": "15px",
+          "scroll": 1905,
+          "graph": {
+            "top": 293.02386474609375,
+            "bottom": 589.8676147460938
+          },
+          "proportion": {
+            "top": 293.02386474609375,
+            "bottom": 589.8676147460938
+          }
+        }
+      ]
+    },
+    {
+      "name": "no actual study: empty message instead of donut, selector remains",
+      "pass": true,
+      "value": {
+        "text": "아직 학습 기록이 없어요.",
+        "hidden": true,
+        "selector": true
+      }
+    },
+    {
+      "name": "no selected-period study versus no selected-group records",
+      "pass": true,
+      "value": true
+    },
+    {
+      "name": "valid data including zero-percent group is displayed; group selector works",
+      "pass": true,
+      "value": {
+        "hidden": false,
+        "text": "과거 기록100%0% 항목0%"
+      }
+    },
+    {
+      "name": "displayed range matches bins; aggregation end and source records unchanged",
+      "pass": true,
+      "value": {
+        "ranges": {
+          "week": {
+            "text": "2026-10-26 – 2026-11-01 · 오늘까지 집계",
+            "start": "2026-10-26",
+            "end": "2026-11-01",
+            "aggregationEnd": "2026-10-26",
+            "bins": 7
+          },
+          "month": {
+            "text": "2026-10-01 – 2026-10-28 · 오늘까지 집계",
+            "start": "2026-10-01",
+            "end": "2026-10-28",
+            "aggregationEnd": "2026-10-26",
+            "bins": 4
+          },
+          "quarter": {
+            "text": "2026-08-01 – 2026-10-31 · 오늘까지 집계",
+            "start": "2026-08-01",
+            "end": "2026-10-31",
+            "aggregationEnd": "2026-10-26",
+            "bins": 3
+          },
+          "half": {
+            "text": "2026-05-01 – 2026-10-31 · 오늘까지 집계",
+            "start": "2026-05-01",
+            "end": "2026-10-31",
+            "aggregationEnd": "2026-10-26",
+            "bins": 6
+          }
+        },
+        "unchanged": true,
+        "today": "2026-10-26"
+      }
+    },
+    {
+      "name": "empty/data cards responsive at320..1920 without overflow",
+      "pass": true,
+      "value": true
+    }
+  ],
+  "errors": [],
+  "physicalSafari": false
+}

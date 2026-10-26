@@ -1,0 +1,146 @@
+{
+  "results": [
+    {
+      "name": "top3 cards preserved; weekly card removed; first selection today, inline only",
+      "pass": true,
+      "value": {
+        "summary": 3,
+        "weekly": false,
+        "selected": "2026-10-26",
+        "today": "2026-10-26",
+        "modal": false,
+        "title": "10월 26일의 학습 기록"
+      }
+    },
+    {
+      "name": "many date rows:5 by default, latest first; expand and collapse",
+      "pass": true,
+      "value": {
+        "visible": 5,
+        "total": 7,
+        "more": "나머지 2건 더 보기",
+        "first": "algorithm-r-12",
+        "expected": "algorithm-r-12"
+      }
+    },
+    {
+      "name": "archived completed material opens original detail and stays archived",
+      "pass": true,
+      "value": {
+        "view": "detail",
+        "archived": true,
+        "title": "기초 문법 완주",
+        "tab": "true",
+        "highlight": true
+      }
+    },
+    {
+      "name": "past round record displays original round and scroll target",
+      "pass": true,
+      "value": true
+    },
+    {
+      "name": "review links to review tab; actual completion distinct from schedule",
+      "pass": true,
+      "value": {
+        "text": "10월 29일의 학습 기록이날의 학습·복습 기록이 없어요.",
+        "scheduled": 11,
+        "rows": 0
+      }
+    },
+    {
+      "name": "month arrows/year picker clear selection; empty month; Today restores date",
+      "pass": true,
+      "value": true
+    },
+    {
+      "name": "viewing history never saves or changes original data",
+      "pass": true,
+      "value": true
+    },
+    {
+      "name": "edit/delete refresh calendar records immediately",
+      "pass": true,
+      "value": true
+    },
+    {
+      "name": "mobile/PC inline history, long names and month picker do not overflow",
+      "pass": true,
+      "value": [
+        {
+          "width": 320,
+          "scroll": 305,
+          "picker": 274,
+          "panel": 293,
+          "dayHeight": 44
+        },
+        {
+          "width": 375,
+          "scroll": 360,
+          "picker": 325,
+          "panel": 344,
+          "dayHeight": 44
+        },
+        {
+          "width": 430,
+          "scroll": 415,
+          "picker": 377.5,
+          "panel": 399,
+          "dayHeight": 44
+        },
+        {
+          "width": 680,
+          "scroll": 665,
+          "picker": 502.5,
+          "panel": 649,
+          "dayHeight": 68.6875
+        },
+        {
+          "width": 768,
+          "scroll": 753,
+          "picker": 546.5,
+          "panel": 726,
+          "dayHeight": 44
+        },
+        {
+          "width": 1023,
+          "scroll": 1008,
+          "picker": 673.984375,
+          "panel": 969.984375,
+          "dayHeight": 44
+        },
+        {
+          "width": 1024,
+          "scroll": 1009,
+          "picker": 814.484375,
+          "panel": 984.984375,
+          "dayHeight": 30
+        },
+        {
+          "width": 1280,
+          "scroll": 1265,
+          "picker": 942.484375,
+          "panel": 1232.984375,
+          "dayHeight": 30
+        },
+        {
+          "width": 1440,
+          "scroll": 1425,
+          "picker": 1022.484375,
+          "panel": 1384.984375,
+          "dayHeight": 30
+        },
+        {
+          "width": 1920,
+          "scroll": 1905,
+          "picker": 1262.484375,
+          "panel": 1652.484375,
+          "dayHeight": 30
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "environment": "Windows headless Chrome; dist app; synthetic test session",
+  "physicalSafari": false
+}

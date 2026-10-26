@@ -49,6 +49,20 @@
   }
   return dates;
  }
- const api={rows,monthStart,period,shares,summarize,calendar};
+ function onDate(state,date,today,study){
+  if(!study.date(date))return [];
+  return rows(state,today,study).filter(r=>r.date===date).map(r=>{
+   if(r.kind==='study')return r;
+   const m=state.study.materials.find(m=>m.id===r.materialId);
+   let round=Number.isInteger(r.round)&&r.round>0?r.round:null;
+   if(!round&&m.roundHistory.length===0)round=m.round;
+   if(!round)for(const h of [...m.roundHistory,{round:m.round,records:m.records}]){
+    const list=h.records.map(x=>x.sequence),first=Math.min(...list),last=Math.max(...list);
+    if(list.length&&r.sequence>=first&&(r.sequence<=last||h.round===m.round)){round=h.round;break;}
+   }
+   return {...r,round};
+  }).sort((a,b)=>b.sequence-a.sequence||(b.createdAt||'').localeCompare(a.createdAt||'')||b.id.localeCompare(a.id));
+ }
+ const api={onDate,rows,monthStart,period,shares,summarize,calendar};
  if(typeof module!=='undefined'&&module.exports)module.exports=api;else root.StudyStats=api;
 })(typeof window==='undefined'?this:window);

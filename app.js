@@ -127,6 +127,7 @@ function renderExamSummary(){
 }
 let selectedMaterial = demoMaterials[0] || null;
 let currentView = 'home';
+let statsVisited=false;
 let calendarMonth = Number(localToday().slice(5,7))-1;
 let calendarYear = Number(localToday().slice(0,4));
 let toastTimer;
@@ -145,7 +146,7 @@ function showView(view, focus = false) {
   if (!['home','goals','stats','more','detail'].includes(view)) view = 'home';
   if (dialog.open) dialog.close();
   currentView = view;
-  if(view==='stats'){renderStats(statsPeriod);renderCalendar();}
+  if(view==='stats'){if(!statsVisited){calendarYear=Number(localToday().slice(0,4));calendarMonth=Number(localToday().slice(5,7))-1;selectedCalendarDate=localToday();calendarExpanded=false;statsVisited=true;}renderStats(statsPeriod);renderCalendar();}
   document.querySelectorAll('.view').forEach((section) => section.hidden = section.id !== `view-${view}`);
   document.querySelectorAll('.nav-item').forEach((button) => {
     const active = button.dataset.view === (view === 'detail' ? 'home' : view);
@@ -303,48 +304,89 @@ function renderGoals(filter = 'all') {
 
 let statsPeriod='week',statsGroup='exam';
 const statsColors=['#627c50','#c3a35b','#b98067','#8c9e79','#a39bba','#7ba09c','#ba9079','#8b9155'];
+function chartDisplayEnd(data,period,today){
+ if(period==='week')return data.bins.at(-1)?.key||today;
+ const year=Number(today.slice(0,4)),month=Number(today.slice(5,7)),last=new Date(year,month,0).getDate();
+ const day=period==='month'?Math.min(last,data.bins.length*7):last;
+ return today.slice(0,8)+String(day).padStart(2,'0');
+}
 function renderStats(period='week'){
   statsPeriod=period;
   const today=localToday(),data=StudyStats.summarize(dataState,today,period,studyAPI,LearningPlan);
   $('stats-summary').innerHTML=[['학습 기록',data.study,'건'],['복습 기록',data.review,'건'],['기록한 날',data.days,'일']].map(([label,value,unit])=>`<div class="stat-tile"><small>${label}</small><strong>${value}<span>${unit}</span></strong></div>`).join('');
-  $('chart-period').textContent=data.start+' – '+data.end;
+  const displayEnd=chartDisplayEnd(data,period,today);
+  $('chart-period').textContent=data.start+' – '+displayEnd+(displayEnd>today?' · 오늘까지 집계':'');
   const max=Math.max(1,...data.bins.flatMap(b=>[b.study,b.review]))*1.2;
   $('bar-chart').innerHTML=data.bins.map(b=>`<div class="bar-column"><div class="bar-pair"><div class="bar${b.study?'':' empty'}" style="height:${b.study/max*100}%" title="학습 ${b.study}건"></div><div class="bar review${b.review?'':' empty'}" style="height:${b.review/max*100}%" title="복습 ${b.review}건"></div></div><small>${b.label}</small></div>`).join('');
   $('bar-chart').setAttribute('aria-label',data.bins.map(b=>`${b.label}: 학습 ${b.study}건, 복습 ${b.review}건`).join(', '));
   const shares=statsGroup==='exam'?data.exams:data.materials;let position=0;
+  const hasData=shares.length>0&&shares.every(g=>Number.isFinite(g.percent)&&g.percent>=0&&Number.isFinite(g.value)&&g.value>=0);
+  $('stats-proportion-content').hidden=!hasData;$('stats-proportion-empty').hidden=hasData;
+  $('stats-proportion-empty').textContent=hasData?'':!StudyStats.rows(dataState,today,studyAPI).some(r=>r.kind==='study')?'아직 학습 기록이 없어요.':!data.records.some(r=>r.kind==='study')?'이 기간에 학습 기록이 없어요.':'해당하는 학습 기록이 없어요.';
   const gradient=shares.map((g,i)=>{const start=position;position+=g.percent;return `${statsColors[i%statsColors.length]} ${start}% ${position}%`;}).join(',');
   $('stats-donut').style.background=shares.length?`conic-gradient(${gradient})`:'#ebe4d5';
   $('stats-donut').setAttribute('aria-label',shares.length?shares.map(g=>g.name+' '+Math.round(g.percent*10)/10+'%').join(', '):'이 기간의 학습 기록이 없어요.');
   $('stats-group-count').textContent=shares.length;
   $('stats-group-label').textContent=statsGroup==='exam'?'시험 / 독립':'자료';
-  $('stats-proportions').innerHTML=shares.map((g,i)=>`<li><i class="legend-dot" style="background:${statsColors[i%statsColors.length]}"></i><span>${escapeHTML(g.name)}</span><b>${Math.round(g.percent*10)/10}%</b></li>`).join('')||'<li>이 기간의 학습 기록이 없어요.</li>';
-  const week=StudyStats.summarize(dataState,today,'week',studyAPI,LearningPlan);
-  const volume=kind=>week.units.filter(g=>g.kind===kind).map(g=>g.amount+escapeHTML(g.unit)).join(' · ');
-  $('weekly-summary').innerHTML=`<p>${week.start} – ${today}</p><strong>이번 주 ${week.days}일 기록했어요.</strong><p>학습 ${week.study}건 · 복습 ${week.review}건</p>${volume('study')?'<p>학습량 '+volume('study')+'</p>':''}${volume('review')?'<p>복습량 '+volume('review')+'</p>':''}`;
+  $('stats-proportions').innerHTML=shares.map((g,i)=>`<li><i class="legend-dot" style="background:${statsColors[i%statsColors.length]}"></i><span>${escapeHTML(g.name)}</span><b>${Math.round(g.percent*10)/10}%</b></li>`).join('');
   const plans=currentPlans();
   $('stats-forecast').innerHTML=plans.map(p=>{const m=demoMaterials.find(m=>m.id===p.id),f=p.forecast;return `<article class="stats-forecast-item"><h3>${escapeHTML(m.name)}</h3><p>${p.isActive&&f.reason==='estimated'&&f.window&&f.speed!==null?`최근 ${f.window}일 평균 ${Math.round(f.speed*100)/100}${escapeHTML(m.unit)}/일 · `:''}${escapeHTML(f.reason==='estimated'&&p.isActive?'예상 완료 '+f.date:forecastLabel(p))}</p></article>`;}).join('')||'<p class="field-help">자료와 학습 기록을 등록하면 속도를 확인할 수 있어요.</p>';
 }
 function calendarData(){return StudyStats.calendar(dataState,localToday(),studyAPI,currentReviews());}
-function renderCalendar(){
-  const first=`${calendarYear}-${String(calendarMonth+1).padStart(2,'0')}-01`,today=localToday(),dates=calendarData();
-  $('calendar-title').textContent=`${calendarYear}년 ${calendarMonth+1}월`;
-  const offset=new Date(first+'T12:00:00').getDay(),count=new Date(calendarYear,calendarMonth+1,0).getDate();
-  $('calendar-grid').innerHTML='<span class="blank" aria-hidden="true"></span>'.repeat(offset)+Array.from({length:count},(_,i)=>{
-    const day=i+1,date=first.slice(0,8)+String(day).padStart(2,'0'),entry=dates[date],done=entry?.records.length||0,scheduled=entry?.scheduled.length||0,focus=entry?.focus.length||0;
-    return `<button class="${done?'level-'+Math.min(3,done):''} ${date===today?'today':''}" data-day="${day}" aria-label="${date}, 완료 기록 ${done}건, 예정 범위 ${scheduled}개, 집중 복습 시작 ${focus}개" ${date===today?'aria-current="date"':''}>${day}<span class="calendar-marks" aria-hidden="true">${scheduled?'<i class="calendar-scheduled '+(date<today?'overdue':'')+'"></i>':''}${focus?'<i class="calendar-focus"></i>':''}</span></button>`;
-  }).join('');
+let selectedCalendarDate=localToday(),calendarExpanded=false;
+function moveCalendar(year,month,selectToday=false){
+ if(!Number.isInteger(year)||year<1000||year>9999||month<0||month>11)return;
+ calendarYear=year;calendarMonth=month;selectedCalendarDate=selectToday?localToday():null;calendarExpanded=false;
+ $('calendar-picker').hidden=true;$('calendar-title').setAttribute('aria-expanded','false');renderCalendar();
 }
-function showCalendarDay(date){
-  const entry=calendarData()[date]||{records:[],scheduled:[],focus:[]},material=id=>dataState.study.materials.find(m=>m.id===id);
-  const records=entry.records.map(r=>`<article class="review-plan-item"><h3>${escapeHTML(r.name)}</h3><p>${r.kind==='study'?'학습':'복습'} · ${r.start}–${r.end}${escapeHTML(r.unit)}${r.kind==='study'?' · '+r.round+'회독':''}</p>${r.understanding?'<span class="badge sage">'+escapeHTML(r.understanding)+'</span>':''}</article>`).join('')||'<p class="field-help">이날 완료한 기록이 없어요.</p>';
-  const upcoming=entry.scheduled.map(p=>{const m=material(p.materialId);return `<article class="review-plan-item"><h3>${escapeHTML(m.name)}</h3><p>${p.start}–${p.end}${escapeHTML(m.unit)} · ${date<localToday()?'복습 지연':'복습 예정'}${p.manual?' · 직접 지정':''}</p><button class="text-link" data-dialog="review" data-material="${escapeHTML(m.id)}" data-review-start="${p.start}" data-review-end="${p.end}">복습 기록${icon('chevron')}</button></article>`;}).join('');
-  const focus=entry.focus.map(p=>`<article class="review-plan-item"><h3>${escapeHTML(material(p.materialId).name)}</h3><p>시험 전 집중 복습 시작 · ${escapeHTML(p.goalName)}</p></article>`).join('');
-  presentExamDialog(date+' 기록과 일정','<h3 class="calendar-section-title">완료 기록</h3>'+records+(upcoming?'<h3 class="calendar-section-title">현재 복습 일정</h3>'+upcoming:'')+focus);
+function renderCalendar(){
+ const first=String(calendarYear).padStart(4,'0')+'-'+String(calendarMonth+1).padStart(2,'0')+'-01',today=localToday(),dates=calendarData();
+ $('calendar-title').textContent=calendarYear+'년 '+(calendarMonth+1)+'월 ▾';
+ const offset=new Date(first+'T12:00:00').getDay(),count=new Date(calendarYear,calendarMonth+1,0).getDate();
+ $('calendar-grid').innerHTML='<span class="blank" aria-hidden="true"></span>'.repeat(offset)+Array.from({length:count},(_,i)=>{
+  const day=i+1,date=first.slice(0,8)+String(day).padStart(2,'0'),entry=dates[date],done=entry?.records.length||0,scheduled=entry?.scheduled.length||0,focus=entry?.focus.length||0;
+  return '<button class="'+(done?'level-'+Math.min(3,done):'')+' '+(date===today?'today':'')+' '+(date===selectedCalendarDate?'selected':'')+'" data-day="'+day+'" aria-pressed="'+(date===selectedCalendarDate)+'" aria-label="'+date+', 완료 기록 '+done+'건, 예정 범위 '+scheduled+'개, 집중 복습 시작 '+focus+'개" '+(date===today?'aria-current="date"':'')+'>'+day+'<span class="calendar-marks" aria-hidden="true">'+(scheduled?'<i class="calendar-scheduled '+(date<today?'overdue':'')+'"></i>':'')+(focus?'<i class="calendar-focus"></i>':'')+'</span></button>';
+ }).join('');
+ renderCalendarRecords();
+}
+function renderCalendarRecords(){
+ const host=$('calendar-records');
+ if(!selectedCalendarDate){host.innerHTML='<h3>선택한 날짜의 기록</h3><p class="field-help">이 달에서 날짜를 선택해 주세요.</p>';return;}
+ const rows=StudyStats.onDate(dataState,selectedCalendarDate,localToday(),studyAPI),visible=calendarExpanded?rows:rows.slice(0,5);
+ host.innerHTML='<h3>'+Number(selectedCalendarDate.slice(5,7))+'월 '+Number(selectedCalendarDate.slice(8,10))+'일의 학습 기록</h3><div class="calendar-record-list">'+(visible.map(r=>{
+  const range=r.start+'–'+r.end+escapeHTML(r.unit),round=r.round?r.round+'회독':'회독 미기록';
+  return '<button type="button" class="calendar-record" data-calendar-record="'+escapeHTML(r.id)+'" data-material="'+escapeHTML(r.materialId)+'" data-kind="'+r.kind+'" data-round="'+(r.round||'')+'"><span class="badge '+(r.kind==='study'?'sage':'cream')+'">'+(r.kind==='study'?'학습':'복습')+'</span><span class="calendar-record-text"><strong>'+escapeHTML(r.name)+'</strong><span>'+range+(r.kind==='study'?' · '+r.amount+escapeHTML(r.unit)+' 학습':'')+' · '+round+(r.understanding?' · '+escapeHTML(r.understanding):'')+'</span></span>'+icon('chevron')+'</button>';
+ }).join('')||'<p class="field-help">이날의 학습·복습 기록이 없어요.</p>')+'</div>'+(rows.length>5?'<button type="button" class="subtle-button calendar-more" data-calendar-more aria-expanded="'+calendarExpanded+'">'+(calendarExpanded?'접기':'나머지 '+(rows.length-5)+'건 더 보기')+'</button>':'');
+}
+function showCalendarDay(date){selectedCalendarDate=date;calendarExpanded=false;renderCalendar();}
+let calendarPickerYear;
+function renderCalendarPicker(){
+ $('calendar-picker-year').textContent=calendarPickerYear+'년';
+ $('calendar-picker-prev').disabled=calendarPickerYear<=1000;
+ $('calendar-picker-next').disabled=calendarPickerYear>=9999;
+ $('calendar-picker-months').innerHTML=Array.from({length:12},(_,month)=>{
+  const selected=calendarPickerYear===calendarYear&&month===calendarMonth;
+  return '<button type="button" class="calendar-picker-month" data-picker-month="'+month+'" aria-pressed="'+selected+'">'+(month+1)+'월</button>';
+ }).join('');
+}
+function toggleCalendarPicker(){
+ const picker=$('calendar-picker'),open=picker.hidden;
+ if(open){calendarPickerYear=calendarYear;renderCalendarPicker();}
+ picker.hidden=!open;$('calendar-title').setAttribute('aria-expanded',String(open));
+ if(open)($('calendar-picker-months').querySelector('[aria-pressed="true"]')||$('calendar-picker-months').querySelector('button')).focus({preventScroll:true});
+}
+function openCalendarRecord(button){
+ const id=button.dataset.material;
+ if(!dataState.study.materials.some(m=>m.id===id))return;
+ openDetail(id);const tab=button.dataset.kind==='review'?'review':'study';renderDetailTab(tab);
+ document.querySelectorAll('[data-detail-tab]').forEach(b=>{const active=b.dataset.detailTab===tab;b.classList.toggle('active',active);b.setAttribute('aria-pressed',String(active));});
+ const row=[...$('detail-tab-content').querySelectorAll('[data-history-record]')].find(r=>r.dataset.historyRecord===button.dataset.calendarRecord&&(tab==='review'||r.dataset.historyRound===button.dataset.round));
+ if(row){row.scrollIntoView({block:'center',behavior:'smooth'});row.classList.add('record-highlight');setTimeout(()=>row.classList.remove('record-highlight'),1800);}
 }
 
 function openDetail(id) {
-  if(!demoMaterials.some(m=>m.id===id))return;
-  selectedMaterial = materialExamInfo(demoMaterials.find((item) => item.id === id) || demoMaterials[0]);
+  const source=dataState.study.materials.find(m=>m.id===id);if(!source)return;
+  selectedMaterial = materialExamInfo(studyAPI.project(source));
   const m = selectedMaterial;
   $('view-detail').innerHTML = `<div class="detail-page-top"><button class="icon-button" data-view="home" aria-label="학습 자료 목록으로 돌아가기">${icon('back')}</button><h1 id="detail-heading">${escapeHTML(m.name)}</h1><button class="icon-button" data-dialog="material-menu" data-material="${escapeHTML(m.id)}" aria-label="자료 관리 메뉴">${icon('more')}</button></div><div class="detail-grid"><section class="panel detail-summary">${plantMarkup(m,'detail-plant')}<div class="material-meta"><span class="badge sage">${m.type}</span><span class="badge cream">${escapeHTML(m.goal)}</span>${m.days!==null ? `<span class="badge clay">${ddayLabel(m.days)}</span>` : ''}</div><div class="quantity"><b>${m.current}</b><span>/</span><span>${m.total}<span class="material-unit">${escapeHTML(m.unit)}</span></span></div><span class="round-label">${m.round}회독</span><div class="material-progress">${progressMarkup(Math.round(m.current/m.total*100))}</div><div class="card-primary-actions"><button class="button primary" data-dialog="record" data-material="${escapeHTML(m.id)}">${icon('edit')}진도 기록</button><button class="button secondary" data-dialog="review" data-material="${escapeHTML(m.id)}">${icon('repeat')}복습</button></div><div class="card-secondary-actions"><button class="subtle-button" data-dialog="memo" data-material="${escapeHTML(m.id)}">메모</button><button class="subtle-button" data-dialog="material" data-material="${escapeHTML(m.id)}" data-edit>수정</button></div></section><section class="panel"><div class="segmented detail-tabs" aria-label="자료 상세 보기"><button class="active" data-detail-tab="study" aria-pressed="true">학습 기록</button><button data-detail-tab="review" aria-pressed="false">복습 기록</button><button data-detail-tab="basic" aria-pressed="false">기본 정보</button></div><div id="detail-tab-content"></div></section></div>`;
   renderDetailTab('study');
@@ -360,9 +402,9 @@ function renderDetailTab(tab) {
     const source=dataState.study.materials.find(item=>item.id===m.id);
     const review=tab==='review';
     const rows=review?studyAPI.sorted(source.reviews):studyAPI.calculate(source.records,source.total);
-    const row=(r,unit,editable=true)=>`<article class="record-row"><div class="record-row-top"><time>${escapeHTML(r.date)}</time>${editable?`<button class="subtle-button" data-edit-entry="${review?'review':'record'}" data-record="${escapeHTML(r.id)}" data-material="${escapeHTML(m.id)}">수정</button><button class="subtle-button" data-delete-entry="${review?'review':'record'}" data-record="${escapeHTML(r.id)}" data-material="${escapeHTML(m.id)}">삭제</button>`:''}</div><div class="record-row-data">${review?`<span>${r.start}–${r.end}${escapeHTML(r.unit)}</span>`:`<span><small>학습량</small><strong>+${r.amount}${escapeHTML(unit)}</strong></span><span><small>현재 위치</small>${r.position}${escapeHTML(unit)}</span>`}</div>${r.understanding?`<span class="badge sage">${escapeHTML(r.understanding)}</span>`:''}</article>`;
+    const row=(r,unit,editable=true,historyRound=m.round)=>`<article class="record-row" data-history-record="${escapeHTML(r.id)}" data-history-round="${historyRound}"><div class="record-row-top"><time>${escapeHTML(r.date)}</time>${editable?`<button class="subtle-button" data-edit-entry="${review?'review':'record'}" data-record="${escapeHTML(r.id)}" data-material="${escapeHTML(m.id)}">수정</button><button class="subtle-button" data-delete-entry="${review?'review':'record'}" data-record="${escapeHTML(r.id)}" data-material="${escapeHTML(m.id)}">삭제</button>`:''}</div><div class="record-row-data">${review?`<span>${r.start}–${r.end}${escapeHTML(r.unit)}</span>`:`<span><small>학습량</small><strong>+${r.amount}${escapeHTML(unit)}</strong></span><span><small>현재 위치</small>${r.position}${escapeHTML(unit)}</span>`}</div>${r.understanding?`<span class="badge sage">${escapeHTML(r.understanding)}</span>`:''}</article>`;
     $('detail-tab-content').innerHTML=rows.slice().reverse().map(r=>row(r,m.unit)).join('')||'<p class="field-help">기록이 없어요.</p>';
-    if(!review)$('detail-tab-content').innerHTML+=source.roundHistory.slice().reverse().map(h=>`<h3>${h.round}회독 · ${escapeHTML(h.completedDate)}</h3>${studyAPI.calculate(h.records,h.total).reverse().map(r=>row(r,h.unit,false)).join('')}`).join('');
+    if(!review)$('detail-tab-content').innerHTML+=source.roundHistory.slice().reverse().map(h=>`<h3>${h.round}회독 · ${escapeHTML(h.completedDate)}</h3>${studyAPI.calculate(h.records,h.total).reverse().map(r=>row(r,h.unit,false,h.round)).join('')}`).join('');
   }
 }
 
@@ -621,6 +663,7 @@ async function readRestore(input){
 }
 
 document.addEventListener('click',(event)=>{
+  if(!$('calendar-picker').hidden&&!event.target.closest('.calendar-navigation')){$('calendar-picker').hidden=true;$('calendar-title').setAttribute('aria-expanded','false');}
   const button = event.target.closest('button');
   if (!button) return;
   if(handleStudyButton(button))return;
@@ -641,10 +684,13 @@ document.addEventListener('click',(event)=>{
     list.hidden = !list.hidden;
     return button.setAttribute('aria-expanded',String(!list.hidden));
   }
-  if (button.dataset.calendar) {
-    const date = new Date(calendarYear,calendarMonth+Number(button.dataset.calendar),1);
-    if(date.getFullYear()<1000||date.getFullYear()>9999)return;calendarYear=date.getFullYear();calendarMonth=date.getMonth();return renderCalendar();
-  }
+  if(button.hasAttribute('data-calendar-today'))return moveCalendar(Number(localToday().slice(0,4)),Number(localToday().slice(5,7))-1,true);
+  if(button.hasAttribute('data-calendar-picker'))return toggleCalendarPicker();
+  if(button.dataset.calendarYear){const year=calendarPickerYear+Number(button.dataset.calendarYear);if(year>=1000&&year<=9999){calendarPickerYear=year;renderCalendarPicker();}return;}
+  if(button.hasAttribute('data-picker-month')){moveCalendar(calendarPickerYear,Number(button.dataset.pickerMonth));$('calendar-title').focus({preventScroll:true});return;}
+  if(button.hasAttribute('data-calendar-more')){calendarExpanded=!calendarExpanded;return renderCalendarRecords();}
+  if(button.hasAttribute('data-calendar-record'))return openCalendarRecord(button);
+  if (button.dataset.calendar) {const date=new Date(calendarYear,calendarMonth+Number(button.dataset.calendar),1);return moveCalendar(date.getFullYear(),date.getMonth());}
   if (button.dataset.day) return showCalendarDay(calendarYear+'-'+String(calendarMonth+1).padStart(2,'0')+'-'+String(button.dataset.day).padStart(2,'0'));
   if (button.dataset.detailTab) {selectInGroup(button,'[data-detail-tab]');return renderDetailTab(button.dataset.detailTab);}
   if (button.closest('[data-choice-group]')) selectInGroup(button,'.choice-button');
@@ -716,3 +762,5 @@ function activateDataContext(){
  applicationContext.updateSettings?.();
 }
 if(applicationContext?.ready)applicationContext.ready({activate:activateDataContext,state:()=>dataState,busy:()=>!!saveGuard?.busy||restoreReading,pending:()=>pendingRestore!==null,notify});
+
+document.addEventListener('keydown',event=>{if(event.key==='Escape'&&currentView==='stats'&&!dialog.open&&!$('calendar-picker').hidden){$('calendar-picker').hidden=true;$('calendar-title').setAttribute('aria-expanded','false');$('calendar-title').focus({preventScroll:true});event.preventDefault();}});

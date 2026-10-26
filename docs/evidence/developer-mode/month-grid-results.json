@@ -1,0 +1,112 @@
+{
+  "results": [
+    {
+      "name": "PC/mobile compact4x3 month popover overlays grid; cell heights unchanged",
+      "pass": true,
+      "value": [
+        {
+          "width": 608,
+          "left": 172.5,
+          "right": 420.5,
+          "popupWidth": 248,
+          "columns": 4,
+          "rows": 3,
+          "months": 12,
+          "selected": 1,
+          "top": 905.2950439453125,
+          "cellHeight": 35,
+          "font": "13.65px",
+          "background": "rgba(0, 0, 0, 0)",
+          "oldInputs": 0
+        },
+        {
+          "width": 1024,
+          "left": 520.484375,
+          "right": 768.484375,
+          "popupWidth": 248,
+          "columns": 4,
+          "rows": 3,
+          "months": 12,
+          "selected": 1,
+          "top": 771.645263671875,
+          "cellHeight": 35,
+          "font": "13.65px",
+          "background": "rgba(0, 0, 0, 0)",
+          "oldInputs": 0
+        },
+        {
+          "width": 1440,
+          "left": 728.484375,
+          "right": 976.484375,
+          "popupWidth": 248,
+          "columns": 4,
+          "rows": 3,
+          "months": 12,
+          "selected": 1,
+          "top": 770.9298706054688,
+          "cellHeight": 35,
+          "font": "13.65px",
+          "background": "rgba(0, 0, 0, 0)",
+          "oldInputs": 0
+        },
+        {
+          "width": 320,
+          "left": 36,
+          "right": 284,
+          "popupWidth": 248,
+          "columns": 4,
+          "rows": 3,
+          "months": 12,
+          "selected": 1,
+          "top": 518.39111328125,
+          "cellHeight": 46,
+          "font": "13.65px",
+          "background": "rgba(0, 0, 0, 0)",
+          "oldInputs": 0
+        },
+        {
+          "width": 375,
+          "left": 63.5,
+          "right": 311.5,
+          "popupWidth": 248,
+          "columns": 4,
+          "rows": 3,
+          "months": 12,
+          "selected": 1,
+          "top": 497.77447509765625,
+          "cellHeight": 46,
+          "font": "13.65px",
+          "background": "rgba(0, 0, 0, 0)",
+          "oldInputs": 0
+        },
+        {
+          "width": 430,
+          "left": 91,
+          "right": 339,
+          "popupWidth": 248,
+          "columns": 4,
+          "rows": 3,
+          "months": 12,
+          "selected": 1,
+          "top": 213.55926513671875,
+          "cellHeight": 46,
+          "font": "13.65px",
+          "background": "rgba(0, 0, 0, 0)",
+          "oldInputs": 0
+        }
+      ]
+    },
+    {
+      "name": "year arrows and immediate month selection close popup and clear selected date",
+      "pass": true,
+      "value": true
+    },
+    {
+      "name": "outside click/Escape close; Today and month navigation preserved; no save",
+      "pass": true,
+      "value": true
+    }
+  ],
+  "errors": [],
+  "physicalSafari": false
+}
