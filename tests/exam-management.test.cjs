@@ -7,7 +7,7 @@ test('only one priority; switch and release',()=>{let s=E.update(base(),{type:'p
 test('pause selections protect chosen, shared-active and manually paused materials',()=>{const s=status(base(),'a','paused',['independent']);assert.equal(E.materialStatus(s,'one'),'paused');assert.equal(E.materialStatus(s,'shared'),'active');assert.equal(E.materialStatus(s,'independent'),'active');assert.equal(E.materialStatus(s,'manual'),'paused')});
 test('both exams paused, restarting either restores shared only',()=>{let s=status(status(base(),'a','paused'),'b','paused');assert.equal(E.materialStatus(s,'shared'),'paused');s=status(s,'b','active');assert.equal(E.materialStatus(s,'shared'),'active');assert.equal(E.materialStatus(s,'one'),'paused');assert.equal(E.materialStatus(s,'manual'),'paused')});
 test('manual pause during auto pause stays paused after resume',()=>{let s=status(base(),'a','paused');s=E.update(s,{type:'material-status',id:'one',status:'paused'});s=status(s,'a','active');assert.equal(E.materialStatus(s,'one'),'paused')});
-test('archive differs from pause and clears priority without deleting history or memo',()=>{let s=base();s.goals[0].note='memo';s.goals[0].history=[{id:'old'}];s=E.update(s,{type:'priority',id:'a'});s=status(s,'a','archived');assert.equal(s.priorityGoalId,null);assert.equal(s.goals[0].note,'memo');assert.deepEqual(s.goals[0].history,[{id:'old'}]);assert.equal(s.goals[0].importance,'legacy');assert.equal(E.materialStatus(s,'one'),'paused')});
+test('archive preserves priority setting without pinning inactive exams or deleting history',()=>{let s=base();s.goals[0].note='memo';s.goals[0].history=[{id:'old'}];s=E.update(s,{type:'priority',id:'a'});s=status(s,'a','archived');assert.equal(s.priorityGoalId,'a');assert.equal(E.orderedGoals(s)[0].id,'b');assert.equal(s.goals[0].note,'memo');assert.deepEqual(s.goals[0].history,[{id:'old'}]);assert.equal(s.goals[0].importance,'legacy');assert.equal(E.materialStatus(s,'one'),'paused')});
 test('deleting paused goal releases automatic pause; material settings remain',()=>{const s=E.update(status(base(),'a','paused'),{type:'delete',id:'a'});assert.equal(E.materialStatus(s,'one'),'active');assert.equal(E.materialStatus(s,'manual'),'paused');assert.ok(s.materialSettings.one)});
 test('no date, D-Day, today and elapsed exam dates',()=>{assert.equal(E.dayDifference('','2026-10-24'),null);assert.equal(E.dayDifference('2026-10-24','2026-10-24'),0);assert.equal(E.dayDifference('2026-10-25','2026-10-24'),1);assert.equal(E.dayDifference('2026-10-23','2026-10-24'),-1)});
 test('edit preserves legacy fields and manual schedule',()=>{let s=base();s.goals[0].focusMode='manual';s.goals[0].focusDate='2026-11-01';s=E.update(s,{type:'upsert',goal:{id:'a',name:'edited',date:'2026-11-20'}});assert.equal(s.goals[0].focusDate,'2026-11-01');assert.equal(s.goals[0].importance,'legacy')});
@@ -48,3 +48,24 @@ test('new material linked to inactive exam defaults paused; active exam resumes 
 test('archive supports per-material keep; resume restores automatic states only',()=>{let s=status(base(),'a','archived',['one']);assert.equal(E.materialStatus(s,'one'),'active');assert.equal(E.materialStatus(s,'independent'),'paused');s=status(s,'a','active');assert.equal(E.materialStatus(s,'independent'),'active');assert.equal(E.materialStatus(s,'manual'),'paused')});
 test('unlinked exams pause/resume without affecting any material',()=>{let s=base();s.goals.push(goal('empty',[]));const before=JSON.stringify(s.materialSettings);s=status(s,'empty','paused');assert.equal(JSON.stringify(s.materialSettings),before);s=status(s,'empty','active');assert.equal(JSON.stringify(s.materialSettings),before)});
 test('unlinked choice is rejected; JSON round trip retains per-exam selections',()=>{assert.throws(()=>status(base(),'a','paused',['missing']));const s=status(base(),'a','paused',['one']);const map=new Map();const storage={getItem:k=>map.get(k)??null,setItem:(k,v)=>map.set(k,v)};E.save(storage,s);assert.deepEqual(E.load(storage,base()).state,s)});
+
+test('UI list order: active priority, upcoming, past, undated, paused, recent archive; names break ties',()=>{
+ const make=(id,date,status='active',name=id)=>({...goal(id,[],status),date,name});
+ const s=base();s.goals=[
+ make('undated','','active'),make('past-old','2026-09-01'),make('future-far','2026-12-01'),
+ make('paused-near','2026-11-01','paused'),make('arch-old','2026-01-01','archived'),
+ make('priority','','active'),make('past-near','2026-10-25'),make('future-z','2026-10-28','active','하'),
+ make('future-a','2026-10-28','active','가'),make('paused-far','2026-12-01','paused'),
+ make('arch-new','2026-10-01','archived'),make('arch-none','','archived')];s.priorityGoalId='priority';
+ const raw=JSON.stringify(s);
+ assert.deepEqual(E.orderedGoals(s,'2026-10-26').map(g=>g.id),['priority','future-a','future-z','future-far','past-near','past-old','undated','paused-near','paused-far','arch-new','arch-old','arch-none']);
+ assert.equal(JSON.stringify(s),raw);
+ s.goals.find(g=>g.id==='priority').status='paused';
+ assert.equal(E.orderedGoals(s,'2026-10-26')[0].id,'future-a');assert.equal(E.reconcile(s).priorityGoalId,'priority');
+});
+test('link management changes only relationships and derived reasons, preserving source metadata',()=>{
+ let s=base();s.goals[0].note='memo';s.goals[0].history=[{id:'old-event'}];
+ const before=structuredClone(s);s=E.update(s,{type:'link-materials',id:'a',materialIds:['shared','manual']});
+ assert.deepEqual(s.goals[0].materialIds,['shared','manual']);assert.deepEqual(s.goals[1],before.goals[1]);assert.deepEqual(s.goals[0].history,before.goals[0].history);assert.equal(s.goals[0].note,'memo');assert.equal(s.materialSettings.manual.manualStatus,'paused');
+ assert.throws(()=>E.update(s,{type:'link-materials',id:'a',materialIds:['shared','shared']}));
+});

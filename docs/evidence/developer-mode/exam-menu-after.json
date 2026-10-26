@@ -1,0 +1,20 @@
+{
+  "hashes": {
+    "app.js": "ce38ec2c724df5d558fe2e0cdd0708d0799907a7c663296a6d0cf349ec9972fa",
+    "exam-management.js": "242001dd4980a00bf72caaccf883f580d646674979c3775dd57d4623bd7066aa",
+    "study-data.js": "8f78871208dc640a71e254ad62087b16a479fc0b13566279fcfd2aa729ec48de",
+    "learning-plan.js": "f62d2aca0b194d0c2ad7d80f906841bff26ed074a626df4e96185306fd96da35",
+    "review-plan.js": "a8644f6a209bd0e33ba6dda64652a524d8b2f273dc698b04444ab6f1e61c04ed",
+    "study-stats.js": "7cada77f58429b474dc58ef419549c32e2d382a4da4a4f12f5fed297df5ad2e6",
+    "reference/v1/app.js": "398469ccf2a9a08fee3850bcf0bc46b26746567f0a7ef9ec01decc45fb8f8e5f"
+  },
+  "unchanged": [
+    "study-data.js",
+    "learning-plan.js",
+    "review-plan.js",
+    "study-stats.js",
+    "reference/v1/app.js"
+  ],
+  "tests": 181,
+  "browserChecks": 8
+}

@@ -1,0 +1,160 @@
+{
+  "results": [
+    {
+      "name": "home emphasizes actual remaining quota, unknown/rest states, excludes archived/paused",
+      "pass": true,
+      "value": {
+        "a": "오늘 학습 교재오늘 남은 학습 30페이지오늘 0 / 30페이지 학습진도 기록",
+        "rest": "쉬는 날 자료오늘은 쉬는 날오늘 0페이지 학습진도 기록",
+        "unknown": "LongStudyNameLongStudyNameLongStudyNameLongStudyNameLongStudyNameLongStudyNameLongStudyName학습량 추천 정보가 없어요.오늘 0강 학습진도 기록",
+        "excluded": true,
+        "text": "집중 복습오늘 남은 학습 12페이지오늘 0 / 12페이지 학습진도 기록오늘 학습 교재오늘 남은 학습 30페이지오늘 0 / 30페이지 학습진도 기록쉬는 날 자료오늘은 쉬는 날오늘 0페이지 학습진도 기록오늘 예정 교재학습량 추천 정보가 없어요.오늘 0문제 학습진도 기록LongStudyNameLongStudyNameLongStudyNameLongStudyNameLongStudyNameLongStudyNameLongStudyName학습량 추천 정보가 없어요.오늘 0페이지 학습진도 기록LongStudyNameLongStudyNameLongStudyNameLongStudyNameLongStudyNameLongStudyNameLongStudyName학습량 추천 정보가 없어요.오늘 0강 학습진도 기록"
+      }
+    },
+    {
+      "name": "progress10/30 leaves20; edit updates actual delta; reaching target marks complete",
+      "pass": true,
+      "value": true
+    },
+    {
+      "name": "changing plan rebases using existing policy; progress stays consistent",
+      "pass": true,
+      "value": {
+        "amount": 23,
+        "text": "오늘 학습 교재오늘 남은 학습 23페이지오늘 30 / 53페이지 학습 · 계획 변경 반영진도 기록"
+      }
+    },
+    {
+      "name": "default today filter counts unique ranges; material groups collapsed; duplicate names stay distinct",
+      "pass": true,
+      "value": {
+        "counts": {
+          "due": 5,
+          "overdue": 13
+        },
+        "shown": [
+          5,
+          13
+        ],
+        "rows": 0,
+        "filter": "due"
+      }
+    },
+    {
+      "name": "5 then10 then all; collapse; switching groups/filters resets5",
+      "pass": true,
+      "value": true
+    },
+    {
+      "name": "keyboard disclosure and Escape close only the range menu",
+      "pass": true,
+      "value": true
+    },
+    {
+      "name": "date change only through overflow; moving range to today refreshes filter counts and preserves reviews",
+      "pass": true,
+      "value": {
+        "counts": {
+          "due": 6,
+          "overdue": 12
+        },
+        "filter": "overdue",
+        "expanded": "m"
+      }
+    },
+    {
+      "name": "review record prefilled; completion returns to same list and removes completed range",
+      "pass": true,
+      "value": true
+    },
+    {
+      "name": "regular/focus partial overlap has no duplicate pages; one completion stores one review",
+      "pass": true,
+      "value": true
+    },
+    {
+      "name": "future reschedule disappears; cancel returns to list; fresh open defaults to today",
+      "pass": true,
+      "value": true
+    },
+    {
+      "name": "320..1440 low modals and long names stay contained; range/menu actions reachable",
+      "pass": true,
+      "value": [
+        {
+          "width": 320,
+          "scroll": 320,
+          "dialog": 284,
+          "dialogScroll": 284,
+          "rows": 5,
+          "y0": 96,
+          "y1": 96,
+          "x": 291,
+          "y": 58
+        },
+        {
+          "width": 375,
+          "scroll": 375,
+          "dialog": 339,
+          "dialogScroll": 339,
+          "rows": 5,
+          "y0": 96,
+          "y1": 96,
+          "x": 346,
+          "y": 58
+        },
+        {
+          "width": 430,
+          "scroll": 430,
+          "dialog": 394,
+          "dialogScroll": 394,
+          "rows": 5,
+          "y0": 96,
+          "y1": 96,
+          "x": 401,
+          "y": 58
+        },
+        {
+          "width": 768,
+          "scroll": 768,
+          "dialog": 543,
+          "dialogScroll": 543,
+          "rows": 5,
+          "y0": 98,
+          "y1": 98,
+          "x": 652,
+          "y": 58
+        },
+        {
+          "width": 1024,
+          "scroll": 1024,
+          "dialog": 543,
+          "dialogScroll": 543,
+          "rows": 5,
+          "y0": 98,
+          "y1": 98,
+          "x": 780,
+          "y": 58
+        },
+        {
+          "width": 1440,
+          "scroll": 1440,
+          "dialog": 558,
+          "dialogScroll": 558,
+          "rows": 5,
+          "y0": 98,
+          "y1": 98,
+          "x": 988,
+          "y": 58
+        }
+      ]
+    },
+    {
+      "name": "backups preserve original formats; display sorting never writes schedule state",
+      "pass": true,
+      "value": true
+    }
+  ],
+  "errors": [],
+  "physicalSafari": false
+}

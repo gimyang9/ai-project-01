@@ -1,0 +1,123 @@
+{
+  "results": [
+    {
+      "name": "nested calendar preserves unsaved exam fields; multi-month cancel discards draft",
+      "pass": true,
+      "value": true
+    },
+    {
+      "name": "toggle date, remove chip and reset affect only draft; Done commits form only",
+      "pass": true,
+      "value": true
+    },
+    {
+      "name": "saving dates changes available days/quota/focus through existing calculation policies",
+      "pass": true,
+      "value": {
+        "before": {
+          "days": 10,
+          "amount": 6,
+          "focus": "2026-10-31"
+        },
+        "after": {
+          "days": 8,
+          "amount": 8,
+          "focus": "2026-10-29",
+          "daysOff": [
+            "2026-11-01",
+            "2026-11-02"
+          ]
+        }
+      }
+    },
+    {
+      "name": "edit restores selected days; malformed/duplicate legacy text safely normalized on Done",
+      "pass": true,
+      "value": true
+    },
+    {
+      "name": "JSON round-trip, deleting a date and reset recalculate without touching history",
+      "pass": true,
+      "value": true
+    },
+    {
+      "name": "Escape/backdrop cancel only calendar, preserving parent form",
+      "pass": true,
+      "value": true
+    },
+    {
+      "name": "320px/low-height modal and many chips scroll; buttons are reachable without overflow",
+      "pass": true,
+      "value": [
+        {
+          "width": 320,
+          "height": 400,
+          "dialog": 284,
+          "scroll": 284,
+          "chipHeight": 112,
+          "chipScroll": 1398,
+          "cell": 44,
+          "x": 291,
+          "y": 56
+        },
+        {
+          "width": 375,
+          "height": 600,
+          "dialog": 339,
+          "scroll": 339,
+          "chipHeight": 112,
+          "chipScroll": 958,
+          "cell": 44,
+          "x": 346,
+          "y": 56
+        },
+        {
+          "width": 430,
+          "height": 800,
+          "dialog": 394,
+          "scroll": 394,
+          "chipHeight": 112,
+          "chipScroll": 958,
+          "cell": 44,
+          "x": 401,
+          "y": 118
+        },
+        {
+          "width": 768,
+          "height": 500,
+          "dialog": 403,
+          "scroll": 403,
+          "chipHeight": 112,
+          "chipScroll": 958,
+          "cell": 44,
+          "x": 582,
+          "y": 56
+        },
+        {
+          "width": 1024,
+          "height": 400,
+          "dialog": 403,
+          "scroll": 403,
+          "chipHeight": 112,
+          "chipScroll": 958,
+          "cell": 44,
+          "x": 710,
+          "y": 56
+        },
+        {
+          "width": 1440,
+          "height": 900,
+          "dialog": 418,
+          "scroll": 418,
+          "chipHeight": 112,
+          "chipScroll": 918,
+          "cell": 44,
+          "x": 918,
+          "y": 168
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "physicalSafari": false
+}

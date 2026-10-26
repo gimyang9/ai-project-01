@@ -1,0 +1,32 @@
+[
+  {
+    "path": "study-data.js",
+    "sha256": "8f78871208dc640a71e254ad62087b16a479fc0b13566279fcfd2aa729ec48de",
+    "diff": ""
+  },
+  {
+    "path": "exam-management.js",
+    "sha256": "242001dd4980a00bf72caaccf883f580d646674979c3775dd57d4623bd7066aa",
+    "diff": ""
+  },
+  {
+    "path": "learning-plan.js",
+    "sha256": "f62d2aca0b194d0c2ad7d80f906841bff26ed074a626df4e96185306fd96da35",
+    "diff": ""
+  },
+  {
+    "path": "review-plan.js",
+    "sha256": "a8644f6a209bd0e33ba6dda64652a524d8b2f273dc698b04444ab6f1e61c04ed",
+    "diff": ""
+  },
+  {
+    "path": "study-stats.js",
+    "sha256": "7cada77f58429b474dc58ef419549c32e2d382a4da4a4f12f5fed297df5ad2e6",
+    "diff": ""
+  },
+  {
+    "path": "today-review-view.js",
+    "sha256": "45393df7e830b599ec258d52e66ff5fe3dd73f95573f82519d6c5b3741aa28b6",
+    "diff": ""
+  }
+]

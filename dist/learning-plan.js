@@ -42,10 +42,26 @@
     result.date=shift(today,days);result.reason=result.date?'estimated':'out-of-range';
     return result;
   }
+  // Burden uses actual increases on eligible learning days; forecasting keeps its calendar-day policy.
+  const BURDEN_THRESHOLD=1.5;
+  function habit(material,today,study,goal){
+    const rows=studyRows(material,study).filter(r=>r.date<=today&&r.unit===material.unit);
+    const first=rows.map(r=>r.date).sort()[0],span=first?diff(today,first)+1:0;
+    const window=span>=28?28:span>=14?14:span>=7?7:0;
+    if(!window)return {window,days:0,amount:0,speed:null};
+    const from=shift(today,1-window),days=availableDays(from,today,goal);
+    const amount=rows.filter(r=>r.date>=from&&allowed(r.date,goal)).reduce((sum,r)=>sum+r.amount,0);
+    return {window,days,amount,speed:days&&amount>0?amount/days:null};
+  }
+  function notice(p){
+    if(!p.goalDate||!p.isActive||!p.remaining)return '';
+    if(p.manualDailyAmount)return p.manualShortfall?'설정한 학습량으로는 시험 전 완료가 어려울 수 있어요.':'';
+    return p.burdenRatio!==null&&p.burdenRatio>=BURDEN_THRESHOLD?'평소 학습 속도를 고려하면 다소 부담되는 분량이에요.':'';
+  }
   function signature(state,material,today,study,exam){
     const active=state.exams.goals.filter(g=>g.status==='active'&&g.materialIds.includes(material.id)).map(g=>({id:g.id,date:g.date,learningDays:[...g.learningDays].sort(),daysOff:[...(g.daysOff||[])].sort()})).sort((a,b)=>a.id.localeCompare(b.id));
     const previous=study.calculate(material.records,material.total).filter(r=>r.date<today).at(-1)?.position||0;
-    return JSON.stringify({total:material.total,unit:material.unit,round:material.round,target:material.targetDate||'',active,status:exam.materialStatus(state.exams,material.id),manual:material.manualDailyAmount||null,previous});
+    return JSON.stringify({policy:'exam-min-v2',total:material.total,unit:material.unit,round:material.round,target:material.targetDate||'',active,status:exam.materialStatus(state.exams,material.id),manual:material.manualDailyAmount||null,previous});
   }
   function stabilize(previous,next,today,study,exam){
     const output=JSON.parse(JSON.stringify(next)),oldPlans=build(previous,today,study,exam);
@@ -66,9 +82,10 @@
     return state.study.materials.filter(m=>!m.archived).map(material=>{
       const m=study.project(material),linked=ordered.filter(g=>g.materialIds.includes(m.id));
       const dated=linked.filter(g=>g.date).sort((a,b)=>a.date.localeCompare(b.date)||a.id.localeCompare(b.id));
-      const goal=dated[0]||linked[0]||null;
+      const goal=dated.find(g=>g.date>=today)||dated[0]||linked[0]||null;
       const target=m.targetDate||'';
-      const end=target||(goal?.date?shift(goal.date,-1):null);
+      const examEnd=goal?.date?shift(goal.date,-1):null;
+      const end=target&&examEnd?(target<examEnd?target:examEnd):target||examEnd;
       const remaining=Math.max(0,m.total-m.current),days=availableDays(today,end,goal);
       const isActive=exam.materialStatus(state.exams,m.id)==='active';
       const todayAllowed=allowed(today,goal);
@@ -81,14 +98,15 @@
       const creditedBefore=valid?saved.creditedBefore:0;
       const required=initialDaily;
       const amount=!isActive||!remaining||!todayAllowed?0:manual?Math.min(remaining,Math.max(0,manual-todayDone)):initialDaily===null?null:Math.min(remaining,Math.max(0,initialDaily-Math.max(0,todayDone-creditedBefore)));
-      const forecast=estimate(material,today,study);
-      return {id:m.id,remaining,goalId:goal?.id||null,goalName:goal?.name||'',deadline:end,deadlineSource:target?'material':goal?.date?'exam':null,availableDays:days,initialDaily,creditedBefore,requiredCurrent,todayAllowed,isActive,requiredDaily:required,manualDailyAmount:manual,todayDone,amount,rank:rank.get(m.id)??Infinity,forecast,
+      const forecast=estimate(material,today,study),usual=habit(material,today,study,goal);
+      const burdenRatio=remaining&&isActive&&days&&Number.isFinite(initialDaily)&&usual.speed>0?initialDaily/usual.speed:null;
+      return {id:m.id,remaining,goalId:goal?.id||null,goalName:goal?.name||'',goalDate:goal?.date||null,habit:usual,burdenRatio,deadline:end,deadlineSource:target&&end===target?'material':goal?.date?'exam':null,availableDays:days,initialDaily,creditedBefore,requiredCurrent,todayAllowed,isActive,requiredDaily:required,manualDailyAmount:manual,todayDone,amount,rank:rank.get(m.id)??Infinity,forecast,
         noTime:!!remaining&&!!end&&days===0,
         overdue:!!remaining&&!!end&&end<today,
         manualShortfall:manual&&end?Math.max(0,remaining-Math.max(0,days*manual-(todayAllowed?Math.min(todayDone,manual):0))):0,
         expectedLate:!!forecast.date&&!!end&&forecast.date>end};
     }).sort((a,b)=>a.rank-b.rank||(a.deadline||'9999-12-31').localeCompare(b.deadline||'9999-12-31')||a.id.localeCompare(b.id));
   }
-  const api={signature,stabilize,shift,diff,weekday,allowed,availableDays,studyRows,estimate,build};
+  const api={BURDEN_THRESHOLD,habit,notice,signature,stabilize,shift,diff,weekday,allowed,availableDays,studyRows,estimate,build};
   if(typeof module!=='undefined'&&module.exports)module.exports=api;else root.LearningPlan=api;
 })(typeof window==='undefined'?this:window);

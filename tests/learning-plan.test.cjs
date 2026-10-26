@@ -9,8 +9,8 @@ const record=(id,date,position,sequence=0)=>({id,date,position,sequence});
 test('approved example: 100 remaining / 5 days = 20, exam day excluded',()=>{
  const p=plans(state([m()],[g('exam','2026-10-30')]))[0];assert.equal(p.deadline,'2026-10-29');assert.equal(p.availableDays,5);assert.equal(p.requiredDaily,20);assert.equal(p.amount,20);
 });
-test('material target overrides even earlier exam date and includes target day',()=>{
- const p=plans(state([m('m',{targetDate:'2026-10-30'})],[g('exam','2026-10-27')]))[0];assert.equal(p.availableDays,6);assert.equal(p.deadline,'2026-10-30');assert.equal(p.requiredDaily,17);assert.equal(p.deadlineSource,'material');
+test('earlier exam deadline wins over a later material target',()=>{
+ const p=plans(state([m('m',{targetDate:'2026-10-30'})],[g('exam','2026-10-27')]))[0];assert.equal(p.availableDays,2);assert.equal(p.deadline,'2026-10-26');assert.equal(p.requiredDaily,50);assert.equal(p.deadlineSource,'exam');
 });
 test('earliest active exam controls shared material once, priority changes ordering only',()=>{
  const s=state([m(),m('other')],[g('later','2026-11-01',{materialIds:['m','other']}),g('early','2026-10-30')]);s.exams=E.update(s.exams,{type:'priority',id:'later'});
@@ -85,4 +85,32 @@ test('same-day progress uses deltas, not sum of positions; mean never counts dup
 });
 test('unrepresentable finish date yields explicit no-estimate result instead of crashing',()=>{
  const material=m('m',{total:Number.MAX_SAFE_INTEGER,records:[record('first','2026-10-19',1)]});const p=plans(state([material]))[0];assert.equal(p.forecast.reason,'out-of-range');assert.equal(p.forecast.date,null);
+});
+
+test('earlier material target remains binding; future preparing exam wins over an expired goal',()=>{
+ const p=plans(state([m('m',{targetDate:'2026-10-26'})],[g('future','2026-10-30'),g('expired','2026-10-01')]))[0];
+ assert.equal(p.goalId,'future');assert.equal(p.deadline,'2026-10-26');assert.equal(p.amount,50);
+});
+test('burden includes idle eligible days, excludes rest days, and starts exactly at 1.5',()=>{
+ const material=m('m',{total:1000,records:[record('r','2026-09-28',40)]});
+ const goal=g('exam','2026-12-01',{learningDays:[0,1,2,3,4],daysOff:['2026-10-01']});
+ const h=P.habit(material,today,D,goal);assert.equal(h.window,28);assert.equal(h.days,19);assert.equal(h.amount,40);assert.equal(h.speed,40/19);
+ const common={goalDate:'2026-12-01',isActive:true,remaining:120,manualDailyAmount:null};
+ assert.equal(P.notice({...common,burdenRatio:1.499}), '');assert.match(P.notice({...common,burdenRatio:1.5}),/다소 부담/);assert.match(P.notice({...common,burdenRatio:2}),/다소 부담/);
+ assert.equal(P.notice({...common,burdenRatio:null}), '');assert.equal(P.notice({...common,burdenRatio:2,goalDate:null}), '');assert.equal(P.notice({...common,burdenRatio:2,remaining:0}), '');
+});
+test('habit requires real matching-unit history and a positive recent speed',()=>{
+ const insufficient=P.habit(m('m',{records:[record('r',today,10)]}),today,D,g('a','2026-11-01'));assert.equal(insufficient.speed,null);
+ const zero=P.habit(m('m',{records:[record('r','2026-08-01',40)]}),today,D,g('a','2026-11-01'));assert.equal(zero.speed,null);
+ const rest=P.habit(m('m',{records:[record('r','2026-09-28',40)]}),today,D,g('a','2026-11-01',{learningDays:[]}));assert.equal(rest.speed,null);
+});
+test('manual notice uses actual remaining capacity and never overwrites the manual amount',()=>{
+ let s=D.update(state([m()],[g('exam','2026-10-30')]),{type:'plan',id:'m',amount:10},E),p=plans(s)[0];
+ assert.match(P.notice(p),/設定|설정한/);assert.equal(p.manualDailyAmount,10);
+ s=D.update(s,{type:'plan',id:'m',amount:20},E);p=plans(s)[0];assert.equal(P.notice(p),'');assert.equal(p.amount,20);
+});
+test('burden and forecasts stay independent from quota increases and same-day completion',()=>{
+ const s=state([m('m',{total:1000,records:[record('old','2026-09-28',28)]})],[g('exam','2026-10-30')]);
+ const before=JSON.stringify(s),p=plans(s)[0];assert.equal(p.habit.speed,1);assert.ok(p.burdenRatio>1.5);assert.match(P.notice(p),/다소 부담/);
+ const noExam=state(s.study.materials);assert.equal(plans(noExam)[0].forecast.date,p.forecast.date);assert.equal(JSON.stringify(s),before);
 });

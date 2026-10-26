@@ -1,0 +1,79 @@
+{
+  "results": [
+    {
+      "name": "100% stays active; card body and title each open detail",
+      "pass": true,
+      "value": true
+    },
+    {
+      "name": "record/review/menu buttons open only their action after filter rerender",
+      "pass": true,
+      "value": true
+    },
+    {
+      "name": "complete preserves history; completed category lists and details work",
+      "pass": true,
+      "value": true
+    },
+    {
+      "name": "resume preserves IDs, records and round; next round remains explicit",
+      "pass": true,
+      "value": true
+    },
+    {
+      "name": "direct settings tab; isolated ON/OFF returns byte-identical real storage",
+      "pass": true,
+      "value": true
+    },
+    {
+      "name": "mobile/PC containment and all actual card hit targets",
+      "pass": true,
+      "value": [
+        {
+          "width": 320,
+          "scroll": 320
+        },
+        {
+          "width": 375,
+          "scroll": 375
+        },
+        {
+          "width": 430,
+          "scroll": 430
+        },
+        {
+          "width": 768,
+          "scroll": 753
+        },
+        {
+          "width": 1023,
+          "scroll": 1008
+        },
+        {
+          "width": 1024,
+          "scroll": 1009
+        },
+        {
+          "width": 1440,
+          "scroll": 1425
+        },
+        {
+          "width": 1920,
+          "scroll": 1905
+        }
+      ]
+    },
+    {
+      "name": "backup roundtrip; old records and review projection preserved",
+      "pass": true,
+      "value": true
+    },
+    {
+      "name": "explicit next round and edited card navigation",
+      "pass": true,
+      "value": true
+    }
+  ],
+  "errors": [],
+  "physicalSafari": false
+}

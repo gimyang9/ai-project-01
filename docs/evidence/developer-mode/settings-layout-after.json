@@ -1,0 +1,42 @@
+[
+  {
+    "path": "index.html",
+    "hash": "9efb4f9899f19993ebb9f85f5711aeaedf83647b96087ad4c62e3bb650e558b7",
+    "afterHash": "c4ca7bf3e9c19fc40c916dbcb6d6862faec820497da95cc3f1619df40a5bb4c9"
+  },
+  {
+    "path": "style.css",
+    "hash": "ff36655685b9dfc527e00a7093bc7ac063e88a87c201f53d92dacd166847e53e",
+    "afterHash": "c8ebd17b6285fc18d81a625e1de66b70461489060753d6a6b18ce602abea7252"
+  },
+  {
+    "path": "app.js",
+    "hash": "1eedc74efedbcaabba8b42b454f70394df56a63b5ca3cec5310c7bf5d26bed48",
+    "afterHash": "1eedc74efedbcaabba8b42b454f70394df56a63b5ca3cec5310c7bf5d26bed48"
+  },
+  {
+    "path": "test-mode.js",
+    "hash": "bcab23f7272b32ef2be4892584fcdc7930b4447ed0cc2cce0bfa901a79b23741",
+    "afterHash": "bcab23f7272b32ef2be4892584fcdc7930b4447ed0cc2cce0bfa901a79b23741"
+  },
+  {
+    "path": "study-data.js",
+    "hash": "8f78871208dc640a71e254ad62087b16a479fc0b13566279fcfd2aa729ec48de",
+    "afterHash": "8f78871208dc640a71e254ad62087b16a479fc0b13566279fcfd2aa729ec48de"
+  },
+  {
+    "path": "learning-plan.js",
+    "hash": "25985f988841544bd43f7c8417ef5049f8c6b1dd8a2432729953821fae602656",
+    "afterHash": "25985f988841544bd43f7c8417ef5049f8c6b1dd8a2432729953821fae602656"
+  },
+  {
+    "path": "review-plan.js",
+    "hash": "a8644f6a209bd0e33ba6dda64652a524d8b2f273dc698b04444ab6f1e61c04ed",
+    "afterHash": "a8644f6a209bd0e33ba6dda64652a524d8b2f273dc698b04444ab6f1e61c04ed"
+  },
+  {
+    "path": "exam-management.js",
+    "hash": "242001dd4980a00bf72caaccf883f580d646674979c3775dd57d4623bd7066aa",
+    "afterHash": "242001dd4980a00bf72caaccf883f580d646674979c3775dd57d4623bd7066aa"
+  }
+]

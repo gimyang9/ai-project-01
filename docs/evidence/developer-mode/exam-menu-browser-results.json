@@ -1,0 +1,228 @@
+{
+  "results": [
+    {
+      "name": "register exam before materials; edit form has no material field",
+      "pass": true,
+      "value": {
+        "name": "시험 먼저",
+        "links": [],
+        "materials": 0
+      }
+    },
+    {
+      "name": "empty links view opens material registration with this exam preselected",
+      "pass": true,
+      "value": [
+        "4965865f-62b9-4dce-b21c-78db22154ed9"
+      ]
+    },
+    {
+      "name": "multiple links save; editing date/name preserves all links",
+      "pass": true,
+      "value": true
+    },
+    {
+      "name": "link cancel has no effect; unlink preserves original study/review records",
+      "pass": true,
+      "value": true
+    },
+    {
+      "name": "active/paused menus; resume keeps ID/date/links and creates no exam",
+      "pass": true,
+      "value": true
+    },
+    {
+      "name": "archived menu has new cycle only; explicit confirmation precedes new ID creation",
+      "pass": true,
+      "value": {
+        "newId": true,
+        "status": "active",
+        "links": [
+          "4965865f-62b9-4dce-b21c-78db22154ed9"
+        ],
+        "oldStatus": "archived"
+      }
+    },
+    {
+      "name": "backup round trip and reload retain inactive priority, IDs and original history",
+      "pass": true,
+      "value": true
+    },
+    {
+      "name": "small mobile/PC modals contain long names and allow reaching buttons",
+      "pass": true,
+      "value": [
+        {
+          "width": 320,
+          "dialog": 284,
+          "scroll": 284,
+          "outer": 320,
+          "type": "시험 관리"
+        },
+        {
+          "width": 320,
+          "dialog": 284,
+          "scroll": 284,
+          "outer": 320,
+          "type": "학습 자료 연결"
+        },
+        {
+          "width": 320,
+          "dialog": 284,
+          "scroll": 284,
+          "outer": 320,
+          "type": "시험 수정"
+        },
+        {
+          "width": 320,
+          "dialog": 284,
+          "scroll": 284,
+          "outer": 320,
+          "type": "새 회차 준비"
+        },
+        {
+          "width": 375,
+          "dialog": 339,
+          "scroll": 339,
+          "outer": 375,
+          "type": "시험 관리"
+        },
+        {
+          "width": 375,
+          "dialog": 339,
+          "scroll": 339,
+          "outer": 375,
+          "type": "학습 자료 연결"
+        },
+        {
+          "width": 375,
+          "dialog": 339,
+          "scroll": 339,
+          "outer": 375,
+          "type": "시험 수정"
+        },
+        {
+          "width": 375,
+          "dialog": 339,
+          "scroll": 339,
+          "outer": 375,
+          "type": "새 회차 준비"
+        },
+        {
+          "width": 430,
+          "dialog": 394,
+          "scroll": 394,
+          "outer": 430,
+          "type": "시험 관리"
+        },
+        {
+          "width": 430,
+          "dialog": 394,
+          "scroll": 394,
+          "outer": 430,
+          "type": "학습 자료 연결"
+        },
+        {
+          "width": 430,
+          "dialog": 394,
+          "scroll": 394,
+          "outer": 430,
+          "type": "시험 수정"
+        },
+        {
+          "width": 430,
+          "dialog": 394,
+          "scroll": 394,
+          "outer": 430,
+          "type": "새 회차 준비"
+        },
+        {
+          "width": 768,
+          "dialog": 463,
+          "scroll": 463,
+          "outer": 768,
+          "type": "시험 관리"
+        },
+        {
+          "width": 768,
+          "dialog": 478,
+          "scroll": 478,
+          "outer": 768,
+          "type": "학습 자료 연결"
+        },
+        {
+          "width": 768,
+          "dialog": 463,
+          "scroll": 463,
+          "outer": 768,
+          "type": "시험 수정"
+        },
+        {
+          "width": 768,
+          "dialog": 463,
+          "scroll": 463,
+          "outer": 768,
+          "type": "새 회차 준비"
+        },
+        {
+          "width": 1024,
+          "dialog": 463,
+          "scroll": 463,
+          "outer": 1024,
+          "type": "시험 관리"
+        },
+        {
+          "width": 1024,
+          "dialog": 463,
+          "scroll": 463,
+          "outer": 1024,
+          "type": "학습 자료 연결"
+        },
+        {
+          "width": 1024,
+          "dialog": 463,
+          "scroll": 463,
+          "outer": 1024,
+          "type": "시험 수정"
+        },
+        {
+          "width": 1024,
+          "dialog": 463,
+          "scroll": 463,
+          "outer": 1024,
+          "type": "새 회차 준비"
+        },
+        {
+          "width": 1440,
+          "dialog": 478,
+          "scroll": 478,
+          "outer": 1440,
+          "type": "시험 관리"
+        },
+        {
+          "width": 1440,
+          "dialog": 478,
+          "scroll": 478,
+          "outer": 1440,
+          "type": "학습 자료 연결"
+        },
+        {
+          "width": 1440,
+          "dialog": 478,
+          "scroll": 478,
+          "outer": 1440,
+          "type": "시험 수정"
+        },
+        {
+          "width": 1440,
+          "dialog": 463,
+          "scroll": 463,
+          "outer": 1440,
+          "type": "새 회차 준비"
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "physicalSafari": false
+}

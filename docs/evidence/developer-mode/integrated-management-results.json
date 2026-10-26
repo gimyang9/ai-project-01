@@ -1,0 +1,136 @@
+{
+  "results": [
+    {
+      "name": "compact plan uses home quota, independent forecast, one warning and no duplicate explanations",
+      "pass": true,
+      "value": {
+        "plan": {
+          "id": "m",
+          "remaining": 930,
+          "goalId": "g",
+          "goalName": "준비 시험",
+          "goalDate": "2026-10-30",
+          "habit": {
+            "window": 14,
+            "days": 14,
+            "amount": 70,
+            "speed": 5
+          },
+          "burdenRatio": 46.8,
+          "deadline": "2026-10-29",
+          "deadlineSource": "exam",
+          "availableDays": 4,
+          "initialDaily": 234,
+          "creditedBefore": 0,
+          "requiredCurrent": 233,
+          "todayAllowed": true,
+          "isActive": true,
+          "requiredDaily": 234,
+          "manualDailyAmount": null,
+          "todayDone": 5,
+          "amount": 229,
+          "rank": 0,
+          "forecast": {
+            "span": 14,
+            "window": 14,
+            "firstDate": "2026-10-13",
+            "recentAmount": 70,
+            "speed": 5,
+            "date": "2027-04-30",
+            "reason": "estimated"
+          },
+          "noTime": false,
+          "overdue": false,
+          "manualShortfall": 0,
+          "expectedLate": true
+        },
+        "text": "학습 계획오늘 권장 학습량229페이지예상 완료일2027.04.30시험 일정준비 시험2026.10.30평소 학습 속도를 고려하면 다소 부담되는 분량이에요.",
+        "cols": "144px 144px",
+        "notices": 1
+      }
+    },
+    {
+      "name": "timeline 5/10/all; actual position, same-day stable order and review range without position",
+      "pass": true,
+      "value": true
+    },
+    {
+      "name": "optional understanding clears existing evaluation and refreshes exact recommendation projection",
+      "pass": true,
+      "value": true
+    },
+    {
+      "name": "delete confirmation keeps records until save then refreshes timeline and review projection",
+      "pass": true,
+      "value": true
+    },
+    {
+      "name": "memo targets, whitespace, auto-height and duplicate save protection",
+      "pass": true,
+      "value": true
+    },
+    {
+      "name": "memo dirty close dismiss preserves input; accept discards; unchanged closes immediately",
+      "pass": true,
+      "value": true
+    },
+    {
+      "name": "memo Escape and backdrop use the same unsaved-change protection",
+      "pass": true,
+      "value": true
+    },
+    {
+      "name": "linked list contains archived history and opens correct material without changing completion",
+      "pass": true,
+      "value": true
+    },
+    {
+      "name": "quota30 minus10 is20; manual preserved and warning only for insufficient capacity",
+      "pass": true,
+      "value": true
+    },
+    {
+      "name": "320..1440 layout, short memo viewport and touch targets",
+      "pass": true,
+      "value": [
+        {
+          "width": 320,
+          "scroll": 320,
+          "cols": "114px 114px"
+        },
+        {
+          "width": 375,
+          "scroll": 375,
+          "cols": "137.5px 137.5px"
+        },
+        {
+          "width": 430,
+          "scroll": 430,
+          "cols": "165px 165px"
+        },
+        {
+          "width": 768,
+          "scroll": 753,
+          "cols": "146.781px 146.781px"
+        },
+        {
+          "width": 1024,
+          "scroll": 1009,
+          "cols": "162.672px 162.672px"
+        },
+        {
+          "width": 1440,
+          "scroll": 1440,
+          "cols": "286.172px 286.172px"
+        }
+      ]
+    },
+    {
+      "name": "backup/reload and test ON/OFF isolation preserve actual stored study and exam data",
+      "pass": true,
+      "value": true
+    }
+  ],
+  "errors": [],
+  "physicalSafari": false
+}

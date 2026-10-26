@@ -24,9 +24,10 @@ function refreshData(){
   examState=dataState.exams;
   demoMaterials=dataState.study.materials.filter(m=>!m.archived).map(studyAPI.project);
   demoArchivedMaterials=dataState.study.materials.filter(m=>m.archived).map(studyAPI.project);
-  $('archive-count').textContent=demoArchivedMaterials.length;
-  $('archive-count').setAttribute('aria-label',`보관 자료 ${demoArchivedMaterials.length}개`);
+
+
   renderMaterials(materialFilter);renderGoals(goalFilter);renderToday();renderHomeWelcome();renderReviewSummary();renderExamSummary();renderStorageNote();renderStats(statsPeriod);renderCalendar();
+  if(dialog.open&&reviewDialogVisible)renderReviewBrowser();
 }
 function renderStorageNote(){
   const note=document.querySelector('.preview-note');
@@ -79,7 +80,7 @@ const localToday=()=>{if(applicationContext?.today)return applicationContext.tod
 const ddayLabel=days=>days===null?'':days===0?'D-Day':days>0?`D−${days}`:`D+${Math.abs(days)}`;
 const examDateLabel=date=>date?new Intl.DateTimeFormat('ko-KR',{year:'numeric',month:'2-digit',day:'2-digit',weekday:'short'}).format(new Date(date+'T12:00:00')):'시험일 미정';
 function materialExamInfo(m) {
-  const goals=examAPI.orderedGoals(examState).filter(g=>g.materialIds.includes(m.id)&&g.status!=='archived');
+  const goals=examAPI.orderedGoals(examState,localToday()).filter(g=>g.materialIds.includes(m.id)&&g.status!=='archived');
   const g=goals.find(g=>g.status==='active')||goals[0];
   return {...m,goal:g?.name||'독립 학습',days:g?examAPI.dayDifference(g.date,localToday()):null,due:m.targetDate||'미정'};
 }
@@ -96,7 +97,7 @@ function currentReviews(){
   return reviewCache.value;
 }
 function activeReviewPlans(){return currentReviews().today;}
-function renderReviewSummary(){$('review-range-count').textContent=activeReviewPlans().length?`${activeReviewPlans().length}개 범위`:'오늘은 복습이 없어요';}
+function renderReviewSummary(){const v=reviewView(),n=v.counts.due+v.counts.overdue;$('review-range-count').textContent=n?n+'개 범위':'복습할 범위 없음';document.querySelector('.review-summary .summary-sub').textContent=n?'복습할 내용을 확인해요':'오늘은 복습이 없어요';}
 function reviewFocusText(plan,unit){
   if(!plan)return '';
   if(plan.reason==='no-study')return '현재 회독에서 공부한 범위가 없어 집중 복습을 기다리고 있어요.';
@@ -107,23 +108,74 @@ function reviewFocusText(plan,unit){
   const label=plan.speed.reason==='initial'?'초기 추정':plan.speed.reason==='manual'?'직접 설정':'최근 기록 기준';
   return `${plan.completedAmount&&plan.remaining===0?'기존 집중 범위 완료 · ':''}${plan.repeatRecommendedAmount?'새 복습 '+plan.repeatRecommendedAmount+unit+' · ':''}${label} 하루 ${Math.round(plan.speed.amount*100)/100}${unit} · 시작 ${plan.startDate}${plan.effectiveStart!==plan.startDate?' (오늘부터)':''}${plan.shortfall?' · 시험 전 '+plan.shortfall+unit+' 부족 예상':''}`;
 }
-function reviewRow(plan,material,upcoming=false){
-  const date=plan.dueDate||'';
-  const labels=upcoming?['복습 예정']:plan.sources.includes('focus')&&plan.status==='복습 지연'?['복습 지연','시험 전 복습']:[plan.status];
-  return `<article class="review-plan-item"><h3>${escapeHTML(material.name)}</h3><p>${plan.start}–${plan.end}${escapeHTML(material.unit)}${date?' · '+escapeHTML(date):''}${plan.manual?' · 직접 지정':''}</p><div class="review-plan-actions">${plan.newTarget?'<span class="badge cream">새 복습 대상</span>':''}${labels.map(label=>`<span class="badge ${label==='복습 지연'?'clay':'sage'}">${label}</span>`).join('')}<button class="text-link" data-dialog="review" data-material="${escapeHTML(material.id)}" data-review-start="${plan.start}" data-review-end="${plan.end}">복습 기록${icon('chevron')}</button><button class="subtle-button" data-dialog="review-date" data-material="${escapeHTML(material.id)}" data-review-start="${plan.start}" data-review-end="${plan.end}" data-review-due="${escapeHTML(date)}">날짜 변경</button></div></article>`;
+let reviewUI={filter:'due',materialId:null,limit:5},reviewReturnToList=false,reviewDialogVisible=false;
+function reviewView(){return TodayReviewView.build(currentReviews(),dataState,localToday(),studyAPI,examAPI,LearningPlan);}
+function reviewRangeMarkup(plan){
+ const date=new Intl.DateTimeFormat('ko-KR',{...(plan.displayDue.slice(0,4)!==localToday().slice(0,4)?{year:'numeric'}:{}),month:'long',day:'numeric'}).format(new Date(plan.displayDue+'T12:00:00'));
+ const understanding=plan.understanding?' · 이전 이해도: '+escapeHTML(plan.understanding):'';
+ const attrs='data-material="'+escapeHTML(plan.materialId)+'" data-review-start="'+plan.start+'" data-review-end="'+plan.end+'" data-review-due="'+plan.displayDue+'"';
+ return '<article class="review-range-row"><div class="review-range-copy"><strong>'+plan.start+'–'+plan.end+escapeHTML(plan.unit)+'</strong><p>'+date+' 예정'+understanding+'</p></div><button type="button" class="review-range-trigger" data-review-menu '+attrs+' aria-haspopup="menu" aria-expanded="false" aria-controls="review-range-popup" aria-label="'+plan.start+'–'+plan.end+escapeHTML(plan.unit)+' 더보기">···</button></article>';
+}
+let reviewPopup=null,reviewPopupTrigger=null;
+function closeReviewMenu(restoreFocus=false){
+ if(!reviewPopup||reviewPopup.hidden)return;
+ if(typeof reviewPopup.hidePopover==='function'&&reviewPopup.matches(':popover-open'))reviewPopup.hidePopover();
+ reviewPopup.hidden=true;
+ const trigger=reviewPopupTrigger;reviewPopupTrigger=null;
+ trigger?.setAttribute('aria-expanded','false');
+ if(restoreFocus&&trigger?.isConnected)trigger.focus({preventScroll:true});
+}
+function placeReviewMenu(){
+ if(!reviewPopup||reviewPopup.hidden||!reviewPopupTrigger?.isConnected)return;
+ const anchor=reviewPopupTrigger.getBoundingClientRect(),parent=dialog.getBoundingClientRect(),visual=window.visualViewport;
+ const left=Math.max(parent.left+8,visual?.offsetLeft||0),right=Math.min(parent.right-8,(visual?.offsetLeft||0)+(visual?.width||innerWidth));
+ if(anchor.bottom<parent.top||anchor.top>parent.bottom){closeReviewMenu();return;}
+ const top=Math.max(parent.top+8,visual?.offsetTop||0),bottom=Math.min(parent.bottom-8,(visual?.offsetTop||0)+(visual?.height||innerHeight));
+ reviewPopup.style.maxWidth=Math.max(100,right-left)+'px';
+ reviewPopup.style.maxHeight=Math.max(44,bottom-top)+'px';
+ const rect=reviewPopup.getBoundingClientRect();
+ const x=Math.max(left,Math.min(anchor.right-rect.width,right-rect.width));
+ const below=anchor.bottom+4,above=anchor.top-rect.height-4;
+ const y=below+rect.height<=bottom?below:Math.max(top,above);
+ reviewPopup.dataset.placement=below+rect.height<=bottom?'below':'above';
+ reviewPopup.style.left=x+'px';reviewPopup.style.top=y+'px';
+}
+function openReviewMenu(trigger){
+ if(reviewPopupTrigger===trigger&&!reviewPopup.hidden){closeReviewMenu(true);return;}
+ closeReviewMenu();
+ if(!reviewPopup){
+  reviewPopup=document.createElement('div');reviewPopup.id='review-range-popup';reviewPopup.className='review-floating-menu';
+  reviewPopup.setAttribute('popover','manual');reviewPopup.setAttribute('role','menu');reviewPopup.setAttribute('aria-label','복습 범위 메뉴');reviewPopup.hidden=true;
+  dialog.append(reviewPopup);
+ }
+ const attrs='data-material="'+escapeHTML(trigger.dataset.material)+'" data-review-start="'+trigger.dataset.reviewStart+'" data-review-end="'+trigger.dataset.reviewEnd+'" data-review-due="'+trigger.dataset.reviewDue+'"';
+ reviewPopup.innerHTML='<button type="button" role="menuitem" data-dialog="review" '+attrs+'>복습 기록</button><button type="button" role="menuitem" data-dialog="review-date" '+attrs+'>복습 날짜 변경</button>';
+ reviewPopupTrigger=trigger;trigger.setAttribute('aria-expanded','true');reviewPopup.hidden=false;
+ if(typeof reviewPopup.showPopover==='function')reviewPopup.showPopover();
+ placeReviewMenu();reviewPopup.querySelector('button').focus({preventScroll:true});
 }
 function reviewListMarkup(){
-  const snapshot=currentReviews(),today=localToday();
-  const rows=snapshot.today.map(plan=>reviewRow(plan,demoMaterials.find(m=>m.id===plan.materialId))).join('');
-  const upcoming=snapshot.materials.flatMap(plan=>plan.segments.filter(r=>r.dueDate&&r.dueDate>today).map(r=>({...r,materialId:plan.id}))).sort((a,b)=>a.dueDate.localeCompare(b.dueDate)||a.start-b.start);
-  const focus=snapshot.materials.filter(p=>p.focus).map(p=>{const m=demoMaterials.find(m=>m.id===p.id);return `<article class="review-focus-note"><h3>${escapeHTML(m.name)} · 시험 전 복습</h3><p>${escapeHTML(reviewFocusText(p.focus,m.unit))}</p><button class="subtle-button" data-dialog="review-settings" data-material="${escapeHTML(m.id)}">복습 계획</button></article>`;}).join('');
-  return (rows||'<p class="dialog-intro">오늘 예정된 복습이 없어요.</p>')+focus+(upcoming.length?`<details class="review-upcoming"><summary>앞으로의 복습 일정</summary>${upcoming.map(p=>reviewRow(p,demoMaterials.find(m=>m.id===p.materialId),true)).join('')}</details>`:'')+'<p class="field-help">추천은 학습 기록을 바탕으로 한 추정이에요. 자료 관리의 복습 계획에서 분량을 직접 정할 수 있어요.</p>';
+ const view=reviewView(),groups=view[reviewUI.filter];
+ if(!groups.some(g=>g.id===reviewUI.materialId)){reviewUI.materialId=null;reviewUI.limit=5;}
+ const filters='<div class="segmented review-filters" role="group" aria-label="복습 목록"><button type="button" data-review-filter="due" class="'+(reviewUI.filter==='due'?'active':'')+'" aria-pressed="'+(reviewUI.filter==='due')+'">오늘 예정 <span>'+view.counts.due+'</span></button><button type="button" data-review-filter="overdue" class="'+(reviewUI.filter==='overdue'?'active':'')+'" aria-pressed="'+(reviewUI.filter==='overdue')+'">밀린 복습 <span>'+view.counts.overdue+'</span></button></div>';
+ const list=groups.map((g,i)=>{
+  const open=reviewUI.materialId===g.id,id='review-material-'+i;
+  const rows=open?g.items.slice(0,reviewUI.limit).map(reviewRangeMarkup).join(''):'';
+  const footer=!open||g.items.length<=5?'':reviewUI.limit<g.items.length?'<button class="subtle-button review-more" data-review-more>나머지 '+(g.items.length-reviewUI.limit)+'개 더 보기</button>':'<button class="subtle-button review-more" data-review-collapse>접기</button>';
+  return '<section class="review-material-group"><button class="review-material-toggle" data-review-material="'+escapeHTML(g.id)+'" aria-expanded="'+open+'" aria-controls="'+id+'"><strong>'+escapeHTML(g.name)+'</strong><span>'+g.items.length+'개 범위</span>'+icon('chevron')+'</button><div id="'+id+'" class="review-material-ranges" '+(open?'':'hidden')+'>'+rows+footer+'</div></section>';
+ }).join('')||'<p class="field-help review-empty">'+(reviewUI.filter==='due'?'오늘 예정된 복습이 없어요.':'밀린 복습이 없어요.')+'</p>';
+ return '<div class="review-browser">'+filters+list+'</div>';
+}
+function renderReviewBrowser(){closeReviewMenu();$('dialog-content').innerHTML=reviewListMarkup();}
+function returnReviewList(){
+ const state={...reviewUI},focus=dialogReturnFocus;reviewReturnToList=false;
+ openDialog('review-plan');reviewUI=state;renderReviewBrowser();dialogReturnFocus=focus;
 }
 
 function renderExamSummary(){
   const g=examState.goals.filter(g=>g.status==='active'&&g.date&&examAPI.dayDifference(g.date,localToday())>=0).sort((a,b)=>a.date.localeCompare(b.date))[0];
   const card=document.querySelector('.exam-summary');
-  card.innerHTML=`<span class="summary-icon terracotta">${icon('calendar')}</span><span><small>가장 가까운 시험</small><strong>${g?escapeHTML(g.name):'예정된 시험이 없어요'}</strong><span class="summary-sub">${g?examDateLabel(g.date):'시험 날짜를 등록해 보세요'}</span></span>${g?`<b class="d-day">${ddayLabel(examAPI.dayDifference(g.date,localToday()))}</b>`:''}`;
+  card.innerHTML=`<span class="summary-heading"><span class="summary-icon terracotta">${icon('calendar')}</span><small>다가오는 시험</small></span><span class="summary-body"><strong>${g?escapeHTML(g.name):'예정된 시험 없음'}</strong><span class="summary-sub">${g?examDateLabel(g.date):'시험을 등록해 보세요'}</span></span>${g?`<b class="d-day">${ddayLabel(examAPI.dayDifference(g.date,localToday()))}</b>`:''}`;
 }
 let selectedMaterial = demoMaterials[0] || null;
 let currentView = 'home';
@@ -141,10 +193,13 @@ function notify(message) {
   toastTimer = setTimeout(() => $('toast').classList.remove('visible'), 3800);
 }
 
+function settingsMarkup(){return `${applicationContext?.settings?applicationContext.settings():''}<section class="settings-block settings-data"><h3>학습 데이터 관리</h3><input id="restore-file" type="file" accept="application/json,.json" hidden><div class="settings-data-actions"><button class="button secondary" data-backup>백업 파일 저장</button><button class="button secondary" data-restore>백업 파일 선택</button></div></section><button class="reset-button" data-dialog="reset">초기화</button>`;}
+function renderSettings(){$('settings-content').innerHTML=settingsMarkup();applicationContext?.updateSettings?.();}
 function showView(view, focus = false) {
   refreshForDayChange();
+  reviewReturnToList=false;
   if (!['home','goals','stats','more','detail'].includes(view)) view = 'home';
-  if (dialog.open) dialog.close();
+  if (dialog.open&&!requestDialogClose())return;
   currentView = view;
   if(view==='stats'){if(!statsVisited){calendarYear=Number(localToday().slice(0,4));calendarMonth=Number(localToday().slice(5,7))-1;selectedCalendarDate=localToday();calendarExpanded=false;statsVisited=true;}renderStats(statsPeriod);renderCalendar();}
   document.querySelectorAll('.view').forEach((section) => section.hidden = section.id !== `view-${view}`);
@@ -153,6 +208,7 @@ function showView(view, focus = false) {
     button.classList.toggle('active', active);
     if (active) button.setAttribute('aria-current', 'page'); else button.removeAttribute('aria-current');
   });
+  if(view==='more')renderSettings();
   if (view !== 'detail' && location.hash !== `#${view}`) history.replaceState(null, '', `#${view}`);
   window.scrollTo({top:0,behavior:'instant'});
   if (focus) $('main').focus({preventScroll:true});
@@ -178,26 +234,30 @@ function materialCard(material) {
   material=materialExamInfo(material);
   const status=examAPI.materialStatus(examState,material.id);
   const percent = Math.round(material.current / material.total * 100);
-  return `<article class="material-card" data-category="${escapeHTML(material.category)}">
+  return `<article class="material-card" data-card-detail="${escapeHTML(material.id)}" data-category="${escapeHTML(material.category)}">
     <div class="material-card-top"><div class="material-meta"><span class="badge sage">${icon(material.typeKey === 'lecture' ? 'screen' : 'book')}${escapeHTML(material.type)}</span><span class="badge cream">${escapeHTML(material.goal)}</span>${status==='paused'?'<span class="badge neutral">일시 중단</span>':material.days!==null ? `<span class="badge clay">${ddayLabel(material.days)}</span>` : '<span class="badge neutral">시험일 미정</span>'}</div><button class="icon-button card-menu" data-dialog="material-menu" data-material="${escapeHTML(material.id)}" aria-label="${escapeHTML(material.name)} 관리">${icon('more')}</button></div>
-    <div class="material-main">${plantMarkup(material)}<div class="material-info"><button class="card-title" data-detail="${escapeHTML(material.id)}">${escapeHTML(material.name)}</button><div class="quantity"><b>${material.current}</b><span>/</span><span>${material.total}<span class="material-unit">${escapeHTML(material.unit)}</span></span></div><span class="round-label">${material.round}회독</span></div></div>
+    <div class="material-main">${plantMarkup(material)}<div class="material-info"><button class="card-title" data-detail="${escapeHTML(material.id)}">${escapeHTML(material.name)}<span class="material-title-chevron" aria-hidden="true">›</span></button><div class="quantity"><b>${material.current}</b><span>/</span><span>${material.total}<span class="material-unit">${escapeHTML(material.unit)}</span></span></div><span class="round-label">${material.round}회독</span></div></div>
     <div class="material-progress">${progressMarkup(percent)}</div>
     <div class="card-primary-actions"><button class="button secondary" data-dialog="record" data-material="${escapeHTML(material.id)}">${icon('edit')}진도 기록</button><button class="button secondary" data-dialog="review" data-material="${escapeHTML(material.id)}">${icon('repeat')}복습</button></div>
 
   </article>`;
 }
 
+let materialStatusFilter='active';
 function renderMaterials(filter = 'all') {
+ const list=materialStatusFilter==='completed'?demoArchivedMaterials:demoMaterials;
+ $('material-list-title').textContent=materialStatusFilter==='completed'?'학습 완료':'학습 자료';
+ document.querySelectorAll('[data-material-list]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.materialList===materialStatusFilter)));
   materialFilter=filter;
-  $('material-count').textContent=demoMaterials.length;
+  $('material-count').textContent=list.length;
   for(const category of ['all','school','exam']){
-    $('material-count-'+category).textContent=demoMaterials.filter(m=>category==='all'||m.category===category).length;
+    $('material-count-'+category).textContent=list.filter(m=>category==='all'||m.category===category).length;
   }
-  const items = demoMaterials.filter((item) => filter === 'all' || item.category === filter);
+  const items = list.filter((item) => filter === 'all' || item.category === filter);
   $('material-grid').innerHTML = items.map(materialCard).join('');
   $('filter-empty').hidden = items.length !== 0;
-  $('filter-empty').querySelector('h3').textContent=demoMaterials.length?'이 분류에 해당하는 자료가 없어요':'아직 등록된 자료가 없어요';
-  $('filter-empty').querySelector('p').textContent=demoMaterials.length?'다른 분류를 선택해 보세요.':'첫 학습 자료를 추가해 보세요.';
+  $('filter-empty').querySelector('h3').textContent=list.length?'이 분류에 해당하는 자료가 없어요':(materialStatusFilter==='completed'?'학습 완료한 자료가 없어요':'아직 등록된 자료가 없어요');
+  $('filter-empty').querySelector('p').textContent=list.length?'다른 분류를 선택해 보세요.':(materialStatusFilter==='completed'?'완료한 자료의 이력을 확인할 수 있어요.':'첫 학습 자료를 추가해 보세요.');
 }
 
 function renderHomeWelcome() {
@@ -213,26 +273,23 @@ function renderHomeWelcome() {
 }
 
 function renderToday() {
-  const tasks=currentPlans().filter(p=>p.isActive&&p.remaining>0);
-  $('today-list').innerHTML=tasks.map(p=>{
-    const m=demoMaterials.find(m=>m.id===p.id);
-    const warning=p.noTime||p.manualShortfall>0||p.expectedLate;
-    return `<div class="today-task today-task-compact"><span class="task-icon">${icon('book')}</span><span class="task-copy"><strong>${escapeHTML(m.name)}</strong><small class="${warning?'today-plan-warning':''}">남은 ${p.remaining}${escapeHTML(m.unit)} · ${escapeHTML(homePlanLabel(p,m.unit))}</small></span><button class="text-link" data-dialog="record" data-material="${escapeHTML(m.id)}">진도 기록${icon('chevron')}</button></div>`;
-  }).join('')||`<p class="field-help">${demoMaterials.length?'오늘 진행할 학습이 없어요.':'학습 자료를 등록하고 공부한 진도를 기록해 보세요.'}</p>`;
+ const tasks=currentPlans().filter(p=>p.isActive&&p.remaining>0);
+ $('today-list').innerHTML=tasks.map(p=>{
+  const m=demoMaterials.find(m=>m.id===p.id);
+  return '<div class="today-task today-task-focus"><span class="task-icon">'+icon('book')+'</span><span class="task-copy"><strong>'+escapeHTML(m.name)+'</strong><b class="today-remaining">'+escapeHTML(homePlanLabel(p,m.unit))+'</b><small class="today-progress">'+escapeHTML(homeStudyProgress(p,m.unit))+'</small></span><button class="text-link" data-dialog="record" data-material="'+escapeHTML(m.id)+'">진도 기록'+icon('chevron')+'</button></div>';
+ }).join('')||'<p class="field-help">'+(demoMaterials.length?'오늘 진행할 학습이 없어요.':'학습 자료를 등록하고 공부한 진도를 기록해 보세요.')+'</p>';
 }
-
-// Home-only wording. Original calculation and detailed plan labels stay unchanged.
 function homePlanLabel(p,unit){
-  if(!p.remaining)return '이번 회독 완료';
-  if(!p.isActive)return '학습 중단 중';
-  let label;
-  if(!p.todayAllowed)label='오늘은 쉬는 날';
-  else if(p.manualDailyAmount)label=p.amount>0?`오늘 직접 설정 ${p.amount}${unit}`:'오늘 설정한 분량 완료';
-  else if(p.noTime)label='학습 가능일 없음';
-  else if(p.amount!==null&&Number.isFinite(p.amount))label=`오늘 권장 ${p.amount}${unit}`;
-  else label='목표일 미정';
-  const warning=p.overdue?'기한 초과':p.noTime?'학습 가능일 없음':p.manualShortfall>0?`기한 내 ${p.manualShortfall}${unit} 부족`:p.expectedLate?'완료 지연 예상':'';
-  return warning&&warning!==label?`${label} · ${warning}`:label;
+ if(!p.remaining)return '이번 회독 완료';
+ if(!p.isActive)return '학습 중단 중';
+ if(!p.todayAllowed)return '오늘은 쉬는 날';
+ if(p.amount===null||!Number.isFinite(p.amount))return '학습량 추천 정보가 없어요.';
+ return p.amount>0?'오늘 남은 학습 '+p.amount+unit:'오늘 학습 완료';
+}
+function homeStudyProgress(p,unit){
+ const target=p.manualDailyAmount||(Number.isFinite(p.initialDaily)?p.initialDaily+(p.creditedBefore||0):null);
+ if(!p.todayAllowed||target===null)return '오늘 '+p.todayDone+unit+' 학습';
+ return '오늘 '+p.todayDone+' / '+target+unit+' 학습'+(!p.manualDailyAmount&&p.creditedBefore?' · 계획 변경 반영':'');
 }
 
 function currentPlans(){return LearningPlan.build(dataState,localToday(),studyAPI,examAPI);}
@@ -260,8 +317,13 @@ function planWarning(p,unit){
   if(p.expectedLate)return '현재 학습 속도라면 목표 기한보다 늦어질 수 있어요.';
   return '';
 }
-function planMarkup(p,m,action=true){
-  return `<div class="learning-plan"><p><strong>${escapeHTML(dailyPlanLabel(p,m.unit))}</strong></p><p>${escapeHTML(forecastLabel(p))}</p>${p.deadline?`<p>학습 기준일 ${p.deadline} · 남은 학습 가능일 ${p.availableDays}일${p.goalName?` · ${escapeHTML(p.goalName)} 일정`:''}</p>`:'<p>목표일 미정 · 자동 권장량은 기한을 정하면 안내해요.</p>'}${planWarning(p,m.unit)?`<p class="plan-warning">${escapeHTML(planWarning(p,m.unit))}</p>`:''}${action?`<button class="subtle-button" data-dialog="study-plan" data-material="${escapeHTML(m.id)}">학습 계획</button>`:''}</div>`;
+function planMarkup(p,m){
+  const label=p.manualDailyAmount?'오늘 설정 학습량':'오늘 권장 학습량';
+  const amount=!p.remaining?'이번 회독 완료':!p.isActive?'학습 중단 중':!p.todayAllowed?'오늘은 쉬는 날':p.noTime?'학습 가능일 없음':p.amount===null?'미정':p.amount+escapeHTML(m.unit);
+  const date=p.forecast.reason==='completed'?'이번 회독 완료':p.isActive&&p.forecast.date?p.forecast.date.replaceAll('-','.'):'추정 기록 부족';
+  const forecast=p.forecast.reason==='no-recent-study'?'최근 학습량 없음':p.forecast.reason==='out-of-range'?'추정 범위 초과':!p.isActive?'학습 중단 중':date;
+  const notice=LearningPlan.notice(p);
+  return '<section class="learning-plan plan-compact"><h3>'+icon('calendar')+'학습 계획</h3><div class="plan-metrics"><div><small>'+label+'</small><strong>'+amount+'</strong></div><div><small>예상 완료일</small><strong>'+escapeHTML(forecast)+'</strong></div></div>'+(p.goalDate?'<div class="plan-exam"><span>시험 일정</span><span><small>'+escapeHTML(p.goalName)+'</small><b>'+p.goalDate.replaceAll('-','.')+'</b></span></div>'+(notice?'<p class="plan-inline-notice">'+icon('info')+escapeHTML(notice)+'</p>':''):'')+'</section>';
 }
 
 // Modal-only presentation: use existing derived plan values without changing policy.
@@ -291,10 +353,10 @@ function renderGoals(filter = 'all') {
     button.querySelector('span').textContent=count;
   });
   $('goal-grid').innerHTML=goals.map(g=>{
-    const linked=g.materialIds.map(id=>demoMaterials.find(m=>m.id===id)).filter(Boolean);
+    const linked=g.materialIds.map(id=>dataState.study.materials.find(m=>m.id===id)).filter(Boolean).map(studyAPI.project);
     const progress=linked.length?Math.round(linked.reduce((sum,m)=>sum+m.current/m.total,0)/linked.length*100):0;
     const days=examAPI.dayDifference(g.date,localToday());
-    return `<article class="goal-card ${g.status==='paused'?'paused':''}"><div class="goal-top"><span class="goal-symbol">${icon(['notes','target','book'].includes(g.icon)?g.icon:'target')}</span><div class="goal-status">${g.id===examState.priorityGoalId?'<span class="badge sage">우선 시험</span>':''}${g.status==='paused'?'<span class="badge neutral">일시 중단</span>':g.status==='archived'?'<span class="badge neutral">보관</span>':''}<button class="icon-button exam-menu-button" data-exam-dialog="menu" data-goal="${escapeHTML(g.id)}" aria-label="${escapeHTML(g.name)} 관리">${icon('more')}</button></div></div><h2>${escapeHTML(g.name)}</h2><p class="goal-date">${icon('calendar')}${examDateLabel(g.date)}${days===null?'':`<b>${ddayLabel(days)}</b>`}</p><div>${progressMarkup(progress,'연결 자료 진행률')}</div><button class="linked-toggle" data-linked="${escapeHTML(g.id)}" aria-expanded="false" aria-controls="linked-${escapeHTML(g.id)}">연결된 자료 ${linked.length}개${icon('chevron')}</button><ul class="linked-materials" id="linked-${escapeHTML(g.id)}" hidden>${linked.map(m=>{const p=plans.find(p=>p.id===m.id);return `<li><strong>${escapeHTML(m.name)}</strong>${g.status==='active'&&p?planMarkup(p,m):''}</li>`;}).join('')}</ul></article>`;
+    return `<article class="goal-card ${g.status==='paused'?'paused':''}"><div class="goal-top"><span class="goal-symbol">${icon(['notes','target','book'].includes(g.icon)?g.icon:'target')}</span><div class="goal-status">${g.status==='active'&&g.id===examState.priorityGoalId?'<span class="badge sage">우선 시험</span>':''}${g.status==='paused'?'<span class="badge neutral">일시 중단</span>':g.status==='archived'?'<span class="badge neutral">보관</span>':''}<button class="icon-button exam-menu-button" data-exam-dialog="menu" data-goal="${escapeHTML(g.id)}" aria-label="${escapeHTML(g.name)} 관리">${icon('more')}</button></div></div><h2>${escapeHTML(g.name)}</h2><p class="goal-date">${icon('calendar')}${examDateLabel(g.date)}${days===null?'':`<b>${ddayLabel(days)}</b>`}</p><div>${progressMarkup(progress,'연결 자료 진행률')}</div><button class="linked-toggle" data-linked="${escapeHTML(g.id)}" aria-expanded="false" aria-controls="linked-${escapeHTML(g.id)}">연결된 자료 ${linked.length}개${icon('chevron')}</button><ul class="linked-materials" id="linked-${escapeHTML(g.id)}" hidden>${linked.map(m=>'<li><button class="linked-material-link" data-detail="'+escapeHTML(m.id)+'"><span>'+escapeHTML(m.name)+'</span>'+icon('chevron')+'</button></li>').join('')}</ul></article>`;
   }).join('');
   $('goal-empty').hidden=goals.length!==0;
   $('goal-empty').querySelector('h3').textContent=filter==='all'?'등록된 시험이 없어요':filter==='done'?'보관한 시험이 없어요':filter==='paused'?'일시 중단한 시험이 없어요':'진행 중인 시험이 없어요';
@@ -378,13 +440,15 @@ function toggleCalendarPicker(){
 function openCalendarRecord(button){
  const id=button.dataset.material;
  if(!dataState.study.materials.some(m=>m.id===id))return;
- openDetail(id);const tab=button.dataset.kind==='review'?'review':'study';renderDetailTab(tab);
+ openDetail(id);const tab=button.dataset.kind==='review'?'review':'study';detailLimits[tab]=Infinity;renderDetailTab(tab);
  document.querySelectorAll('[data-detail-tab]').forEach(b=>{const active=b.dataset.detailTab===tab;b.classList.toggle('active',active);b.setAttribute('aria-pressed',String(active));});
  const row=[...$('detail-tab-content').querySelectorAll('[data-history-record]')].find(r=>r.dataset.historyRecord===button.dataset.calendarRecord&&(tab==='review'||r.dataset.historyRound===button.dataset.round));
  if(row){row.scrollIntoView({block:'center',behavior:'smooth'});row.classList.add('record-highlight');setTimeout(()=>row.classList.remove('record-highlight'),1800);}
 }
 
+let detailTab='study',detailLimits={study:5,review:5};
 function openDetail(id) {
+  detailLimits={study:5,review:5};
   const source=dataState.study.materials.find(m=>m.id===id);if(!source)return;
   selectedMaterial = materialExamInfo(studyAPI.project(source));
   const m = selectedMaterial;
@@ -394,6 +458,8 @@ function openDetail(id) {
 }
 
 function renderDetailTab(tab) {
+  detailTab=tab;
+  document.querySelectorAll('[data-detail-tab]').forEach(b=>{const active=b.dataset.detailTab===tab;b.classList.toggle('active',active);b.setAttribute('aria-pressed',String(active));});
   const m = selectedMaterial;
   if (tab === 'basic') {
     const plan=currentPlans().find(p=>p.id===m.id);
@@ -401,23 +467,54 @@ function renderDetailTab(tab) {
   } else {
     const source=dataState.study.materials.find(item=>item.id===m.id);
     const review=tab==='review';
-    const rows=review?studyAPI.sorted(source.reviews):studyAPI.calculate(source.records,source.total);
-    const row=(r,unit,editable=true,historyRound=m.round)=>`<article class="record-row" data-history-record="${escapeHTML(r.id)}" data-history-round="${historyRound}"><div class="record-row-top"><time>${escapeHTML(r.date)}</time>${editable?`<button class="subtle-button" data-edit-entry="${review?'review':'record'}" data-record="${escapeHTML(r.id)}" data-material="${escapeHTML(m.id)}">수정</button><button class="subtle-button" data-delete-entry="${review?'review':'record'}" data-record="${escapeHTML(r.id)}" data-material="${escapeHTML(m.id)}">삭제</button>`:''}</div><div class="record-row-data">${review?`<span>${r.start}–${r.end}${escapeHTML(r.unit)}</span>`:`<span><small>학습량</small><strong>+${r.amount}${escapeHTML(unit)}</strong></span><span><small>현재 위치</small>${r.position}${escapeHTML(unit)}</span>`}</div>${r.understanding?`<span class="badge sage">${escapeHTML(r.understanding)}</span>`:''}</article>`;
-    $('detail-tab-content').innerHTML=rows.slice().reverse().map(r=>row(r,m.unit)).join('')||'<p class="field-help">기록이 없어요.</p>';
-    if(!review)$('detail-tab-content').innerHTML+=source.roundHistory.slice().reverse().map(h=>`<h3>${h.round}회독 · ${escapeHTML(h.completedDate)}</h3>${studyAPI.calculate(h.records,h.total).reverse().map(r=>row(r,h.unit,false,h.round)).join('')}`).join('');
+    const records=review?studyAPI.sorted(source.reviews).map(r=>({r,unit:r.unit,round:r.round||m.round,editable:true})):studyAPI.calculate(source.records,source.total).map(r=>({r,unit:m.unit,round:m.round,editable:true}));
+    if(!review)for(const h of source.roundHistory)records.push(...studyAPI.calculate(h.records,h.total).map(r=>({r,unit:h.unit,round:h.round,editable:false})));
+    records.sort((a,b)=>b.r.date.localeCompare(a.r.date)||b.r.sequence-a.r.sequence);
+    const row=({r,unit,round,editable})=>'<article class="record-row timeline-record" data-history-record="'+escapeHTML(r.id)+'" data-history-round="'+round+'"><div class="timeline-top"><time>'+r.date.replaceAll('-','.')+'</time>'+(r.understanding?'<span class="badge sage">'+escapeHTML(r.understanding)+'</span>':'')+'</div><strong class="timeline-amount">'+(review?r.start+'–'+r.end+escapeHTML(unit)+' 복습':r.amount+escapeHTML(unit)+' 학습')+'</strong>'+(!review?'<p class="timeline-position">학습 후 위치 · '+r.position+escapeHTML(unit)+'</p>':'')+'<div class="timeline-actions"><small>'+round+'회독</small>'+(editable?'<button class="subtle-button" data-edit-entry="'+(review?'review':'record')+'" data-record="'+escapeHTML(r.id)+'" data-material="'+escapeHTML(m.id)+'">수정</button><button class="subtle-button" data-delete-entry="'+(review?'review':'record')+'" data-record="'+escapeHTML(r.id)+'" data-material="'+escapeHTML(m.id)+'">삭제</button>':'')+'</div></article>';
+    $('detail-tab-content').innerHTML=records.length?'<div class="record-timeline">'+records.slice(0,detailLimits[tab]).map(row).join('')+'</div>'+(records.length>detailLimits[tab]?'<button class="subtle-button timeline-more" data-history-more="'+tab+'">더 보기</button>':''):'<p class="field-help">기록이 없어요.</p>';
   }
 }
 
+let memoState=null,memoSaving=false,memoDraftValue='';
+function memoFormMarkup(kind,id,note){
+ memoDraftValue=note||'';
+ const target=kind==='exam'?'exam-note':'material-note';
+ return '<form data-'+(kind==='exam'?'exam':'study')+'-form="memo" data-'+(kind==='exam'?'goal':'material')+'="'+escapeHTML(id)+'"><textarea id="'+target+'" class="memo-textarea" data-memo rows="4" aria-label="메모" placeholder="메모를 입력하세요.">'+escapeHTML(note||'')+'</textarea><div class="dialog-actions memo-actions"><button class="button primary" type="submit">저장</button></div></form>';
+}
+function resizeMemo(){
+ const input=document.querySelector('textarea[data-memo]');
+ if(!input)return;
+ input.style.height='auto';input.style.height=Math.min(240,Math.max(120,input.scrollHeight))+'px';
+}
+function setupMemo(){
+ const input=document.querySelector('textarea[data-memo]');input.value=memoDraftValue;
+ memoState={initial:input.value};memoSaving=false;resizeMemo();
+}
+function requestDialogClose(){
+ if(memoSaving)return false;
+ const input=memoState&&document.querySelector('textarea[data-memo]');
+ if(input&&input.value!==memoState.initial&&!window.confirm('저장하지 않은 메모가 있어요. 닫으면 변경 내용이 사라집니다. 닫을까요?'))return false;
+ memoState=null;dialog.close();return true;
+}
+function saveMemo(commit,success){
+ if(memoSaving)return false;memoSaving=true;
+ const submit=dialog.querySelector('[type="submit"]');if(submit)submit.disabled=true;
+ const done=ok=>{memoSaving=false;if(submit)submit.disabled=false;if(ok){memoState=null;success();}return ok;};
+ try{const result=commit();return result&&typeof result.then==='function'?result.then(done,error=>{done(false);notify(error.message);return false;}):done(result);}
+ catch(error){done(false);notify(error.message);return false;}
+}
 function dialogFooter(action = '기록', danger = false) {
   return `<div class="dialog-actions"><button class="button cream" type="button" data-close>취소</button><button class="button ${danger ? 'cream' : 'primary'}" type="submit">${action}</button></div>`;
 }
 
 function understanding() {
-  return `<div class="form-field"><span class="field-label">이해도<small>(선택사항)</small></span><div class="choice-row" data-choice-group="understanding"><button class="choice-button" type="button" aria-pressed="false">쉬움</button><button class="choice-button" type="button" aria-pressed="false">보통</button><button class="choice-button" type="button" aria-pressed="false">어려움</button></div></div>`;
+  return `<div class="form-field"><span class="field-label">이해도<small>(선택사항)</small></span><div class="choice-row understanding-segments" role="group" aria-label="이해도" data-choice-group="understanding"><button class="choice-button" type="button" aria-pressed="false">쉬움</button><button class="choice-button" type="button" aria-pressed="false">보통</button><button class="choice-button" type="button" aria-pressed="false">어려움</button></div></div>`;
 }
 
 function openDialog(type, materialId, editing = false) {
-  const m = demoMaterials.find((item)=>item.id===materialId) || selectedMaterial || {id:'',name:'',note:'',typeKey:'book',unit:'페이지',total:1};
+  closeReviewMenu();
+  reviewDialogVisible=type==='review-plan';
+  const m = [...demoMaterials,...demoArchivedMaterials].find((item)=>item.id===materialId) || selectedMaterial || {id:'',name:'',note:'',typeKey:'book',unit:'페이지',total:1};
   selectedMaterial = m;
   let title = '';
   let content = '';
@@ -439,9 +536,9 @@ function openDialog(type, materialId, editing = false) {
     title = editing ? '학습 자료 수정' : '학습 자료 추가';
     content = `<form data-study-form="material" data-material="${editing?escapeHTML(m.id):''}"><div class="form-field"><label for="material-name">자료 이름</label><input id="material-name" maxlength="100" ${editing ? `value="${escapeHTML(m.name)}"` : 'placeholder="예: 컴퓨터 네트워크"'} required></div><div class="form-field"><label for="material-type">학습 유형</label><select id="material-type" required>${[['book','교재'],['workbook','문제집'],['lecture','인터넷 강의'],['vocabulary','단어 학습'],['other','기타']].map(([key,label])=>`<option value="${key}" ${key===(editing?m.typeKey:'book')?'selected':''}>${label}</option>`).join('')}</select></div><div class="form-field" id="unit-picker-field"><label for="material-unit">학습 단위</label><select id="material-unit"></select></div><div class="form-field" id="custom-unit-field" hidden><label for="custom-unit">학습 단위</label><input id="custom-unit" maxlength="20" placeholder="예: 세트"></div><div class="form-field"><label for="material-total">전체 학습 분량</label><div class="input-unit"><input id="material-total" type="number" min="1" step="1" inputmode="numeric" ${editing ? `value="${m.total}"` : 'placeholder="예: 300"'} required><span id="total-unit">${editing ? m.unit : '페이지'}</span></div></div><div class="form-field"><span class="field-label">연결할 시험 <small>(선택사항)</small></span><div class="checkbox-list">${examState.goals.map((g)=>`<label><input type="checkbox" name="material-goal" value="${escapeHTML(g.id)}" ${editing&&g.materialIds.includes(m.id)?'checked':''}>${escapeHTML(g.name)}</label>`).join('')}</div><p class="field-help">연결하지 않으면 독립 자료로 관리해요. 여러 시험에 연결할 수 있어요.</p></div><div class="form-field"><label for="material-due">목표 완료일 <small>(선택사항)</small></label><input id="material-due" type="date" value="${editing?escapeHTML(m.targetDate||''):''}"></div><p class="field-help">식물은 학습 진도에 맞춰 표시해요.</p>${dialogFooter(editing?'저장':'추가')}</form>`;
   } else if (type === 'memo') {
-    title = '메모';
-    content = `<p class="dialog-material-name">${escapeHTML(m.name)}</p><form data-study-form="memo" data-material="${escapeHTML(m.id)}"><div class="form-field"><label for="material-note">학습 메모 <small>(선택사항)</small></label><textarea id="material-note" rows="6" placeholder="필요할 때 꺼내 볼 메모를 남겨요.">${escapeHTML(m.note)}</textarea></div>${dialogFooter('저장')}</form>`;
+    title='메모';content=memoFormMarkup('study',m.id,m.note);
   } else if (type === 'review-plan') {
+    reviewUI={filter:'due',materialId:null,limit:5};reviewReturnToList=false;
     title='오늘의 복습';content=reviewListMarkup();
   } else if(type==='review-settings'){
     title='복습 계획';
@@ -452,7 +549,7 @@ function openDialog(type, materialId, editing = false) {
     content=`<p class="dialog-material-name">${escapeHTML(m.name)}</p><form data-study-form="review-date" data-material="${escapeHTML(m.id)}"><div class="form-row"><div class="form-field"><label for="review-schedule-start">시작 위치</label><input id="review-schedule-start" type="number" min="1" max="${m.total}" step="1" inputmode="numeric" required></div><div class="form-field"><label for="review-schedule-end">끝 위치</label><input id="review-schedule-end" type="number" min="1" max="${m.total}" step="1" inputmode="numeric" required></div></div><div class="form-field"><label for="review-schedule-date">복습 날짜 <small>(선택사항)</small></label><input id="review-schedule-date" type="date"><p class="field-help">비워 두면 이 범위의 자동 복습 날짜로 돌아가요.</p></div>${dialogFooter('저장')}</form>`;
   } else if (type === 'settings') {
     title = '설정';
-    content = `${applicationContext?.settings?applicationContext.settings():''}<section class="settings-block settings-data"><h3>학습 데이터 관리</h3><input id="restore-file" type="file" accept="application/json,.json" hidden><div class="settings-data-actions"><button class="button secondary" data-backup>백업 파일 저장</button><button class="button secondary" data-restore>백업 파일 선택</button></div></section><button class="reset-button" data-dialog="reset">초기화</button>`;
+    return showView('more',true);
   } else if (type === 'reset') {
     title = '학습 데이터를 초기화할까요?';
     content = `<p class="dialog-intro">2.0 학습 자료·기록·메모·시험을 모두 초기화합니다. 필요한 데이터는 먼저 백업해 주세요. 보존된 1.0 원본 저장값은 유지됩니다.${studyLoad.writable?'':' 읽지 못한 저장값은 별도 보존한 뒤 초기화합니다.'}</p><form data-study-form="reset">${dialogFooter('초기화',true)}</form>`;
@@ -461,14 +558,15 @@ function openDialog(type, materialId, editing = false) {
     content = `<p class="dialog-intro">‘${escapeHTML(m.name)}’ 자료와 연결된 기록이 삭제됩니다.</p><form data-study-form="delete" data-material="${escapeHTML(m.id)}">${dialogFooter('삭제',true)}</form>`;
   } else if (type === 'material-menu') {
     title = '학습 자료 관리';
-    content = `<div class="more-list"><button data-dialog="study-plan" data-material="${escapeHTML(m.id)}">${icon('calendar')}<span>학습 계획</span></button><button data-dialog="review-settings" data-material="${escapeHTML(m.id)}">${icon('repeat')}<span>복습 계획</span></button><button data-dialog="memo" data-material="${escapeHTML(m.id)}">${icon('notes')}<span>메모</span></button><button data-dialog="material" data-material="${escapeHTML(m.id)}" data-edit>${icon('edit')}<span>자료 수정</span></button>${m.current===m.total?`<button data-dialog="next-round" data-material="${escapeHTML(m.id)}">${icon('repeat')}<span>다음 회독 시작</span></button>`:''}<button data-archive-material="${escapeHTML(m.id)}">${icon('archive')}<span>학습 완료 및 보관</span></button><button data-material-status="${examState.materialSettings[m.id].manualStatus==='paused'?'active':'paused'}" data-material="${escapeHTML(m.id)}">${icon('repeat')}<span>${examState.materialSettings[m.id].manualStatus==='paused'?'다시 시작하기':'학습 일시 중단'}</span></button><button class="muted-danger" data-dialog="delete-material" data-material="${escapeHTML(m.id)}">${icon('trash')}<span>자료 삭제</span></button></div>`;
+    content = `<div class="more-list"><button data-dialog="study-plan" data-material="${escapeHTML(m.id)}">${icon('calendar')}<span>학습 계획</span></button><button data-dialog="review-settings" data-material="${escapeHTML(m.id)}">${icon('repeat')}<span>복습 계획</span></button><button data-dialog="memo" data-material="${escapeHTML(m.id)}">${icon('notes')}<span>메모</span></button><button data-dialog="material" data-material="${escapeHTML(m.id)}" data-edit>${icon('edit')}<span>자료 수정</span></button>${m.current===m.total?`<button data-dialog="next-round" data-material="${escapeHTML(m.id)}">${icon('repeat')}<span>다음 회독 시작</span></button>`:''}${m.archived?`<button data-unarchive-material="${escapeHTML(m.id)}">${icon('repeat')}<span>학습 재개</span></button>`:`<button data-archive-material="${escapeHTML(m.id)}">${icon('archive')}<span>학습 완료</span></button>`}${!m.archived?`<button data-material-status="${examState.materialSettings[m.id].manualStatus==='paused'?'active':'paused'}" data-material="${escapeHTML(m.id)}">${icon('repeat')}<span>${examState.materialSettings[m.id].manualStatus==='paused'?'학습 재개':'학습 일시 중단'}</span></button>`:''}<button class="muted-danger" data-dialog="delete-material" data-material="${escapeHTML(m.id)}">${icon('trash')}<span>자료 삭제</span></button></div>`;
   } else if (type === 'archive') {
-    title = '보관한 학습 자료';
-    content = demoArchivedMaterials.map(material => `<div class="material-main">${plantMarkup(material)}<div><h3>${escapeHTML(material.name)}</h3><p class="field-help">${material.round}회독 완료 · 보관 중</p><button class="text-link" data-unarchive-material="${escapeHTML(material.id)}">다시 꺼내기${icon('chevron')}</button></div></div>`).join('') || '<p class="field-help">보관한 자료가 없어요.</p>';
+ materialStatusFilter='completed';renderMaterials(materialFilter);return showView('home',true);
   }
   if (!title) return;
   dialog.classList.remove('exam-choice-dialog','exam-pause-dialog');
   dialog.classList.toggle('study-plan-dialog',type==='study-plan');
+  dialog.classList.toggle('review-list-dialog',type==='review-plan');
+  dialog.classList.toggle('memo-dialog',type==='memo');memoState=null;
   const alreadyOpen = dialog.open;
   if (!alreadyOpen) dialogReturnFocus = document.activeElement;
   $('dialog-title').textContent = title;
@@ -480,12 +578,16 @@ function openDialog(type, materialId, editing = false) {
   }
   if (!alreadyOpen) dialog.showModal();
   dialog.scrollTop = 0;
+  if(type==='memo')setupMemo();
   // Keep the mobile keyboard closed until the user taps an input.
   dialog.querySelector('[data-close]').focus({preventScroll:true});
 }
 
 function presentExamDialog(title,content) {
-  dialog.classList.remove('study-plan-dialog');
+  closeReviewMenu();
+  reviewDialogVisible=false;
+  const memo=content.includes('data-memo');dialog.classList.toggle('memo-dialog',memo);memoState=null;
+  dialog.classList.remove('study-plan-dialog','review-list-dialog');
   if(!dialog.open)dialogReturnFocus=document.activeElement;
   dialog.classList.toggle('exam-choice-dialog',content.includes('data-exam-choices'));
   dialog.classList.toggle('exam-pause-dialog',content.includes('data-pause-layout'));
@@ -493,25 +595,38 @@ function presentExamDialog(title,content) {
   $('dialog-content').innerHTML=content;
   if(!dialog.open)dialog.showModal();
   dialog.scrollTop=0;
+  if(memo)setupMemo();
   dialog.querySelector('[data-close]').focus({preventScroll:true});
 }
 function openExamDialog(type,id,status) {
   const g=examState.goals.find(g=>g.id===id);
   if(type!=='edit'&&!g)return;
+  if(type==='resit'&&g.status!=='archived')return;
+  if(type==='status'&&status==='active'&&g.status!=='paused')return;
   const safeId=g?escapeHTML(g.id):'';
   if(type==='menu') {
-    presentExamDialog('시험 관리',`<p class="dialog-material-name">${escapeHTML(g.name)}</p><div class="more-list"><button data-exam-dialog="memo" data-goal="${safeId}">${icon('notes')}<span>메모</span></button><button data-exam-dialog="edit" data-goal="${safeId}">${icon('edit')}<span>시험 수정</span></button>${g.status==='active'?`<button data-exam-priority="${safeId}">${icon('target')}<span>${examState.priorityGoalId===g.id?'우선 시험 해제':'우선 시험 지정'}</span></button>`:''}<button data-exam-dialog="status" data-goal="${safeId}" data-status="${g.status==='archived'?'active':'archived'}">${icon('archive')}<span>${g.status==='archived'?'보관 해제하고 다시 시작하기':'시험 완료 및 보관'}</span></button>${g.status!=='archived'?`<button data-exam-dialog="status" data-goal="${safeId}" data-status="${g.status==='paused'?'active':'paused'}">${icon('repeat')}<span>${g.status==='paused'?'다시 시작하기':'학습 일시 중단'}</span></button>`:''}<button data-exam-dialog="resit" data-goal="${safeId}">${icon('repeat')}<span>다시 준비하기</span></button><button class="muted-danger" data-exam-dialog="delete" data-goal="${safeId}">${icon('trash')}<span>시험 삭제</span></button></div>`);
+    const item=(type,label,name,extra='')=>'<button data-exam-dialog="'+type+'" data-goal="'+safeId+'" '+extra+'>'+icon(name)+'<span>'+label+'</span></button>';
+    let items=item('memo','메모','notes')+item('edit','시험 수정','edit')+item('links','학습 자료 연결','book');
+    if(g.status==='active')items+='<button data-exam-priority="'+safeId+'">'+icon('target')+'<span>'+(examState.priorityGoalId===g.id?'우선 시험 해제':'우선 시험 설정')+'</span></button>'+item('status','시험 완료 및 보관','archive','data-status="archived"')+item('status','학습 일시 중단','repeat','data-status="paused"');
+    else if(g.status==='paused')items+=item('status','학습 재개','repeat','data-status="active"');
+    else items+=item('resit','새 회차 준비','repeat');
+    items+=item('delete','시험 삭제','trash','class="muted-danger"');
+    presentExamDialog('시험 관리','<p class="dialog-material-name exam-material-name">'+escapeHTML(g.name)+'</p><div class="more-list">'+items+'</div>');
+  }else if(type==='links'){
+    const materials=dataState.study.materials;
+    const choices=materials.map(m=>'<label><input type="checkbox" name="linked-material" value="'+escapeHTML(m.id)+'" '+(g.materialIds.includes(m.id)?'checked':'')+'><span>'+escapeHTML(m.name)+(m.archived?'<small>학습 완료</small>':'')+'</span></label>').join('');
+    presentExamDialog('학습 자료 연결','<p class="dialog-material-name exam-material-name">'+escapeHTML(g.name)+'</p>'+(materials.length?'<form data-exam-form="links" data-goal="'+safeId+'"><div class="checkbox-list exam-links-list">'+choices+'</div><p class="field-help">여러 시험에 같은 자료를 연결할 수 있어요. 연결을 해제해도 학습·복습 기록은 유지됩니다.</p>'+dialogFooter('저장')+'</form>':'<p class="field-help">등록된 학습 자료가 없어요.</p><button class="button secondary" data-add-goal-material="'+safeId+'">'+icon('plus')+'학습 자료 추가</button>'));
   }else if(type==='memo') {
-    presentExamDialog('시험 메모',`<p class="dialog-material-name">${escapeHTML(g.name)}</p><form data-exam-form="memo" data-goal="${safeId}"><div class="form-field"><label for="exam-note">메모 <small>(선택사항)</small></label><textarea id="exam-note" rows="6">${escapeHTML(g.note)}</textarea></div>${dialogFooter('저장')}</form>`);
+    presentExamDialog('메모',memoFormMarkup('exam',g.id,g.note));
   }else if(type==='edit'||type==='resit') {
-    const draft=type==='resit'?{...g,name:g.name+' · 재응시',date:'',daysOff:[],focusMode:'auto',focusDate:''}:g||{name:'',date:'',materialIds:[],learningDays:[0,1,2,3,4,5],daysOff:[],focusMode:'auto',focusDate:''};
-    presentExamDialog(type==='resit'?'다시 준비하기':g?'시험 수정':'시험 추가',`<form data-exam-form="${type==='resit'?'resit':'edit'}" data-goal="${safeId}">${type==='resit'?'<p class="field-help">선택한 기존 자료와 기록을 함께 사용합니다. 원래 시험과 자료의 직접 중단·보관 상태는 유지해요.</p>':''}<div class="form-field"><label for="goal-name">시험 이름</label><input id="goal-name" value="${escapeHTML(draft.name)}" maxlength="100" placeholder="예: 정보처리기사 필기" required></div><div class="form-field"><label for="goal-date">시험 날짜 <small>(선택사항)</small></label><input id="goal-date" type="date" value="${draft.date}"></div><div class="form-field"><span class="field-label">연결할 학습 자료 <small>(선택사항)</small></span><div class="checkbox-list">${dataState.study.materials.map(studyAPI.project).filter(m=>type!=='resit'||g.materialIds.includes(m.id)).map(m=>`<label><input type="checkbox" name="goal-material" value="${escapeHTML(m.id)}" ${draft.materialIds.includes(m.id)?'checked':''}>${escapeHTML(m.name)}</label>`).join('')}</div></div><hr class="form-divider"><div class="form-field"><span class="field-label">학습 가능한 요일</span><div class="weekday-options">${['월','화','수','목','금','토','일'].map((day,i)=>`<label><input type="checkbox" name="learning-day" value="${i}" ${draft.learningDays.includes(i)?'checked':''} aria-label="${day}요일 학습 가능"><span>${day}</span></label>`).join('')}</div></div><div class="form-field"><label for="exam-days-off">쉬는 날짜 <small>(선택사항)</small></label><textarea id="exam-days-off" rows="2" placeholder="2026-11-01, 2026-11-08">${escapeHTML((draft.daysOff||[]).join(', '))}</textarea><p class="field-help">YYYY-MM-DD 형식으로 쉼표나 줄바꿈으로 구분해 주세요.</p></div><div class="form-field"><label for="focus-mode">시험 전 집중 복습</label><select id="focus-mode"><option value="auto" ${draft.focusMode==='auto'?'selected':''}>학습 기록에 맞춰 자동 추천</option><option value="manual" ${draft.focusMode==='manual'?'selected':''}>직접 시작일 설정</option></select><p class="field-help">실제 복습 속도와 학습 가능일로 추천해요. 직접 설정한 시작일을 우선해요.</p></div><div class="form-field" id="focus-date-field" ${draft.focusMode==='manual'?'':'hidden'}><label for="focus-date">집중 복습 시작일</label><input id="focus-date" type="date" value="${draft.focusDate}" ${draft.focusMode==='manual'?'required':''}></div>${dialogFooter(g?'저장':'추가')}</form>`);
+    const draft=type==='resit'?{...g,name:g.name,date:'',daysOff:[],focusMode:'auto',focusDate:''}:g||{name:'',date:'',materialIds:[],learningDays:[0,1,2,3,4,5],daysOff:[],focusMode:'auto',focusDate:''};
+    presentExamDialog(type==='resit'?'새 회차 준비':g?'시험 수정':'시험 추가',`<form data-exam-form="${type==='resit'?'resit':'edit'}" data-goal="${safeId}">${type==='resit'?'<p class="field-help">선택한 기존 자료와 기록을 함께 사용해요. 완료·보관 시험은 유지하고 새 시험을 만들며, 학습·복습 기록은 복사하거나 초기화하지 않아요.</p>':''}<div class="form-field"><label for="goal-name">시험 이름</label><input id="goal-name" value="${escapeHTML(draft.name)}" maxlength="100" placeholder="예: 정보처리기사 필기" required></div><div class="form-field"><label for="goal-date">시험 날짜 <small>(선택사항)</small></label><input id="goal-date" type="date" value="${draft.date}"></div>${type==='resit'?`<div class="form-field"><span class="field-label">연결할 학습 자료 <small>(선택사항)</small></span><div class="checkbox-list">${dataState.study.materials.map(studyAPI.project).filter(m=>type!=='resit'||g.materialIds.includes(m.id)).map(m=>`<label><input type="checkbox" name="goal-material" value="${escapeHTML(m.id)}" ${draft.materialIds.includes(m.id)?'checked':''}>${escapeHTML(m.name)}</label>`).join('')}</div></div>`:''}<hr class="form-divider"><div class="form-field"><span class="field-label">학습 가능한 요일</span><div class="weekday-options">${['월','화','수','목','금','토','일'].map((day,i)=>`<label><input type="checkbox" name="learning-day" value="${i}" ${draft.learningDays.includes(i)?'checked':''} aria-label="${day}요일 학습 가능"><span>${day}</span></label>`).join('')}</div></div><div class="form-field"><label for="days-off-open">쉬는 날짜 <small>(선택사항)</small></label><input id="exam-days-off" type="hidden" value="${escapeHTML((draft.daysOff||[]).join(', '))}"><button type="button" id="days-off-open" class="days-off-trigger" data-days-off-open aria-haspopup="dialog" aria-controls="days-off-dialog"><span id="days-off-summary">${draft.daysOff?.length?draft.daysOff.length+'일 선택':'쉬는 날짜를 선택해 주세요.'}</span>${icon('calendar')}</button><p class="field-help">선택한 날짜는 학습 가능한 날에서 제외해요.</p></div><div class="form-field"><label for="focus-mode">시험 전 집중 복습</label><select id="focus-mode"><option value="auto" ${draft.focusMode==='auto'?'selected':''}>학습 기록에 맞춰 자동 추천</option><option value="manual" ${draft.focusMode==='manual'?'selected':''}>직접 시작일 설정</option></select><p class="field-help">실제 복습 속도와 학습 가능일로 추천해요. 직접 설정한 시작일을 우선해요.</p></div><div class="form-field" id="focus-date-field" ${draft.focusMode==='manual'?'':'hidden'}><label for="focus-date">집중 복습 시작일</label><input id="focus-date" type="date" value="${draft.focusDate}" ${draft.focusMode==='manual'?'required':''}></div>${type==='resit'?'<label class="resit-confirm"><input id="resit-confirm" type="checkbox" required><span>기존 시험과 기록을 보존하고 새 회차를 만드는 것을 확인했어요.</span></label>':''}${dialogFooter(type==='resit'?'새 회차 만들기':g?'저장':'추가')}</form>`);
   }else if(type==='status'&&(status==='paused'||status==='archived')) {
     const linked=g.materialIds.map(id=>demoMaterials.find(m=>m.id===id)).filter(Boolean);
     const isPause=status==='paused';
     const title=isPause?'시험 일시 중단':'시험 마무리';
     const description=linked.length?(isPause?'시험을 중단한 뒤에도 계속 공부할 자료를 선택해 주세요.':'시험을 마무리한 뒤에도 계속 공부할 자료를 선택해 주세요.'):(isPause?'연결된 학습 자료가 없어요. 시험을 일시 중단할까요?':'연결된 학습 자료가 없어요. 시험을 마무리하고 보관할까요?');
-    presentExamDialog(title,`<form data-exam-form="status" data-exam-choices ${isPause?'data-pause-layout':''} data-goal="${safeId}" data-status="${status}">${isPause?'':`<p class="dialog-material-name">${escapeHTML(g.name)}</p>`}<p class="dialog-intro">${isPause?escapeHTML(g.name)+' ':''}${description}</p>${linked.length?`<fieldset class="exam-choice-group"><legend>학습을 계속할 자료</legend><div class="checkbox-list exam-choice-list" tabindex="0" aria-label="학습을 계속할 자료 목록">${linked.map(m=>{
+    presentExamDialog(title,`<form data-exam-form="status" data-exam-choices ${isPause?'data-pause-layout':''} data-goal="${safeId}" data-status="${status}">${isPause?'':`<p class="dialog-material-name exam-material-name">${escapeHTML(g.name)}</p>`}<p class="dialog-intro">${isPause?escapeHTML(g.name)+' ':''}${description}</p>${linked.length?`<fieldset class="exam-choice-group"><legend>학습을 계속할 자료</legend><div class="checkbox-list exam-choice-list" tabindex="0" aria-label="학습을 계속할 자료 목록">${linked.map(m=>{
       const otherActive=examState.goals.some(other=>other.id!==g.id&&other.status==='active'&&other.materialIds.includes(m.id));
       const manuallyPaused=examState.materialSettings[m.id]?.manualStatus==='paused';
       return `<label><input type="checkbox" name="continue-material" value="${escapeHTML(m.id)}"><span>${escapeHTML(m.name)}${manuallyPaused?'<small>직접 중단한 상태는 유지돼요.</small>':otherActive?'<small>다른 진행 중인 시험에 연결되어 있어요.</small>':''}</span></label>`;
@@ -522,9 +637,9 @@ function openExamDialog(type,id,status) {
     try {next=examAPI.update(examState,action);}catch{return;}
     const paused=demoMaterials.filter(m=>examAPI.materialStatus(examState,m.id)==='active'&&examAPI.materialStatus(next,m.id)==='paused');
     const resumed=demoMaterials.filter(m=>examAPI.materialStatus(examState,m.id)==='paused'&&examAPI.materialStatus(next,m.id)==='active');
-    const name=type==='delete'?'삭제':'다시 시작';
+    const name=type==='delete'?'삭제':'학습 재개';
     const impact=(list,text)=>list.length?`<p class="exam-status-note">${text}</p><ul class="exam-impact">${list.map(m=>`<li>${escapeHTML(m.name)}</li>`).join('')}</ul>`:'';
-    presentExamDialog(type==='delete'?'시험을 삭제할까요?':`시험을 ${name}할까요?`,`<p class="dialog-material-name">${escapeHTML(g.name)}</p><p class="dialog-intro">${type==='delete'?'시험과 연결 정보, 시험 메모가 삭제돼요. 학습 자료와 학습·복습 기록은 유지됩니다.':'이 시험의 학습 추천을 다시 시작해요. 직접 중단한 자료는 자동으로 재개하지 않습니다.'}</p>${impact(paused,'함께 일시 중단되는 자료')}${impact(resumed,'자동 중단을 해제하는 자료')}<form data-exam-form="${type}" data-goal="${safeId}" data-status="${status||''}">${dialogFooter(name,type==='delete')}</form>`);
+    presentExamDialog(type==='delete'?'시험을 삭제할까요?':'학습을 재개할까요?',`<p class="dialog-material-name exam-material-name">${escapeHTML(g.name)}</p><p class="dialog-intro">${type==='delete'?'시험과 연결 정보, 시험 메모가 삭제돼요. 학습 자료와 학습·복습 기록은 유지됩니다.':'기존 시험·날짜·연결·기록을 유지하고 학습을 재개해요. 직접 중단한 자료는 자동으로 재개하지 않습니다.'}</p>${impact(paused,'함께 일시 중단되는 자료')}${impact(resumed,'자동 중단을 해제하는 자료')}<form data-exam-form="${type}" data-goal="${safeId}" data-status="${status||''}">${dialogFooter(name,type==='delete')}</form>`);
   }
 }
 function submitExamForm(event) {
@@ -533,14 +648,20 @@ function submitExamForm(event) {
   const id=form.dataset.goal;
   const mode=form.dataset.examForm;
   let action;
+  if(mode==='memo')return saveMemo(()=>commitExam({type:'memo',id,note:$('exam-note').value},'메모를 저장했어요.'),()=>dialog.close());
   if(mode==='edit'||mode==='resit') {
     const name=$('goal-name').value.trim();
     if(!name){$('goal-name').setCustomValidity('시험 이름을 입력해 주세요.');$('goal-name').reportValidity();$('goal-name').addEventListener('input',()=> $('goal-name').setCustomValidity(''),{once:true});return;}
+    if(mode==='resit'&&!$('resit-confirm').checked){$('resit-confirm').reportValidity();return;}
     const existing=mode==='resit'?null:examState.goals.find(g=>g.id===id);
     action={type:mode==='resit'?'resit':'upsert',id,goal:{...(existing||{id:'exam-'+Array.from(crypto.getRandomValues(new Uint8Array(16)),n=>n.toString(16).padStart(2,'0')).join(''),status:'active',note:'',icon:'target'}),name,date:$('goal-date').value,
-      materialIds:Array.from(form.querySelectorAll('[name="goal-material"]:checked'),el=>el.value),
+      materialIds:mode==='resit'?Array.from(form.querySelectorAll('[name="goal-material"]:checked'),el=>el.value):[...(existing?.materialIds||[])],
       learningDays:Array.from(form.querySelectorAll('[name="learning-day"]:checked'),el=>Number(el.value)),
       focusMode:$('focus-mode').value,focusDate:$('focus-date').value,daysOff:[...new Set(($('exam-days-off')?.value||'').split(/[\s,]+/).filter(Boolean))]}};
+  }else if(mode==='links'){
+    const goal=examState.goals.find(g=>g.id===id);if(!goal)return;
+    const unknown=goal.materialIds.filter(id=>!dataState.study.materials.some(m=>m.id===id));
+    action={type:'link-materials',id,materialIds:[...new Set([...Array.from(form.querySelectorAll('[name="linked-material"]:checked'),el=>el.value),...unknown])]};
   }else if(mode==='memo')action={type:'memo',id,note:$('exam-note').value};
   else if(mode==='delete')action={type:'delete',id};
   else if(mode==='status')action={type:'status',id,status:form.dataset.status,continuedMaterialIds:Array.from(form.querySelectorAll('[name="continue-material"]:checked'),el=>el.value)};
@@ -572,6 +693,7 @@ function submitStudyForm(event){
   event.preventDefault();
   const form=event.target,mode=form.dataset.studyForm,id=form.dataset.material;
   const m=dataState.study.materials.find(m=>m.id===id);
+  if(mode==='memo')return saveMemo(()=>commitStudy({type:'note',id,note:$('material-note').value},'저장했어요.'),()=>{dialog.close();if(currentView==='detail'){const tab=detailTab;openDetail(id);renderDetailTab(tab);}});
   const understandingValue=form.querySelector('[data-choice-group="understanding"] .active')?.textContent||'';
   let action;
   if(mode==='material'){
@@ -608,6 +730,8 @@ function submitStudyForm(event){
 
 function handleStudyButton(button){
   if(button.dataset.reviewStart){
+    if(button.closest?.('.review-browser,.review-floating-menu'))reviewReturnToList=true;
+    closeReviewMenu();
     openDialog(button.dataset.dialog,button.dataset.material);
     if(button.dataset.dialog==='review'){
       $('review-from').value=button.dataset.reviewStart;$('review-to').value=button.dataset.reviewEnd;
@@ -628,7 +752,7 @@ function handleStudyButton(button){
   if(button.hasAttribute('data-restore')){$('restore-file').click();return true;}
   if(button.dataset.archiveMaterial||button.dataset.unarchiveMaterial){
     const id=button.dataset.archiveMaterial||button.dataset.unarchiveMaterial;
-    finishCommit(commitStudy({type:'archive',id,archived:!!button.dataset.archiveMaterial},button.dataset.archiveMaterial?'자료와 이력을 보관했어요.':'자료를 다시 꺼냈어요.'),()=>{dialog.close();if(currentView==='detail')showView('home');});
+    finishCommit(commitStudy({type:'archive',id,archived:!!button.dataset.archiveMaterial},button.dataset.archiveMaterial?'학습 완료로 옮겼어요.':'학습을 재개했어요.'),()=>{dialog.close();if(currentView==='detail')showView('home');});
     return true;
   }
   if(button.dataset.editEntry){
@@ -663,16 +787,25 @@ async function readRestore(input){
 }
 
 document.addEventListener('click',(event)=>{
+  if(!event.target.closest('.material-list-picker'))$('material-list-picker').open=false;
+  if(reviewPopup&&!reviewPopup.hidden&&!reviewPopup.contains(event.target)&&!event.target.closest('[data-review-menu]'))closeReviewMenu();
   if(!$('calendar-picker').hidden&&!event.target.closest('.calendar-navigation')){$('calendar-picker').hidden=true;$('calendar-title').setAttribute('aria-expanded','false');}
   const button = event.target.closest('button');
-  if (!button) return;
+  if (!button) {const card=event.target.closest('[data-card-detail]');if(card&&!event.target.closest('a,input,select,textarea,summary'))openDetail(card.dataset.cardDetail);return;}
+ if(button.hasAttribute('data-review-menu')){openReviewMenu(button);return;}
+ if(button.dataset.materialList){materialStatusFilter=button.dataset.materialList;$('material-list-picker').open=false;renderMaterials(materialFilter);return;}
+  if(button.dataset.reviewFilter){reviewUI={filter:button.dataset.reviewFilter,materialId:null,limit:5};renderReviewBrowser();$('dialog-content').querySelector('[data-review-filter="'+reviewUI.filter+'"]').focus({preventScroll:true});return;}
+  if(button.dataset.reviewMaterial){reviewUI.materialId=reviewUI.materialId===button.dataset.reviewMaterial?null:button.dataset.reviewMaterial;reviewUI.limit=5;renderReviewBrowser();[...$('dialog-content').querySelectorAll('[data-review-material]')].find(b=>b.dataset.reviewMaterial===button.dataset.reviewMaterial)?.focus({preventScroll:true});return;}
+  if(button.hasAttribute('data-review-more')||button.hasAttribute('data-review-collapse')){reviewUI.limit=button.hasAttribute('data-review-more')?reviewUI.limit+5:5;renderReviewBrowser();$('dialog-content').querySelector('.review-more')?.focus({preventScroll:true});return;}
   if(handleStudyButton(button))return;
+  if(button.dataset.addGoalMaterial){openDialog('material');for(const input of dialog.querySelectorAll('[name="material-goal"]'))input.checked=input.value===button.dataset.addGoalMaterial;return;}
+  if(button.hasAttribute('data-days-off-open')){DaysOffPicker.open($('exam-days-off'),localToday(),dates=>{$('days-off-summary').textContent=dates.length?dates.length+'일 선택':'쉬는 날짜를 선택해 주세요.';});return;}
   if (button.dataset.examDialog) return openExamDialog(button.dataset.examDialog,button.dataset.goal,button.dataset.status);
   if (button.dataset.examPriority) {finishCommit(commitExam({type:'priority',id:button.dataset.examPriority},'우선 시험 설정을 저장했어요.'),()=>dialog.close());return;}
   if (button.dataset.materialStatus) {finishCommit(commitExam({type:'material-status',id:button.dataset.material,status:button.dataset.materialStatus},'자료 상태를 저장했어요.'),()=>dialog.close());return;}
 
   if (button.dataset.view) return showView(button.dataset.view,true);
-  if (button.hasAttribute('data-close')) return dialog.close();
+  if (button.hasAttribute('data-close')) return requestDialogClose();
   if (button.dataset.detail) return openDetail(button.dataset.detail);
   if (button.dataset.dialog) return openDialog(button.dataset.dialog,button.dataset.material,button.hasAttribute('data-edit'));
   if (button.dataset.previewAction) return notify(`${button.dataset.previewAction} 기능은 다음 단계에서 연결해요. 실제 데이터는 변경되지 않았어요.`);
@@ -692,8 +825,9 @@ document.addEventListener('click',(event)=>{
   if(button.hasAttribute('data-calendar-record'))return openCalendarRecord(button);
   if (button.dataset.calendar) {const date=new Date(calendarYear,calendarMonth+Number(button.dataset.calendar),1);return moveCalendar(date.getFullYear(),date.getMonth());}
   if (button.dataset.day) return showCalendarDay(calendarYear+'-'+String(calendarMonth+1).padStart(2,'0')+'-'+String(button.dataset.day).padStart(2,'0'));
+  if(button.dataset.historyMore){detailLimits[button.dataset.historyMore]+=5;return renderDetailTab(button.dataset.historyMore);}
   if (button.dataset.detailTab) {selectInGroup(button,'[data-detail-tab]');return renderDetailTab(button.dataset.detailTab);}
-  if (button.closest('[data-choice-group]')) selectInGroup(button,'.choice-button');
+  if (button.closest('[data-choice-group]')) {const selected=button.classList.contains('active');selectInGroup(button,'.choice-button');if(selected){button.classList.remove('active');button.setAttribute('aria-pressed','false');}}
 });
 
 document.addEventListener('change',(event)=>{
@@ -708,6 +842,7 @@ document.addEventListener('change',(event)=>{
   if (target.id==='material-unit') $('total-unit').textContent=target.value;
 });
 document.addEventListener('input',(event)=>{
+  if(event.target.hasAttribute('data-memo'))resizeMemo();
   if(event.target.id==='custom-unit') $('total-unit').textContent=event.target.value.trim()||'단위';
 });
 document.addEventListener('submit',(event)=>{
@@ -716,11 +851,15 @@ document.addEventListener('submit',(event)=>{
 });
 dialog.addEventListener('click',(event)=>{
   if(event.target!==dialog) return;
+  if(reviewPopup&&!reviewPopup.hidden){closeReviewMenu(true);return;}
   const rect=dialog.getBoundingClientRect();
-  if(event.clientX<rect.left||event.clientX>rect.right||event.clientY<rect.top||event.clientY>rect.bottom) dialog.close();
+  if(event.clientX<rect.left||event.clientX>rect.right||event.clientY<rect.top||event.clientY>rect.bottom) requestDialogClose();
 });
+dialog.addEventListener('cancel',event=>{if(memoState){event.preventDefault();requestDialogClose();}});
 dialog.addEventListener('close',()=>{
+  closeReviewMenu();
   pendingRestore=null;
+  if(reviewReturnToList){returnReviewList();return;}
   if(dialogReturnFocus?.isConnected) dialogReturnFocus.focus({preventScroll:true});
 });
 window.addEventListener('hashchange',()=>showView(location.hash.slice(1),true));
@@ -732,6 +871,7 @@ function refreshForDayChange(){
  displayedDay=today;reviewCache=null;
  renderHomeWelcome();renderToday();renderReviewSummary();renderExamSummary();
  renderMaterials(materialFilter);renderGoals(goalFilter);renderStats(statsPeriod);renderCalendar();
+ if(dialog.open&&reviewDialogVisible)renderReviewBrowser();
  return true;
 }
 function scheduleDayRefresh(){
@@ -744,8 +884,7 @@ window.addEventListener('focus',()=>{refreshForDayChange();scheduleDayRefresh();
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'){refreshForDayChange();scheduleDayRefresh();}});
 scheduleDayRefresh();
 
-$('archive-count').textContent=demoArchivedMaterials.length;
-$('archive-count').setAttribute('aria-label',`보관 자료 ${demoArchivedMaterials.length}개`);
+
 renderReviewSummary();renderExamSummary();
 renderHomeWelcome();renderMaterials();renderToday();renderGoals();renderStats();renderCalendar();
 renderStorageNote();
@@ -758,9 +897,27 @@ function activateDataContext(){
  saveGuard=null;storageConflict=false;pendingRestore=null;$('storage-conflict-notice').hidden=true;
  try{saveGuard=StorageGuard.create(appStorage,studyAPI.KEY,appLocks);}catch{}
  selectedMaterial=null;$('view-detail').replaceChildren();refreshData();
- if(currentView==='detail'){showView('home');openDialog('settings');}
+ if(currentView==='detail')showView('more');
  applicationContext.updateSettings?.();
 }
 if(applicationContext?.ready)applicationContext.ready({activate:activateDataContext,state:()=>dataState,busy:()=>!!saveGuard?.busy||restoreReading,pending:()=>pendingRestore!==null,notify});
 
 document.addEventListener('keydown',event=>{if(event.key==='Escape'&&currentView==='stats'&&!dialog.open&&!$('calendar-picker').hidden){$('calendar-picker').hidden=true;$('calendar-title').setAttribute('aria-expanded','false');$('calendar-title').focus({preventScroll:true});event.preventDefault();}});
+
+document.addEventListener('keydown',event=>{
+ const trigger=event.target.closest?.('[data-review-menu]');
+ if(trigger&&event.key==='ArrowDown'){event.preventDefault();openReviewMenu(trigger);return;}
+ if(!reviewPopup||reviewPopup.hidden)return;
+ if(event.key==='Escape'){event.preventDefault();event.stopImmediatePropagation();closeReviewMenu(true);return;}
+ if(['ArrowDown','ArrowUp','Home','End'].includes(event.key)){
+  event.preventDefault();const items=[...reviewPopup.querySelectorAll('button')],index=items.indexOf(document.activeElement);
+  items[event.key==='Home'?0:event.key==='End'?items.length-1:(index+(event.key==='ArrowDown'?1:-1)+items.length)%items.length].focus();
+ }
+},true);
+dialog.addEventListener('scroll',placeReviewMenu,{passive:true});
+window.addEventListener('resize',placeReviewMenu);
+window.visualViewport?.addEventListener('resize',placeReviewMenu);
+
+document.addEventListener('keydown',event=>{if(event.key==='Escape'&&$('material-list-picker').open){$('material-list-picker').open=false;$('material-list-picker').querySelector('summary').focus();}});
+
+document.addEventListener('keydown',event=>{if(event.key==='Escape'&&dialog.open&&memoState){event.preventDefault();event.stopImmediatePropagation();requestDialogClose();}},true);

@@ -1,7 +1,7 @@
 /* Versioned app shell; personal data stays in localStorage, outside this cache. */
 'use strict';
-const REVISION="28e4fe8fc597fdeb";
-const FILES=["app.js","assets/apple-touch-icon.png","assets/date-leaf.png","assets/favicon.svg","assets/fonts/BMJUA.woff","assets/fonts/Cafe24Ssurround.woff","assets/fonts/LINESeedKR-Bd.woff2","assets/fonts/LINESeedKR-Rg.woff2","assets/home-banner-cottage-bear.png","assets/home-banner-garden-background.png","assets/home-logo-approved.png","assets/icon-192.png","assets/icon-512.png","assets/plants-five-stages.png","assets/plants-growth-v2.png","assets/plants.png","assets/sidebar-bear-tree.png","banner-camera.css","exam-management.js","index.html","learning-plan.js","manifest.webmanifest","pwa.js","review-plan.js","storage-guard.js","streak.js","study-data.js","study-stats.js","style.css","test-data.js","test-mode.js"];
+const REVISION="c7da42c7479a7b10";
+const FILES=["app.js","assets/apple-touch-icon.png","assets/date-leaf.png","assets/favicon.svg","assets/fonts/BMJUA.woff","assets/fonts/Cafe24Ssurround.woff","assets/fonts/LINESeedKR-Bd.woff2","assets/fonts/LINESeedKR-Rg.woff2","assets/home-banner-cottage-bear.png","assets/home-banner-garden-background.png","assets/home-logo-approved.png","assets/icon-192.png","assets/icon-512.png","assets/plants-five-stages.png","assets/plants-growth-v2.png","assets/plants.png","assets/sidebar-bear-tree.png","banner-camera.css","days-off-picker.js","exam-management.js","index.html","learning-plan.js","manifest.webmanifest","pwa.js","review-plan.js","storage-guard.js","streak.js","study-data.js","study-stats.js","style.css","test-data.js","test-mode.js","today-review-view.js"];
 const PREFIX='chagok-v2-shell:'+encodeURIComponent(self.registration.scope)+':';
 const CACHE=PREFIX+REVISION;
 self.addEventListener('install',event=>{

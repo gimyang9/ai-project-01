@@ -1,0 +1,239 @@
+{
+  "results": [
+    {
+      "name": "controlled old header reproduction confirms 44px first grid column and two lines",
+      "pass": true,
+      "value": {
+        "width": 44,
+        "lines": 2,
+        "columns": "44px 578px 44px"
+      }
+    },
+    {
+      "name": "settings title shares exam/stat styling, center and top spacing at 320..1920px",
+      "pass": true,
+      "value": [
+        {
+          "width": 320,
+          "header": {
+            "font": "Cafe24, \"LINE Seed\", sans-serif",
+            "size": "20px",
+            "weight": "400",
+            "lineHeight": "27px",
+            "center": 0,
+            "top": 23.5,
+            "lines": 1,
+            "headerBottom": 62,
+            "headerHeight": 50,
+            "margin": "16px"
+          },
+          "gap": 16,
+          "cardGap": [
+            12,
+            12
+          ]
+        },
+        {
+          "width": 375,
+          "header": {
+            "font": "Cafe24, \"LINE Seed\", sans-serif",
+            "size": "22px",
+            "weight": "400",
+            "lineHeight": "29.7px",
+            "center": 0,
+            "top": 22.15625,
+            "lines": 1,
+            "headerBottom": 62,
+            "headerHeight": 50,
+            "margin": "16px"
+          },
+          "gap": 16,
+          "cardGap": [
+            12,
+            12
+          ]
+        },
+        {
+          "width": 430,
+          "header": {
+            "font": "Cafe24, \"LINE Seed\", sans-serif",
+            "size": "22px",
+            "weight": "400",
+            "lineHeight": "29.7px",
+            "center": 0,
+            "top": 22.15625,
+            "lines": 1,
+            "headerBottom": 62,
+            "headerHeight": 50,
+            "margin": "16px"
+          },
+          "gap": 16,
+          "cardGap": [
+            12,
+            12
+          ]
+        },
+        {
+          "width": 680,
+          "header": {
+            "font": "Cafe24, \"LINE Seed\", sans-serif",
+            "size": "22px",
+            "weight": "400",
+            "lineHeight": "29.7px",
+            "center": 0,
+            "top": 22.15625,
+            "lines": 1,
+            "headerBottom": 62,
+            "headerHeight": 50,
+            "margin": "16px"
+          },
+          "gap": 16,
+          "cardGap": [
+            12,
+            12
+          ]
+        },
+        {
+          "width": 768,
+          "header": {
+            "font": "Cafe24, \"LINE Seed\", sans-serif",
+            "size": "23px",
+            "weight": "400",
+            "lineHeight": "31.05px",
+            "center": 0,
+            "top": 26.46875,
+            "lines": 1,
+            "headerBottom": 68,
+            "headerHeight": 52,
+            "margin": "18px"
+          },
+          "gap": 18,
+          "cardGap": [
+            12,
+            12
+          ]
+        },
+        {
+          "width": 1023,
+          "header": {
+            "font": "Cafe24, \"LINE Seed\", sans-serif",
+            "size": "23px",
+            "weight": "400",
+            "lineHeight": "31.05px",
+            "center": 0,
+            "top": 26.46875,
+            "lines": 1,
+            "headerBottom": 68,
+            "headerHeight": 52,
+            "margin": "18px"
+          },
+          "gap": 18,
+          "cardGap": [
+            12,
+            12
+          ]
+        },
+        {
+          "width": 1024,
+          "header": {
+            "font": "Cafe24, \"LINE Seed\", sans-serif",
+            "size": "23px",
+            "weight": "400",
+            "lineHeight": "31.05px",
+            "center": 0,
+            "top": 38.46875,
+            "lines": 1,
+            "headerBottom": 80,
+            "headerHeight": 52,
+            "margin": "18px"
+          },
+          "gap": 18,
+          "cardGap": [
+            12,
+            12
+          ]
+        },
+        {
+          "width": 1280,
+          "header": {
+            "font": "Cafe24, \"LINE Seed\", sans-serif",
+            "size": "23px",
+            "weight": "400",
+            "lineHeight": "31.05px",
+            "center": 0,
+            "top": 38.46875,
+            "lines": 1,
+            "headerBottom": 80,
+            "headerHeight": 52,
+            "margin": "18px"
+          },
+          "gap": 18,
+          "cardGap": [
+            12,
+            12
+          ]
+        },
+        {
+          "width": 1440,
+          "header": {
+            "font": "Cafe24, \"LINE Seed\", sans-serif",
+            "size": "23px",
+            "weight": "400",
+            "lineHeight": "31.05px",
+            "center": 0,
+            "top": 38.46875,
+            "lines": 1,
+            "headerBottom": 80,
+            "headerHeight": 52,
+            "margin": "18px"
+          },
+          "gap": 18,
+          "cardGap": [
+            12,
+            12
+          ]
+        },
+        {
+          "width": 1920,
+          "header": {
+            "font": "Cafe24, \"LINE Seed\", sans-serif",
+            "size": "23px",
+            "weight": "400",
+            "lineHeight": "31.05px",
+            "center": 0,
+            "top": 38.46875,
+            "lines": 1,
+            "headerBottom": 80,
+            "headerHeight": 52,
+            "margin": "18px"
+          },
+          "gap": 18,
+          "cardGap": [
+            12,
+            12
+          ]
+        }
+      ]
+    },
+    {
+      "name": "test switch preserves real storage through changes and OFF",
+      "pass": true,
+      "value": true
+    },
+    {
+      "name": "backup button downloads valid original-format JSON with original history",
+      "pass": true,
+      "value": {
+        "format": "chagok-v2",
+        "version": 1
+      }
+    },
+    {
+      "name": "reset stays behind confirmation; restore file stages then restores exact original history",
+      "pass": true,
+      "value": true
+    }
+  ],
+  "errors": [],
+  "physicalSafari": false
+}

@@ -8,7 +8,7 @@ function boot(entries={},options={}){
  const document={getElementById:element,querySelector:element,querySelectorAll:()=>[],addEventListener(){},activeElement:null};
  const context=vm.createContext({document,console,Date:options.Date||Date,Intl,crypto,location:{hash:''},history:{replaceState(){}},setTimeout:()=>1,clearTimeout(){},localStorage:{getItem:k=>map.get(k)??null,setItem:(k,v)=>map.set(k,v)},addEventListener(type,fn){windowListeners.set(type,fn);},scrollTo(){}});
  context.window=context;
- for(const name of ['streak.js','exam-management.js','study-data.js','learning-plan.js','review-plan.js','study-stats.js','storage-guard.js','app.js'])vm.runInContext(fs.readFileSync('dist/'+name,'utf8'),context,{filename:name});
+ for(const name of ['streak.js','exam-management.js','study-data.js','learning-plan.js','review-plan.js','study-stats.js','storage-guard.js','today-review-view.js','app.js'])vm.runInContext(fs.readFileSync('dist/'+name,'utf8'),context,{filename:name});
  return {map,element,dispatchWindow:type=>windowListeners.get(type)?.(),run:code=>vm.runInContext(code,context),context};
 }
 const submit=(app,mode,id='',record='')=>app.run(`submitStudyForm({preventDefault(){},target:{dataset:{studyForm:${JSON.stringify(mode)},material:${JSON.stringify(id)},record:${JSON.stringify(record)}},querySelector(){return null;},querySelectorAll(){return [];}}})`);
@@ -23,14 +23,14 @@ test('real app initialises empty, shows registration/settings dialogs and persis
  a.element('material-note').value='메모 저장';submit(a,'memo',m.id);
  saved=JSON.parse(a.map.get(D.KEY));assert.equal(saved.study.materials[0].records[0].position,10);assert.equal(saved.study.materials[0].reviews.length,1);assert.equal(saved.study.materials[0].note,'메모 저장');
  const b=boot(Object.fromEntries(a.map));assert.match(b.element('material-grid').innerHTML,/연결 검사/);assert.match(b.element('material-grid').innerHTML,/>10</);
- b.run(`openDetail(${JSON.stringify(m.id)})`);assert.match(b.element('detail-tab-content').innerHTML,/2026-10-01/);assert.match(b.element('detail-tab-content').innerHTML,/data-edit-entry/);
- b.run("openDialog('settings')");assert.match(b.element('dialog-content').innerHTML,/data-backup/);assert.match(b.element('dialog-content').innerHTML,/restore-file/);
+ b.run(`openDetail(${JSON.stringify(m.id)})`);assert.match(b.element('detail-tab-content').innerHTML,/2026.10.01/);assert.match(b.element('detail-tab-content').innerHTML,/data-edit-entry/);
+ b.run("openDialog('settings')");assert.match(b.element('settings-content').innerHTML,/data-backup/);assert.match(b.element('settings-content').innerHTML,/restore-file/);
 });
-test('app archive badge, unarchive, delete confirmation, and reset use live storage',()=>{
+test('app completed list, resume, delete confirmation, and reset use live storage',()=>{
  const a=boot();a.run("commitStudy({type:'material',material:{id:'m',name:'보관할 자료',type:'book',unit:'페이지',total:10}},'ok')");
- a.run("handleStudyButton({dataset:{archiveMaterial:'m'},hasAttribute(){return false;}})");assert.equal(a.element('archive-count').textContent,1);assert.doesNotMatch(a.element('material-grid').innerHTML,/보관할 자료/);
- a.run("openDialog('archive')");assert.match(a.element('dialog-content').innerHTML,/data-unarchive-material="m"/);
- a.run("handleStudyButton({dataset:{unarchiveMaterial:'m'},hasAttribute(){return false;}})");assert.equal(a.element('archive-count').textContent,0);
+ a.run("handleStudyButton({dataset:{archiveMaterial:'m'},hasAttribute(){return false;}})");assert.equal(a.run('demoArchivedMaterials.length'),1);assert.doesNotMatch(a.element('material-grid').innerHTML,/보관할 자료/);
+ a.run("openDialog('archive')");assert.match(a.element('material-grid').innerHTML,/data-card-detail="m"/);a.run("openDialog('material-menu','m')");assert.match(a.element('dialog-content').innerHTML,/data-unarchive-material="m"/);
+ a.run("handleStudyButton({dataset:{unarchiveMaterial:'m'},hasAttribute(){return false;}})");assert.equal(a.run('demoArchivedMaterials.length'),0);
  a.run("openDialog('delete-material','m')");assert.match(a.element('dialog-content').innerHTML,/data-study-form="delete"/);submit(a,'delete','m');assert.equal(JSON.parse(a.map.get(D.KEY)).study.materials.length,0);
  submit(a,'reset');assert.equal(JSON.parse(a.map.get(D.KEY)).exams.goals.length,0);
 });
@@ -59,6 +59,7 @@ test('resit UI stages only original linked materials and commits selected ids wi
  a.run("commitExam({type:'upsert',goal:{id:'old',name:'이전 시험',date:'',status:'archived',note:'보존 메모',materialIds:['m'],continuedMaterialIds:[],learningDays:[0,1],focusMode:'auto',focusDate:''}},'ok')");
  const studyBefore=JSON.parse(a.map.get(D.KEY)).study;
  a.run("openExamDialog('resit','old')");assert.match(a.element('dialog-content').innerHTML,/다시|함께 사용/);assert.match(a.element('dialog-content').innerHTML,/data-exam-form="resit"/);
+ a.element('resit-confirm').checked=true;
  for(const [id,value] of Object.entries({'goal-name':'재응시','goal-date':'2026-12-01','focus-mode':'auto','focus-date':'','exam-days-off':'2026-11-01,\n2026-11-08'}))a.element(id).value=value;
  a.run(`submitExamForm({preventDefault(){},target:{dataset:{goal:'old',examForm:'resit'},querySelectorAll(selector){return selector.includes('goal-material')?[{value:'m'}]:[{value:'0'},{value:'1'}];}}})`);
  const state=JSON.parse(a.map.get(D.KEY));assert.equal(state.exams.goals.length,2);assert.equal(state.exams.goals[0].status,'archived');assert.equal(state.exams.goals[1].sourceGoalId,'old');assert.deepEqual(state.exams.goals[1].daysOff,['2026-11-01','2026-11-08']);const strip=x=>({...x,materials:x.materials.map(({dailyPlan,...m})=>m)});assert.deepEqual(strip(state.study),strip(studyBefore));
@@ -67,13 +68,13 @@ test('approved plans render quota and adaptive estimate; manual form persists an
  const a=boot();a.run("Date=class extends Date{constructor(...args){super(...(args.length?args:['2026-10-25T12:00:00']));}}");
  a.run("commitStudy({type:'material',material:{id:'m',name:'추천 자료',type:'book',unit:'페이지',total:100}},'ok')");
  a.run("commitExam({type:'upsert',goal:{id:'g',name:'시험',date:'2026-10-30',status:'active',note:'',materialIds:['m'],continuedMaterialIds:[],learningDays:[0,1,2,3,4,5,6],focusMode:'auto',focusDate:''}},'ok')");
- assert.match(a.element('today-list').innerHTML,/오늘 권장 20페이지/);assert.doesNotMatch(a.element('today-list').innerHTML,/추정할 기록이 부족/);
+ assert.match(a.element('today-list').innerHTML,/오늘 남은 학습 20페이지/);assert.doesNotMatch(a.element('today-list').innerHTML,/추정할 기록이 부족/);
  a.run("commitStudy({type:'record',id:'m',record:{id:'r',date:'2026-10-19',position:20},today:'2026-10-25'},'ok')");
- assert.doesNotMatch(a.element('today-list').innerHTML,/최근 7일 평균/);assert.match(a.element('today-list').innerHTML,/오늘 권장 16페이지/);
+ assert.doesNotMatch(a.element('today-list').innerHTML,/최근 7일 평균/);assert.match(a.element('today-list').innerHTML,/오늘 남은 학습 16페이지/);
  a.run("openDialog('study-plan','m')");assert.match(a.element('dialog-content').innerHTML,/data-study-form="plan"/);
- a.element('manual-daily-amount').value='5';submit(a,'plan','m');assert.match(a.element('today-list').innerHTML,/오늘 직접 설정 5페이지/);
- a.run("openDetail('m');renderDetailTab('basic')");assert.match(a.element('detail-tab-content').innerHTML,/최근 7일 평균/);
- a.run("renderGoals()");assert.match(a.element('goal-grid').innerHTML,/학습 계획/);
+ a.element('manual-daily-amount').value='5';submit(a,'plan','m');assert.match(a.element('today-list').innerHTML,/오늘 남은 학습 5페이지/);
+ a.run("openDetail('m');renderDetailTab('basic')");assert.match(a.element('detail-tab-content').innerHTML,/오늘 설정 학습량/);assert.doesNotMatch(a.element('detail-tab-content').innerHTML,/최근 7일 평균/);
+ a.run("renderGoals()");assert.match(a.element('goal-grid').innerHTML,/linked-material-link/);assert.doesNotMatch(a.element('goal-grid').innerHTML,/학습 계획/);
  const b=boot(Object.fromEntries(a.map));assert.equal(b.run('dataState.study.materials[0].manualDailyAmount'),5);
 });
 test('failed manual-plan save keeps original plan; clearing it restores automatic quota',()=>{
@@ -103,17 +104,17 @@ test('modal status keeps rest independent, prioritises actionable warnings, and 
  for(const [fixture,primary,secondary] of cases){const before=JSON.stringify(fixture);a.context.statusFixture=fixture;const shown=a.run("compactPlanStatus(statusFixture,'페이지')");assert.equal(shown.primary,primary);assert.equal(shown.secondary,secondary);assert.equal(JSON.stringify(fixture),before);}
 });
 
-test('home today-list shows concise remaining/state only for all requested plan cases',()=>{
+test('home today-list focuses daily remainder and state without forecast clutter',()=>{
  const a=boot();
  const base={id:'sample',remaining:25,isActive:true,todayAllowed:true,manualDailyAmount:null,amount:null,deadline:null,noTime:false,overdue:false,manualShortfall:0,expectedLate:false,forecast:{reason:'insufficient'}};
  const cases=[
-  [base,'남은 25강 · 목표일 미정'],
-  [{...base,deadline:'2026-11-20',amount:5},'남은 25강 · 오늘 권장 5강'],
-  [{...base,manualDailyAmount:10,amount:6},'남은 25강 · 오늘 직접 설정 6강'],
-  [{...base,todayAllowed:false,amount:0},'남은 25강 · 오늘은 쉬는 날'],
-  [{...base,deadline:'2026-11-20',amount:5,forecast:{reason:'no-recent-study',window:14}},'남은 25강 · 오늘 권장 5강'],
-  [{...base,noTime:true,overdue:true},'남은 25강 · 학습 가능일 없음 · 기한 초과'],
-  [{...base,noTime:true},'남은 25강 · 학습 가능일 없음']
+  [base,'학습량 추천 정보가 없어요.'],
+  [{...base,deadline:'2026-11-20',amount:5},'오늘 남은 학습 5강'],
+  [{...base,manualDailyAmount:10,amount:6},'오늘 남은 학습 6강'],
+  [{...base,todayAllowed:false,amount:0},'오늘은 쉬는 날'],
+  [{...base,deadline:'2026-11-20',amount:5,forecast:{reason:'no-recent-study',window:14}},'오늘 남은 학습 5강'],
+  [{...base,noTime:true,overdue:true},'학습량 추천 정보가 없어요.'],
+  [{...base,noTime:true},'학습량 추천 정보가 없어요.']
  ];
  const raw=a.map.get(D.KEY);
  for(const [plan,expected] of cases){
@@ -131,13 +132,13 @@ test('home today-list shows concise remaining/state only for all requested plan 
  assert.match(a.element('today-list').innerHTML,/오늘 진행할 학습이 없어요/);
 });
 
-test('home manual target completion and short warnings preserve original detailed labels',()=>{
+test('home completion stays concise while detailed plan warnings remain available',()=>{
  const a=boot();const plan={remaining:30,isActive:true,todayAllowed:true,manualDailyAmount:10,amount:0,deadline:'2026-11-20',noTime:false,overdue:false,manualShortfall:0,expectedLate:false,forecast:{reason:'no-recent-study',window:14}};
  a.context.homeFixture=plan;
- assert.equal(a.run("homePlanLabel(homeFixture,'페이지')"),'오늘 설정한 분량 완료');
+ assert.equal(a.run("homePlanLabel(homeFixture,'페이지')"),'오늘 학습 완료');
  assert.match(a.run('forecastLabel(homeFixture)'),/최근 14일 학습량이 0/);
  a.context.homeFixture={...plan,amount:4,manualShortfall:12};
- assert.equal(a.run("homePlanLabel(homeFixture,'페이지')"),'오늘 직접 설정 4페이지 · 기한 내 12페이지 부족');
+ assert.equal(a.run("homePlanLabel(homeFixture,'페이지')"),'오늘 남은 학습 4페이지');
  assert.match(a.run("planWarning(homeFixture,'페이지')"),/직접 정한 분량으로는/);
 });
 
@@ -156,13 +157,13 @@ test('material heading and filters reflect live unarchived data across changes a
  submit(a,'reset');assert.deepEqual(counts(),[0,0,0,0]);
 });
 
-test('review UI shows merged ranges, prefills one completion, and stores only one history row',()=>{
+test('review groups hide ranges initially and original completion stores one history row',()=>{
  const a=boot();
  a.run("commitStudy({type:'material',material:{id:'m',name:'복습 UI',type:'book',unit:'페이지',total:100}},'ok')");
  a.run("commitStudy({type:'record',id:'m',record:{id:'r',date:'2026-10-01',position:60,understanding:'보통'},today:'2026-10-25'},'ok')");
  a.run("commitExam({type:'upsert',goal:{id:'g',name:'시험',date:'2026-11-10',status:'active',note:'',materialIds:['m'],learningDays:[0,1,2,3,4,5,6],daysOff:[],focusMode:'manual',focusDate:'2026-10-20',continuedMaterialIds:[]}},'ok')");
  a.run("openDialog('review-plan')");const html=a.element('dialog-content').innerHTML;
- assert.match(html,/복습 UI/);assert.match(html,/시험 전 복습/);assert.doesNotMatch(html,/successStreak|연속 성공/);
+ assert.match(html,/오늘 예정된 복습이 없어요/);a.run("reviewUI.filter='overdue';renderReviewBrowser()");assert.match(a.element('dialog-content').innerHTML,/복습 UI/);assert.match(html,/오늘 예정/);assert.match(html,/밀린 복습/);assert.doesNotMatch(html,/최근 기록 기준 하루|부족 예상|review-range-row/);assert.doesNotMatch(html,/successStreak|연속 성공/);
  const first=a.run('activeReviewPlans()[0]');
  a.run(`handleStudyButton({dataset:{dialog:'review',material:'m',reviewStart:'${first.start}',reviewEnd:'${first.end}'}})`);
  assert.equal(String(a.element('review-from').value),String(first.start));assert.equal(String(a.element('review-to').value),String(first.end));
@@ -196,7 +197,7 @@ test('five plant stages retain first completion and render the stored family in 
  a.run("commitStudy({type:'record',id:'m',record:{id:'r',date:localToday(),position:100},today:localToday()},'ok')");
  const saved=JSON.parse(a.map.get(D.KEY)),family=saved.study.materials[0].growthState.family;
  a.run("commitStudy({type:'archive',id:'m',archived:true},'ok');openDialog('archive')");
- assert.match(a.element('dialog-content').innerHTML,new RegExp('growth-'+family+' stage-4'));
+ assert.match(a.element('material-grid').innerHTML,new RegExp('growth-'+family+' stage-4'));
 });
 
 test('day rollover refreshes schedules without changing input, modal, filters or stored data',()=>{
@@ -226,4 +227,39 @@ test('chart display range follows all visible bins without changing aggregation 
   const result=a.run("(()=>{const d=StudyStats.period("+JSON.stringify(date)+","+JSON.stringify(period)+",LearningPlan);return {end:chartDisplayEnd(d,"+JSON.stringify(period)+","+JSON.stringify(date)+"),actualEnd:d.end}})()");
   assert.equal(result.end,end);assert.equal(result.actualEnd,date);
  }
+});
+
+test('exam edit removes material picker but preserves links; separate links form supports cancel/save',()=>{
+ const a=boot();
+ for(const id of ['one','two'])a.run("commitStudy({type:'material',material:{id:"+JSON.stringify(id)+",name:"+JSON.stringify(id)+",type:'book',unit:'페이지',total:100}},'ok')");
+ a.run("commitExam({type:'upsert',goal:{id:'g',name:'시험',date:'2026-11-01',status:'active',note:'메모',materialIds:['one','two'],continuedMaterialIds:[],learningDays:[0,1],daysOff:[],focusMode:'auto',focusDate:''}},'ok')");
+ a.run("openExamDialog('edit','g')");assert.doesNotMatch(a.element('dialog-content').innerHTML,/name="goal-material"|연결할 학습 자료/);
+ for(const [id,value]of Object.entries({'goal-name':'이름 수정','goal-date':'2026-11-02','focus-mode':'auto','focus-date':'','exam-days-off':''}))a.element(id).value=value;
+ a.run("submitExamForm({preventDefault(){},target:{dataset:{goal:'g',examForm:'edit'},querySelectorAll(){return [{value:'0'},{value:'1'}]}}})");
+ assert.deepEqual(JSON.parse(a.map.get(D.KEY)).exams.goals[0].materialIds,['one','two']);
+ a.run("openExamDialog('links','g')");assert.match(a.element('dialog-content').innerHTML,/name="linked-material"/);
+ const raw=a.map.get(D.KEY);a.run('dialog.close()');assert.equal(a.map.get(D.KEY),raw);
+ a.run("submitExamForm({preventDefault(){},target:{dataset:{goal:'g',examForm:'links'},querySelectorAll(){return [{value:'two'}]}}})");
+ const state=JSON.parse(a.map.get(D.KEY));assert.deepEqual(state.exams.goals[0].materialIds,['two']);assert.equal(state.study.materials.length,2);
+});
+test('exam menus match state; archived cannot resume or prepare without confirmation',()=>{
+ const a=boot();
+ a.run("commitExam({type:'upsert',goal:{id:'g',name:'시험',date:'',status:'active',note:'',materialIds:[],continuedMaterialIds:[],learningDays:[0],daysOff:[],focusMode:'auto',focusDate:''}},'ok')");
+ const labels=()=>[...a.element('dialog-content').innerHTML.matchAll(/<span>([^<]+)<\/span>/g)].map(m=>m[1]);
+ a.run("openExamDialog('menu','g')");assert.deepEqual(labels(),['메모','시험 수정','학습 자료 연결','우선 시험 설정','시험 완료 및 보관','학습 일시 중단','시험 삭제']);
+ a.run("commitExam({type:'status',id:'g',status:'paused'},'ok');openExamDialog('menu','g')");assert.deepEqual(labels(),['메모','시험 수정','학습 자료 연결','학습 재개','시험 삭제']);
+ a.run("commitExam({type:'status',id:'g',status:'archived'},'ok');openExamDialog('menu','g')");assert.deepEqual(labels(),['메모','시험 수정','학습 자료 연결','새 회차 준비','시험 삭제']);
+ const raw=a.map.get(D.KEY);a.run("openExamDialog('status','g','active')");assert.equal(a.map.get(D.KEY),raw);
+ a.run("openExamDialog('resit','g')");assert.match(a.element('dialog-content').innerHTML,/id="resit-confirm"[^>]*required/);
+ a.element('goal-name').value='새 시험';a.element('resit-confirm').checked=false;a.element('resit-confirm').reportValidity=()=>false;
+ a.run("submitExamForm({preventDefault(){},target:{dataset:{goal:'g',examForm:'resit'}}})");assert.equal(a.map.get(D.KEY),raw);
+});
+
+test('home progress uses actual daily deltas, handles plan rebase and preserves detailed warnings',()=>{
+ const a=boot();a.context.p={todayAllowed:true,todayDone:10,initialDaily:30,creditedBefore:0,manualDailyAmount:null};
+ assert.equal(a.run("homeStudyProgress(p,'페이지')"),'오늘 10 / 30페이지 학습');
+ a.context.p={...a.context.p,todayDone:8,initialDaily:10,creditedBefore:5};
+ assert.equal(a.run("homeStudyProgress(p,'페이지')"),'오늘 8 / 15페이지 학습 · 계획 변경 반영');
+ a.context.p={...a.context.p,todayAllowed:false};
+ assert.equal(a.run("homeStudyProgress(p,'강')"),'오늘 8강 학습');
 });

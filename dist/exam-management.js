@@ -14,7 +14,7 @@
       ids.add(g.id);
     }
     for(const m of Object.values(value.materialSettings)) if(!m || !['active','paused','archived'].includes(m.manualStatus) || (value.version===1&&typeof m.independent!=='boolean') || !Array.isArray(m.autoPausedBy) || !m.autoPausedBy.every(id=>typeof id==='string')) throw Error('자료 상태를 확인해 주세요.');
-    if(value.priorityGoalId!==null && !value.goals.some(g=>g.id===value.priorityGoalId&&g.status==='active')) throw Error('우선 시험 상태를 확인해 주세요.');
+    if(value.priorityGoalId!==null && !value.goals.some(g=>g.id===value.priorityGoalId)) throw Error('우선 시험 상태를 확인해 주세요.');
     return copy(value);
   }
   function upgrade(value){
@@ -41,7 +41,7 @@
       const kept=linked.some(g=>g.status!=='active'&&g.continuedMaterialIds.includes(id));
       m.autoPausedBy=m.manualStatus==='active'&&!hasActive&&!kept ? linked.filter(g=>g.status!=='active').map(g=>g.id) : [];
     }
-    if(!state.goals.some(g=>g.id===state.priorityGoalId&&g.status==='active')) state.priorityGoalId=null;
+    if(!state.goals.some(g=>g.id===state.priorityGoalId)) state.priorityGoalId=null;
     return state;
   }
   const materialStatus=(state,id)=>{const m=state.materialSettings[id];return !m?'active':m.manualStatus!=='active'?m.manualStatus:m.autoPausedBy.length?'paused':'active';};
@@ -56,7 +56,11 @@
       next.materialSettings[action.id].manualStatus=action.status;
     }else{
       if(!g)throw Error('시험을 찾을 수 없어요.');
-      if(action.type==='resit'){
+      if(action.type==='link-materials'){
+        if(!Array.isArray(action.materialIds)||!action.materialIds.every(id=>typeof id==='string')||new Set(action.materialIds).size!==action.materialIds.length)throw Error('연결할 자료를 확인해 주세요.');
+        g.materialIds=[...action.materialIds];
+      }else if(action.type==='resit'){
+        if(g.status!=='archived')throw Error('완료·보관한 시험에서 새 회차를 준비해 주세요.');
         const draft=copy(action.goal);
         if(!draft||next.goals.some(item=>item.id===draft.id)||!Array.isArray(draft.materialIds)||!draft.materialIds.every(id=>g.materialIds.includes(id)))throw Error('재응시 자료와 새 시험을 확인해 주세요.');
         next.goals.push({...draft,status:'active',sourceGoalId:g.id,continuedMaterialIds:[]});
@@ -73,7 +77,7 @@
       else if(action.type==='delete')next.goals=next.goals.filter(item=>item.id!==g.id);
       else throw Error('지원하지 않는 작업이에요.');
     }
-    if(!next.goals.some(g=>g.id===next.priorityGoalId&&g.status==='active'))next.priorityGoalId=null;
+    if(!next.goals.some(g=>g.id===next.priorityGoalId))next.priorityGoalId=null;
     return validate(reconcile(next));
   }
   function load(storage,initial){
@@ -90,7 +94,21 @@
     storage.setItem(KEY,JSON.stringify(safe));return safe;
   }
   function dayDifference(date,today){if(!date)return null;return Math.round((Date.parse(date+'T00:00:00Z')-Date.parse(today+'T00:00:00Z'))/86400000);}
-  function orderedGoals(state){return [...state.goals].sort((a,b)=>(b.id===state.priorityGoalId)-(a.id===state.priorityGoalId)||['active','paused','archived'].indexOf(a.status)-['active','paused','archived'].indexOf(b.status)||(a.date||'9999-12-31').localeCompare(b.date||'9999-12-31')||a.id.localeCompare(b.id));}
+  function orderedGoals(state,today){
+    const priority=g=>g.status==='active'&&g.id===state.priorityGoalId;
+    if(!today)return [...state.goals].sort((a,b)=>Number(priority(b))-Number(priority(a))||['active','paused','archived'].indexOf(a.status)-['active','paused','archived'].indexOf(b.status)||(a.date||'9999-12-31').localeCompare(b.date||'9999-12-31')||a.id.localeCompare(b.id));
+    const group=g=>priority(g)?0:g.status==='active'?g.date?(g.date>=today?1:2):3:g.status==='paused'?4:5;
+    const compareDate=(a,b,descending=false)=>!a.date&&!b.date?0:!a.date?1:!b.date?-1:descending?b.date.localeCompare(a.date):a.date.localeCompare(b.date);
+    return [...state.goals].sort((a,b)=>{
+      const rank=group(a)-group(b);if(rank)return rank;
+      let date=0;
+      if(a.status==='paused'){
+        const phase=g=>!g.date?2:g.date>=today?0:1;
+        date=phase(a)-phase(b)||compareDate(a,b,!!a.date&&a.date<today);
+      }else date=compareDate(a,b,a.status==='archived'||group(a)===2);
+      return date||a.name.localeCompare(b.name,'ko')||a.id.localeCompare(b.id);
+    });
+  }
   const api={KEY,validate,upgrade,reconcile,materialStatus,update,load,save,dayDifference,orderedGoals};
   if(typeof module!=='undefined'&&module.exports)module.exports=api;else root.ExamManagement=api;
 })(typeof window==='undefined'?this:window);

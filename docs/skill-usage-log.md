@@ -1000,3 +1000,34 @@ skills/chagok-data-guard/SKILL.md 적용. 연월13→13.65px·배경none유지,�
 ## CG-SKILL-047 · 2026-10-26
 
 skills/chagok-data-guard/SKILL.md 적용. 사용자확인: 좁은모바일은가로44px보다기존7열·높이44px우선. 모바일46→44px고정(하한때문에실제약4.3%축소),숫자위여백약15%축소. PC35px·간격·강조·기능유지. Chrome입력별4검증 및PWA4테스트통과. 5주높이258→248px,글자/표시겹침없음. 근거: docs/evidence/developer-mode/calendar-input-results.json,calendar-mobile-pwa.tap. 결과limited: 실제Safari미검증. root/dist/PWA반영.
+
+
+## CG-SKILL-048 · 2026-10-26
+
+skills/chagok-data-guard/SKILL.md 적용. 시험추가/수정자료필드제거·기존연결보존·별도다중연결관리·자료추가동선. 준비7/중단5/보관5메뉴,동일시험학습재개·확인후새ID회차생성·보관원본유지. 우선설정비활성시보존/준비때만상단,목록상태/날짜/이름정렬. Node181건·Chrome8흐름(링크/취소/편집/재개/회차/백업왕복/리로드/긴이름·휠·버튼접근)통과. 근거: docs/evidence/developer-mode/exam-menu-before/after.json,exam-menu-tests.tap,exam-menu-browser-results.json. 결과limited: 실제Safari/사용자자료미검증. 학습/복습계산/원본모듈해시유지,PS정책제한은해시·합성실행으로대체. root/dist/PWA갱신,커밋·게시없음.
+
+
+## CG-SKILL-049 · 2026-10-26
+
+skills/chagok-data-guard/SKILL.md 적용. 쉬는날짜 커스텀다중선택 모달·월이동·칩삭제/초기화·완료시폼반영·취소원본유지. 중첩모달Esc 보호·70개칩높이제한·320x400실제휠/완료버튼접근 검증. 시험저장 후daysOff 기존배열로권장량/집중시작일갱신,원본기록/계산모듈불변·백업왕복 확인.183테스트·Chrome7흐름통과. 근거: docs/evidence/developer-mode/days-off-before/after.json,days-off-tests.tap,days-off-browser-results.json,days-off-375.png. 결과limited: 실제Safari미검증. PS도구정책제한은해시·합성실행비교로대체. root/dist/PWA32개셸반영,커밋·게시없음.
+
+
+## CG-SKILL-050 · 2026-10-26
+
+skills/chagok-data-guard/SKILL.md 적용. 홈 남은권장량/오늘진도 표시,복습 오늘/밀림 필터·자료ID묶음·5개추가·균형표시정렬·보조날짜메뉴·기존기록/일정모달 연결·저장/취소후목록복귀. 계산/저장모듈6개 해시동일.191테스트·Chrome12흐름/320x400~1440x900·원본일정불변/부분겹침/단일복습기록/백업통과. 근거: docs/evidence/developer-mode/today-ui-before/after.json,today-ui-tests.tap,today-ui-browser-results.json,today-review-375.png. 결과limited: 실제Safari/사용자자료미검증. PS정책제한은해시/호출/합성저장비교로대체. 중단시스타일호출미실행은재개후완료. root/dist/PWA갱신,커밋·게시없음.
+
+## CG-SKILL-051 — 홈 완료 자료·설정·카드 진입
+
+2026-10-26. chagok-data-guard 적용. archived 저장 형식을 유지해 완료 자료를 홈 드롭다운에 통합하고 설정 직접 진입·카드 일반 영역 클릭 위임을 반영했다. Node191건/격리Chrome8흐름 통과. 완료·재개 시 원본 기록/회독 유지, 실사용 저장값과 테스트 격리/백업 왕복 확인. 근거: docs/evidence/developer-mode/home-management-results.json. 실제 Safari/PWA 미검증, PowerShell 경계 도구는 정책 제한으로 변경 경로 검토·합성 저장 비교로 대체. 결과 limited.
+
+## CG-SKILL-052 — 학습 관리 UI·기록·자동 추천
+
+2026-10-26. chagok-data-guard 적용. 학습 계획2열/원본기록타임라인/선택해제 세그먼트/공통메모/시험연결목록을 개선하고 공통권장량의 시험기한 우선 및1.5배 부담/직접설정 경고를 반영했다. 기존 예상일 평균·복습알고리즘·원본저장형식 유지. Node196·격리Chrome23흐름 통과. 상세근거 docs/integrated-management-update.md. 실제Safari/PWA 미검증·PS경계도구 실행정책차단은 해시/실제합성저장/백업검증으로 대체. limited.
+
+## CG-SKILL-053 — 자료 상단·오늘의 복습 UI
+
+2026-10-26. chagok-data-guard 적용. 자료 개수UI숨김/선형chevron/164px선택메뉴/공통추가버튼/캡슐필터, 복습 그룹제목과 범위카드 분리·두항목 공유팝업을 반영했다. 추천·저장·격리 모듈 해시동일. Node196·격리Chrome10흐름/320~1440px·위치불변·위/아래팝업·기록/날짜변경·백업/격리/새문서재로드 확인. 근거 docs/material-review-ui-update.md. 실제Safari/PWA·구형popover미지원엔진 미검증. PS경계도구 기존정책제한은 해시/합성저장/백업검증으로 대체. limited.
+
+## CG-SKILL-054 — 설정 헤더·여백 수정
+
+2026-10-26. chagok-data-guard 적용. 공통래퍼누락으로제목이44px첫열에배치된원인을재현하고래퍼를복원했다. 설정전용PC여백/폰트규칙제거·카드사이12px통일. 데이터처리모듈해시동일. Node196·Chrome5흐름/320~1920px·실제JSON다운로드/파일복원/초기화확인취소/테스트격리 통과. 근거 docs/settings-layout-update.md. 실제Safari/PWA미검증, PS경계도구기존정책제한은해시·합성저장·백업검증으로대체. limited.
