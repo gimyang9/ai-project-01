@@ -1,0 +1,377 @@
+{
+  "canvas": [
+    384,
+    384
+  ],
+  "baseline": 368,
+  "species": [
+    {
+      "id": "cactus",
+      "display_id": "cactus",
+      "source": "exec-01add846-1f34-467a-9f6e-0b70575ced43.png",
+      "sha256": "0bce7fdefffa986e93c4a8c707d181804a49d030e34ca6939130ba9824d382b8",
+      "source_boxes": [
+        [
+          102,
+          415,
+          408,
+          615
+        ],
+        [
+          498,
+          295,
+          815,
+          614
+        ],
+        [
+          903,
+          215,
+          1241,
+          615
+        ],
+        [
+          1298,
+          176,
+          1650,
+          619
+        ],
+        [
+          1716,
+          143,
+          2104,
+          621
+        ]
+      ],
+      "scale": 0.720164609053498,
+      "files": [
+        "cactus-1.png",
+        "cactus-2.png",
+        "cactus-3.png",
+        "cactus-4.png",
+        "cactus-5.png"
+      ]
+    },
+    {
+      "id": "oak",
+      "display_id": "oak",
+      "source": "exec-04b2e50b-5807-473d-a23e-be3986b31373.png",
+      "sha256": "63bf0402e589800272179a90a8ac707fe6d7e15d7a19d679898e399745cb48f3",
+      "source_boxes": [
+        [
+          37,
+          333,
+          273,
+          482
+        ],
+        [
+          341,
+          238,
+          571,
+          478
+        ],
+        [
+          652,
+          179,
+          895,
+          478
+        ],
+        [
+          957,
+          131,
+          1257,
+          478
+        ],
+        [
+          1291,
+          47,
+          1683,
+          482
+        ]
+      ],
+      "scale": 0.7900677200902935,
+      "files": [
+        "oak-1.png",
+        "oak-2.png",
+        "oak-3.png",
+        "oak-4.png",
+        "oak-5.png"
+      ]
+    },
+    {
+      "id": "cherry",
+      "display_id": "cherry",
+      "source": "exec-04b2e50b-5807-473d-a23e-be3986b31373.png",
+      "sha256": "63bf0402e589800272179a90a8ac707fe6d7e15d7a19d679898e399745cb48f3",
+      "source_boxes": [
+        [
+          41,
+          744,
+          286,
+          875
+        ],
+        [
+          339,
+          633,
+          576,
+          875
+        ],
+        [
+          666,
+          594,
+          914,
+          875
+        ],
+        [
+          947,
+          539,
+          1261,
+          878
+        ],
+        [
+          1304,
+          503,
+          1685,
+          879
+        ]
+      ],
+      "scale": 0.8997429305912596,
+      "files": [
+        "cherry-1.png",
+        "cherry-2.png",
+        "cherry-3.png",
+        "cherry-4.png",
+        "cherry-5.png"
+      ]
+    },
+    {
+      "id": "camellia",
+      "display_id": "forgetmenot",
+      "source": "exec-0c41cd7b-69c3-4ece-800d-ae5b1ab3484d.png",
+      "sha256": "46c33339499d13634c52800e8103e59287230b3129f014b3c81dfbce9ce78c23",
+      "source_boxes": [
+        [
+          31,
+          441,
+          341,
+          619
+        ],
+        [
+          389,
+          377,
+          754,
+          624
+        ],
+        [
+          801,
+          241,
+          1169,
+          626
+        ],
+        [
+          1215,
+          177,
+          1609,
+          629
+        ],
+        [
+          1647,
+          74,
+          2137,
+          633
+        ]
+      ],
+      "scale": 0.6172839506172839,
+      "files": [
+        "camellia-1.png",
+        "camellia-2.png",
+        "camellia-3.png",
+        "camellia-4.png",
+        "camellia-5.png"
+      ]
+    },
+    {
+      "id": "gerbera",
+      "display_id": "gerbera",
+      "source": "exec-1730761d-8d96-4b7a-90b1-fce754f012f0.png",
+      "sha256": "862b7e465ed873eaa781ad92a51d940555a13cfd82d78ae91945a6284fc32f91",
+      "source_boxes": [
+        [
+          60,
+          434,
+          372,
+          604
+        ],
+        [
+          419,
+          357,
+          779,
+          606
+        ],
+        [
+          812,
+          247,
+          1171,
+          605
+        ],
+        [
+          1205,
+          238,
+          1606,
+          606
+        ],
+        [
+          1651,
+          221,
+          2143,
+          606
+        ]
+      ],
+      "scale": 0.7,
+      "files": [
+        "gerbera-1.png",
+        "gerbera-2.png",
+        "gerbera-3.png",
+        "gerbera-4.png",
+        "gerbera-5.png"
+      ]
+    },
+    {
+      "id": "sunflower",
+      "display_id": "sunflower",
+      "source": "exec-350ff073-22a7-40ac-903b-4e33d96b2d5a.png",
+      "sha256": "a4eaeed9d5b4b61a1fbeb3eaa90e9459bb2a196741220b05be48d51650fcc1c3",
+      "source_boxes": [
+        [
+          47,
+          393,
+          368,
+          574
+        ],
+        [
+          445,
+          230,
+          802,
+          574
+        ],
+        [
+          863,
+          194,
+          1205,
+          574
+        ],
+        [
+          1257,
+          187,
+          1619,
+          574
+        ],
+        [
+          1701,
+          172,
+          2143,
+          574
+        ]
+      ],
+      "scale": 0.7777777777777778,
+      "files": [
+        "sunflower-1.png",
+        "sunflower-2.png",
+        "sunflower-3.png",
+        "sunflower-4.png",
+        "sunflower-5.png"
+      ]
+    },
+    {
+      "id": "daisy",
+      "display_id": "daisy",
+      "source": "exec-69603788-5eca-4680-8624-baa3eff31ce1.png",
+      "sha256": "549259570ee05913fb361a14dbbc1f2616fa518291aa843c7291f20d2609c708",
+      "source_boxes": [
+        [
+          30,
+          422,
+          367,
+          615
+        ],
+        [
+          403,
+          363,
+          789,
+          617
+        ],
+        [
+          826,
+          260,
+          1194,
+          617
+        ],
+        [
+          1230,
+          217,
+          1645,
+          617
+        ],
+        [
+          1681,
+          202,
+          2143,
+          617
+        ]
+      ],
+      "scale": 0.7446808510638298,
+      "files": [
+        "daisy-1.png",
+        "daisy-2.png",
+        "daisy-3.png",
+        "daisy-4.png",
+        "daisy-5.png"
+      ]
+    },
+    {
+      "id": "hydrangea",
+      "display_id": "hydrangea",
+      "source": "exec-2dd3c4d1-2940-4442-8e54-2becca799123.png",
+      "sha256": "ed038fddc895cce655b6a2cf40dd16cdc7a53a2fc534fe516c504192bc44f29b",
+      "source_boxes": [
+        [
+          57,
+          372,
+          347,
+          567
+        ],
+        [
+          405,
+          287,
+          741,
+          570
+        ],
+        [
+          802,
+          260,
+          1131,
+          567
+        ],
+        [
+          1184,
+          238,
+          1582,
+          570
+        ],
+        [
+          1648,
+          179,
+          2127,
+          570
+        ]
+      ],
+      "scale": 0.7186858316221766,
+      "files": [
+        "hydrangea-1.png",
+        "hydrangea-2.png",
+        "hydrangea-3.png",
+        "hydrangea-4.png",
+        "hydrangea-5.png"
+      ]
+    }
+  ]
+}
