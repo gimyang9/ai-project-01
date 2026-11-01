@@ -1,0 +1,179 @@
+{
+  "policyProfile": "2026-11-02",
+  "today": "2026-11-02",
+  "calendar": "UTC date-only; OS clock unchanged",
+  "root": "D:\\Projects\\project-v2-upload",
+  "source": "dist",
+  "node": "v24.22.1",
+  "files": [
+    {
+      "path": "dist\\study-data.js",
+      "sha256": "c5e46c39161ec7dfc352f218a59ddb6497c135fdb35d034f0e999a4688e747d7"
+    },
+    {
+      "path": "dist\\exam-management.js",
+      "sha256": "242001dd4980a00bf72caaccf883f580d646674979c3775dd57d4623bd7066aa"
+    },
+    {
+      "path": "dist\\learning-plan.js",
+      "sha256": "f4f3592fda8b75397b6721c4be65c75c31ac5d17fb470738a798bdebc12662ec"
+    },
+    {
+      "path": "dist\\review-plan.js",
+      "sha256": "a8644f6a209bd0e33ba6dda64652a524d8b2f273dc698b04444ab6f1e61c04ed"
+    }
+  ],
+  "results": [
+    {
+      "name": "manual 100/10 counts today once",
+      "status": "passed",
+      "observed": {
+        "expected": "2026-11-11",
+        "actual": "2026-11-11"
+      }
+    },
+    {
+      "name": "automatic quota and actual speed are independent",
+      "status": "passed",
+      "observed": {
+        "plan": "2026-11-13",
+        "actual": "2026-11-30"
+      }
+    },
+    {
+      "name": "manual calendar quota=7 done=0 weekdays=0123456",
+      "status": "passed",
+      "observed": {
+        "expected": "2026-11-18",
+        "actual": "2026-11-18"
+      }
+    },
+    {
+      "name": "manual calendar quota=7 done=0 weekdays=024",
+      "status": "passed",
+      "observed": {
+        "expected": "2026-12-09",
+        "actual": "2026-12-09"
+      }
+    },
+    {
+      "name": "manual calendar quota=7 done=5 weekdays=0123456",
+      "status": "passed",
+      "observed": {
+        "expected": "2026-11-17",
+        "actual": "2026-11-17"
+      }
+    },
+    {
+      "name": "manual calendar quota=7 done=5 weekdays=024",
+      "status": "passed",
+      "observed": {
+        "expected": "2026-12-07",
+        "actual": "2026-12-07"
+      }
+    },
+    {
+      "name": "manual calendar quota=7 done=15 weekdays=0123456",
+      "status": "passed",
+      "observed": {
+        "expected": "2026-11-16",
+        "actual": "2026-11-16"
+      }
+    },
+    {
+      "name": "manual calendar quota=7 done=15 weekdays=024",
+      "status": "passed",
+      "observed": {
+        "expected": "2026-12-04",
+        "actual": "2026-12-04"
+      }
+    },
+    {
+      "name": "manual calendar quota=20 done=0 weekdays=0123456",
+      "status": "passed",
+      "observed": {
+        "expected": "2026-11-08",
+        "actual": "2026-11-08"
+      }
+    },
+    {
+      "name": "manual calendar quota=20 done=0 weekdays=024",
+      "status": "passed",
+      "observed": {
+        "expected": "2026-11-16",
+        "actual": "2026-11-16"
+      }
+    },
+    {
+      "name": "manual calendar quota=20 done=5 weekdays=0123456",
+      "status": "passed",
+      "observed": {
+        "expected": "2026-11-08",
+        "actual": "2026-11-08"
+      }
+    },
+    {
+      "name": "manual calendar quota=20 done=5 weekdays=024",
+      "status": "passed",
+      "observed": {
+        "expected": "2026-11-16",
+        "actual": "2026-11-16"
+      }
+    },
+    {
+      "name": "manual calendar quota=20 done=15 weekdays=0123456",
+      "status": "passed",
+      "observed": {
+        "expected": "2026-11-08",
+        "actual": "2026-11-08"
+      }
+    },
+    {
+      "name": "manual calendar quota=20 done=15 weekdays=024",
+      "status": "passed",
+      "observed": {
+        "expected": "2026-11-16",
+        "actual": "2026-11-16"
+      }
+    },
+    {
+      "name": "condition change does not deduct credited progress twice",
+      "status": "passed",
+      "observed": true
+    },
+    {
+      "name": "preview is read only and matches planned save",
+      "status": "passed",
+      "observed": true
+    },
+    {
+      "name": "current round alone establishes actual forecast window",
+      "status": "passed",
+      "observed": true
+    },
+    {
+      "name": "approved interval rules and limits",
+      "status": "passed",
+      "observed": true
+    },
+    {
+      "name": "review overlap affects only the intersection; originals stay identical",
+      "status": "passed",
+      "observed": true
+    },
+    {
+      "name": "range union matches an independent point set",
+      "status": "passed",
+      "observed": true
+    }
+  ],
+  "summary": {
+    "passed": 20,
+    "failed": 0,
+    "untested": 0
+  },
+  "limitations": [
+    "Selected synthetic cases only; not every learning/review rule.",
+    "No real user storage, browser, UI, PWA or deployment validation."
+  ]
+}

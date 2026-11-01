@@ -1,0 +1,3 @@
+interface:
+  display_name: "Chagok UI Regression"
+  short_description: "반응형 화면과 저장·취소·미리보기 회귀를 격리 환경에서 검사"

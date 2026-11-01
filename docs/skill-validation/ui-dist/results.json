@@ -1,0 +1,164 @@
+{
+  "root": "D:\\Projects\\project-v2-upload",
+  "route": "/dist/index.html",
+  "node": "v24.22.1",
+  "chromePath": "C:/Program Files/Google/Chrome/Application/chrome.exe",
+  "noSandbox": true,
+  "results": [
+    {
+      "case": "home-preserved",
+      "group": "home",
+      "width": 320,
+      "height": 400,
+      "status": "passed",
+      "observed": {
+        "rows": 2,
+        "unchanged": true
+      }
+    },
+    {
+      "case": "preview-cancel-focus",
+      "group": "plan",
+      "width": 320,
+      "height": 400,
+      "status": "passed",
+      "observed": {
+        "inputReactive": true,
+        "cancelUnchanged": true,
+        "tabStaysInDialog": true
+      }
+    },
+    {
+      "case": "save-reload-restore",
+      "group": "plan",
+      "width": 320,
+      "height": 400,
+      "status": "passed",
+      "observed": {
+        "saved": true,
+        "reloaded": true,
+        "resetToAutomatic": true,
+        "originalHistoryUnchanged": true
+      }
+    },
+    {
+      "case": "stats-comparison",
+      "group": "stats",
+      "width": 320,
+      "height": 400,
+      "status": "passed",
+      "observed": {
+        "labelsDistinct": true,
+        "unchanged": true
+      }
+    },
+    {
+      "case": "home-preserved",
+      "group": "home",
+      "width": 375,
+      "height": 700,
+      "status": "passed",
+      "observed": {
+        "rows": 2,
+        "unchanged": true
+      }
+    },
+    {
+      "case": "preview-cancel-focus",
+      "group": "plan",
+      "width": 375,
+      "height": 700,
+      "status": "passed",
+      "observed": {
+        "inputReactive": true,
+        "cancelUnchanged": true,
+        "tabStaysInDialog": true
+      }
+    },
+    {
+      "case": "save-reload-restore",
+      "group": "plan",
+      "width": 375,
+      "height": 700,
+      "status": "passed",
+      "observed": {
+        "saved": true,
+        "reloaded": true,
+        "resetToAutomatic": true,
+        "originalHistoryUnchanged": true
+      }
+    },
+    {
+      "case": "stats-comparison",
+      "group": "stats",
+      "width": 375,
+      "height": 700,
+      "status": "passed",
+      "observed": {
+        "labelsDistinct": true,
+        "unchanged": true
+      }
+    },
+    {
+      "case": "home-preserved",
+      "group": "home",
+      "width": 1440,
+      "height": 900,
+      "status": "passed",
+      "observed": {
+        "rows": 2,
+        "unchanged": true
+      }
+    },
+    {
+      "case": "preview-cancel-focus",
+      "group": "plan",
+      "width": 1440,
+      "height": 900,
+      "status": "passed",
+      "observed": {
+        "inputReactive": true,
+        "cancelUnchanged": true,
+        "tabStaysInDialog": true
+      }
+    },
+    {
+      "case": "save-reload-restore",
+      "group": "plan",
+      "width": 1440,
+      "height": 900,
+      "status": "passed",
+      "observed": {
+        "saved": true,
+        "reloaded": true,
+        "resetToAutomatic": true,
+        "originalHistoryUnchanged": true
+      }
+    },
+    {
+      "case": "stats-comparison",
+      "group": "stats",
+      "width": 1440,
+      "height": 900,
+      "status": "passed",
+      "observed": {
+        "labelsDistinct": true,
+        "unchanged": true
+      }
+    }
+  ],
+  "networkErrors": [],
+  "runtimeErrors": [],
+  "limitations": [
+    "Viewport simulation is not physical Safari or native keyboard testing.",
+    "Only selected cases/groups; no PWA, cache, deployment or mathematical-oracle audit."
+  ],
+  "profile": "C:\\Users\\alsru\\AppData\\Local\\Temp\\chagok-ui-skill-IdDDF4",
+  "url": "http://127.0.0.1:56224/dist/index.html",
+  "browserVersion": "Chrome/156.0.8078.74",
+  "summary": {
+    "passed": 12,
+    "failed": 0,
+    "untested": 0
+  }
+}

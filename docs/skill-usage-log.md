@@ -371,3 +371,33 @@
 ## CG-SKILL-070
 
 {"id":"CG-SKILL-070","date":"2026-11-02","skill":"chagok-data-guard","skill_source":"skills/chagok-data-guard/SKILL.md","task":"학습계획·통계의 실제 경고 문구와 조건 조사","todo_refs":["경고 문구와 기준 설명"],"actions":["root/dist app의 planNotice·통계비교 실제호출과 learning-plan.notice/habit 검토","사용되지 않는 compactPlanStatus/planWarning과 실제표시를 구분","루트와dist 지연문구 불일치 확인;사용자편집은수정하지않음"],"evidence":["dist/app.js:317 planNotice의 지연우선·notice fallback","dist/app.js:367 통계는 공통경고 우선 후 실제/계획날짜 비교","dist/learning-plan.js:62 1.5배 기준·habit은과거회독/학습가능일 평균","app.js 루트는 짧은 지연문구,dist는 긴 지연문구;해시불일치"],"result":"limited","outcome":"현재문구·우선순위·서로다른평균기준과root/dist차이를 설명. 앱/정책변경없음","limitations":["코드검토만·앱테스트/브라우저재실행없음","실사용데이터접근·커밋·배포없음"]}
+## CG-SKILL-071
+
+{"id":"CG-SKILL-071","date":"2026-11-02","skill":"chagok-data-guard","skill_source":"skills/chagok-data-guard/SKILL.md","task":"개발과정 분석·커스텀스킬 후보 제안(1~2단계만)","todo_refs":["사용자 요청 1~2단계;제작/앱적용은 승인대기"],"actions":["PRD/TODO/README 읽기전용 참고·변경이력/보고서/Git/현재스킬과소스 정적분석","skill-creator 원칙을 참고해 기존1개개선·계산/UI/PWA3후보의 역할·실제사례·도구/검증안을 제안","분석제안서1개작성;기존활용로그에 이번분석만추가"],"evidence":["docs/skill-improvement-proposal.md","git log/show:ca02c2e,c6a652d,e1ad5d6,9b0053a","docs/responsive-ui-audit.md·docs/integrated-management-update.md·docs/plant-transparent-update.md","기존 forecast-split-tests.tap 214/213통과/1실패 및 baseline.tap 열람;이번재실행아님","기존스킬·inspect-boundary.ps1 소스검토;현재도구미수정/미실행","분석시작JSONL27항목·001~012/056~070확인","root/dist app.js 해시/문구차이 정적관찰;계산/데이터JS해시일치"],"result":"limited","outcome":"실제반복작업에 근거한 후보제안 완료. 신규/개선SKILL·스크립트 제작과 앱검증은 승인후로유보","limitations":["과거실행기록을 현재앱 통과결과로확대하지않음","로그중간ID 공백은 소급복원/사용주장하지않음","앱/브라우저/배포/실사용저장소검사 미실행","보호이름 문서·앱·기존스킬·배포물 변경금지 유지","커밋/Push/전역설치/AGENTS수정없음"]}
+## CG-SKILL-072
+
+{"id":"CG-SKILL-072","date":"2026-11-02","skill":"chagok-data-guard","skill_source":"skills/chagok-data-guard/SKILL.md","task":"스킬 후보 조정·사용 상황 설명","todo_refs":["분석/후보 제안 단계만 유지"],"actions":["사용자 지시로 chagok-pwa-audit 후보제외","기존데이터보호·계산검증·UI검증의 사용조건과 실제요청예시 정리","기존1개개선+신규2개 제안으로범위수정;PWA업무를다른후보에추가하지않음"],"evidence":["docs/skill-improvement-proposal.md","git diff --check"],"result":"limited","outcome":"제안서만후보조정. 실제스킬제작/앱적용승인으로해석하지않음","limitations":["스킬/스크립트제작·앱검증없음","보호문서/앱/배포물변경·커밋/Push없음"]}
+
+## CG-SKILL-073
+
+{"id":"CG-SKILL-073","skill":"chagok-data-guard","task":"기존 데이터 보호 스킬 개선 및 현재 앱 보존 검사","actions":["경계 수집에 루트·보호 문서·기준 비교 추가","실제 적용 로그 도구와 음성 대조 검사를 제작","기존 저장·통합 테스트 28건 실행 및 작업 경계 전후 비교"],"evidence":["docs/skill-validation/report.md","docs/skill-validation/data-preservation-tests.tap","docs/skill-validation/after.json","docs/skill-validation/tools-tests.tap"],"outcome":"선택 보존 검사 28건과 도구 검사 통과. 앱 및 보호 문서 변경 없음.","limitations":["합성 자료·파일 비교이며 실제 사용자 이전 검증 아님","공식 YAML 검사 의존성 yaml 미설치","두 로그 기록의 완전한 원자성은 보장하지 않음"],"date":"2026-11-02","skill_source":"skills/chagok-data-guard/SKILL.md","todo_refs":["사용자 승인: 나머지도 만들고 개선; 앱 및 보호 문서 수정 금지"],"result":"limited"}
+
+## CG-SKILL-074
+
+{"id":"CG-SKILL-074","skill":"chagok-learning-check","task":"계산 검증 스킬 신규 제작 후 현재 루트·dist 실제 적용","actions":["고정 기준일과 독립 달력 기대값으로 검증 도구 제작","루트·dist에 각각 20개 계산 사례 실행","임시 복제 모듈의 계산 오류를 탐지하는 도구 검사 실행"],"evidence":["docs/skill-validation/learning-root.json","docs/skill-validation/learning-dist.json","docs/skill-validation/tools-tests.tap","docs/skill-validation/report.md"],"outcome":"루트·dist 각각 20건 통과. 과거 사용이 아닌 이번 제작 후 적용.","limitations":["선택 정책과 합성 사례만 검증","모든 다중 시험·중단 경계를 검증한 것은 아님","공식 YAML 검사 의존성 yaml 미설치"],"date":"2026-11-02","skill_source":"skills/chagok-learning-check/SKILL.md","todo_refs":["사용자 승인: 나머지도 만들고 개선; 앱 및 보호 문서 수정 금지"],"result":"limited"}
+
+## CG-SKILL-075
+
+{"id":"CG-SKILL-075","skill":"chagok-ui-regression","task":"화면 회귀 스킬 신규 제작 후 현재 루트·dist 격리 Chrome 적용","actions":["유지할 홈과 계획 입력·취소·저장·통계의 4개 사례 제작","320x400·375x700·1440x900에서 루트·dist 각각 12건 실행","원본 캡처 및 선택 375x700 화면 직접 확인","임시 넘침 실패와 미검증 상태를 구분하는 도구 검사 실행"],"evidence":["docs/skill-validation/ui-root/results.json","docs/skill-validation/ui-dist/results.json","docs/skill-validation/ui-root-initial/results.json","docs/skill-validation/report.md"],"outcome":"루트·dist 각각 12건 통과, 네트워크·런타임 오류 없음. 과거 사용으로 소급하지 않음.","limitations":["기본 Chrome 연결 실패 기록 보존; 명시적 테스트 no-sandbox 옵션으로 재시도","실기기 Safari·네이티브 키보드·확대·모든 모달 미검증","공식 YAML 검사 의존성 yaml 미설치","PWA 및 배포 검증 제외"],"date":"2026-11-02","skill_source":"skills/chagok-ui-regression/SKILL.md","todo_refs":["사용자 승인: 나머지도 만들고 개선; 앱 및 보호 문서 수정 금지"],"result":"limited"}
+
+## CG-SKILL-076
+
+{"id":"CG-SKILL-076","date":"2026-11-02","skill":"chagok-data-guard","skill_source":"skills/chagok-data-guard/SKILL.md","task":"사용자 요청으로 스킬 작성일 표현 제거 및 결과 경로 정리","todo_refs":["날짜 표기 제거 요청; 앱 및 보호 문서 수정 금지"],"actions":["세 SKILL.md의 제작·개선 날짜 제거 및 기준일 예시 일반화","결과 폴더를 docs/skill-validation으로 변경하고 보고서·로그 근거 경로 갱신","실제 실행 날짜·원본 검사 결과·계산 입력 및 정책 식별자는 보존"],"evidence":["skills/chagok-learning-check/SKILL.md","docs/skill-validation/report.md","git diff --check"],"result":"passed","outcome":"스킬의 작성일 표현과 폴더명의 날짜 제거. 과거 제작·사용 이력으로 변경하지 않음.","limitations":["이번 작업은 문서·경로 정리이며 앱 테스트를 다시 실행하지 않음","로그의 실제 실행일과 계산 검증 날짜는 유지"]}
+
+## CG-SKILL-077
+
+{"id":"CG-SKILL-077","date":"2026-11-02","skill":"chagok-data-guard","skill_source":"skills/chagok-data-guard/SKILL.md","task":"사용자가 직접 수정한 세 SKILL.md의 읽기 전용 점검","todo_refs":["현재 스킬 내용 점검 요청"],"actions":["세 스킬의 전체 내용과 현재 계산·검증 도구 대조","스킬 도구 자체 검사 중 데이터·계산 7건 실행","연속 성공 기록 계산 설명·프로필 정리 안내·테스트 경로 및 캡처 예시 불일치 확인"],"evidence":["skills/chagok-learning-check/SKILL.md:114; review-plan.js:19","skills/chagok-ui-regression/SKILL.md:147; skills/chagok-ui-regression/scripts/run-ui.cjs","skills/chagok-data-guard/SKILL.md:144","node --test skills/chagok-data-guard/scripts/tools.test.cjs skills/chagok-learning-check/scripts/tools.test.cjs: 7 passed, 0 failed"],"result":"limited","outcome":"기본 형식과 선택 도구 검사 통과. 문서·구현 차이를 보고하며 스킬과 앱은 수정하지 않음.","limitations":["공식 YAML 검사 및 Chrome UI 검사는 다시 실행하지 않음","이번 기록은 스킬 내용 점검이며 앱 기능 전체 통과를 의미하지 않음"]}
+
+## CG-SKILL-078
+
+{"id":"CG-SKILL-078","date":"2026-11-02","skill":"chagok-data-guard","skill_source":"skills/chagok-data-guard/SKILL.md","task":"점검에서 발견한 스킬 문서 네 항목 수정","todo_refs":["사용자 수정 승인"],"actions":["데이터 스킬의 테스트 경로 두 개 정정","계산 스킬의 복습 간격 기준을 이전 간격·이해도로 명시","UI 실행 예시에 capture 옵션 추가","임시 프로필은 자동 삭제되지 않으며 별도 확인 후 정리하도록 안내"],"evidence":["skills/chagok-data-guard/SKILL.md:144","skills/chagok-learning-check/SKILL.md:114","skills/chagok-ui-regression/SKILL.md:52","skills/chagok-ui-regression/SKILL.md:147","git diff --check"],"result":"passed","outcome":"사용자가 수정한 구조를 유지하며 문서·도구 불일치 네 부분만 정정","limitations":["문서 수정만 수행; 앱 및 스킬 실행 코드 변경 없음","앱 기능·브라우저 검사를 다시 실행하지 않음"]}

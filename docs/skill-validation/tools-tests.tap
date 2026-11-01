@@ -1,0 +1,58 @@
+﻿TAP version 13
+# Subtest: logger dry-run does not write; append preserves the original prefix and rejects duplicates
+ok 1 - logger dry-run does not write; append preserves the original prefix and rejects duplicates
+  ---
+  duration_ms: 54.8014
+  type: 'test'
+  ...
+# Subtest: logger rejects invalid dates, incomplete records and partial IDs without changing logs
+ok 2 - logger rejects invalid dates, incomplete records and partial IDs without changing logs
+  ---
+  duration_ms: 26.7887
+  type: 'test'
+  ...
+# Subtest: logger respects another writer lock
+ok 3 - logger respects another writer lock
+  ---
+  duration_ms: 19.4219
+  type: 'test'
+  ...
+# Subtest: skill metadata and frontmatter are complete (manual subset, not the official YAML validator)
+ok 4 - skill metadata and frontmatter are complete (manual subset, not the official YAML validator)
+  ---
+  duration_ms: 1.853
+  type: 'test'
+  ...
+# Subtest: boundary comparison detects a synthetic changed protected hash without editing the protected document
+ok 5 - boundary comparison detects a synthetic changed protected hash without editing the protected document
+  ---
+  duration_ms: 3270.0895
+  type: 'test'
+  ...
+# Subtest: independent calendar reference includes today and skips rest dates
+ok 6 - independent calendar reference includes today and skips rest dates
+  ---
+  duration_ms: 5.7399
+  type: 'test'
+  ...
+# Subtest: checks detect a wrong today-capacity implementation in a disposable copy
+ok 7 - checks detect a wrong today-capacity implementation in a disposable copy
+  ---
+  duration_ms: 200.2141
+  type: 'test'
+  ...
+# Subtest: runner detects real overflow and preserves an untested case instead of reporting success
+ok 8 - runner detects real overflow and preserves an untested case instead of reporting success
+  ---
+  duration_ms: 1011.8564
+  type: 'test'
+  ...
+1..8
+# tests 8
+# suites 0
+# pass 8
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 3499.7906

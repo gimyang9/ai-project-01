@@ -1,0 +1,1099 @@
+﻿{
+    "schemaVersion":  2,
+    "scope":  "Read-only Git-visible source/assets/protected-document inventory; no browser storage access",
+    "legacyFiles":  [
+                        {
+                            "path":  "reference/v1/app.js",
+                            "sha256":  "398469CCF2A9A08FEE3850BCF0BC46B26746567F0A7EF9EC01DECC45FB8F8E5F"
+                        },
+                        {
+                            "path":  "reference/v1/favicon.svg",
+                            "sha256":  "55818283581A61F8DD47A289992C21553D92BDAE2B3A4CBB21971518F988E710"
+                        },
+                        {
+                            "path":  "reference/v1/fonts/LINESeedKR-Bd.woff2",
+                            "sha256":  "57F95A6C2CE2FF6FA84E28F96BC5D29DCF5A7E308C9A25ED9541EACFF3EDFA56"
+                        },
+                        {
+                            "path":  "reference/v1/fonts/LINESeedKR-Rg.woff2",
+                            "sha256":  "709275188A8EF23040274490CD1FA048A02E9C441A238A4252837258CF8A43DF"
+                        },
+                        {
+                            "path":  "reference/v1/index.html",
+                            "sha256":  "E39F79962F18CCEF089B462D32C51DD5FE2E1E465423751CF46F8A7D4F16D799"
+                        },
+                        {
+                            "path":  "reference/v1/style.css",
+                            "sha256":  "61BF287A3E5557BEDFFA7F81094F473878C732AA1C78E160723399C831B2A2AE"
+                        }
+                    ],
+    "sourceFiles":  [
+                        {
+                            "path":  "dist/app.js",
+                            "sha256":  "8BFB5FD4830B95E98822162B32C635587A92498316B52F9760641CFDF5554774"
+                        },
+                        {
+                            "path":  "dist/days-off-picker.js",
+                            "sha256":  "1AB6E797B2CCAA0627A7C54DC7B4BFA73596BC4FFF90429F674B8EF2D91DD055"
+                        },
+                        {
+                            "path":  "dist/exam-management.js",
+                            "sha256":  "242001DD4980A00BF72CAACCF883F580D646674979C3775DD57D4623BD7066AA"
+                        },
+                        {
+                            "path":  "dist/learning-plan.js",
+                            "sha256":  "F4F3592FDA8B75397B6721C4BE65C75C31AC5D17FB470738A798BDEBC12662EC"
+                        },
+                        {
+                            "path":  "dist/pwa.js",
+                            "sha256":  "2DA8E706D971837034E4290036A543D4809F880B08A8B07621EE30CE34F33684"
+                        },
+                        {
+                            "path":  "dist/review-plan.js",
+                            "sha256":  "A8644F6A209BD0E33BA6DDA64652A524D8B2F273DC698B04444AB6F1E61C04ED"
+                        },
+                        {
+                            "path":  "dist/service-worker.js",
+                            "sha256":  "915D3B56EF93CBE7B02B5E75D773232C2847DC2B83E0E04085ACAA43F10BD0EF"
+                        },
+                        {
+                            "path":  "dist/storage-guard.js",
+                            "sha256":  "69A7AEEDDC098F6EDD2D82AFDA4658670E697EF8D38368E58269068CCC75941A"
+                        },
+                        {
+                            "path":  "dist/streak.js",
+                            "sha256":  "5990245C2D0F69B80BED51BCDD05D106C2BCB438DA4D667D5056F35FEE0D47FA"
+                        },
+                        {
+                            "path":  "dist/study-data.js",
+                            "sha256":  "C5E46C39161EC7DFC352F218A59DDB6497C135FDB35D034F0E999A4688E747D7"
+                        },
+                        {
+                            "path":  "dist/study-stats.js",
+                            "sha256":  "7CADA77F58429B474DC58EF419549C32E2D382A4DA4A4F12F5FED297DF5AD2E6"
+                        },
+                        {
+                            "path":  "dist/test-data.js",
+                            "sha256":  "57BF9CBECDEB4719F85481419676D3CB69666A365B2B7A870E6F99A0E4E0F91A"
+                        },
+                        {
+                            "path":  "dist/test-mode.js",
+                            "sha256":  "BCAB23F7272B32EF2BE4892584FCDC7930B4447ED0CC2CCE0BFA901A79B23741"
+                        },
+                        {
+                            "path":  "dist/today-review-view.js",
+                            "sha256":  "45393DF7E830B599EC258D52E66FF5FE3DD73F95573F82519D6C5B3741AA28B6"
+                        }
+                    ],
+    "rootSourceFiles":  [
+                            {
+                                "path":  "app.js",
+                                "sha256":  "1D2FBF1755269349AFDF25FCDAF34B60069A41D239C8D205AE7FFCE4F658DC50"
+                            },
+                            {
+                                "path":  "days-off-picker.js",
+                                "sha256":  "1AB6E797B2CCAA0627A7C54DC7B4BFA73596BC4FFF90429F674B8EF2D91DD055"
+                            },
+                            {
+                                "path":  "exam-management.js",
+                                "sha256":  "242001DD4980A00BF72CAACCF883F580D646674979C3775DD57D4623BD7066AA"
+                            },
+                            {
+                                "path":  "learning-plan.js",
+                                "sha256":  "F4F3592FDA8B75397B6721C4BE65C75C31AC5D17FB470738A798BDEBC12662EC"
+                            },
+                            {
+                                "path":  "pwa.js",
+                                "sha256":  "2DA8E706D971837034E4290036A543D4809F880B08A8B07621EE30CE34F33684"
+                            },
+                            {
+                                "path":  "review-plan.js",
+                                "sha256":  "A8644F6A209BD0E33BA6DDA64652A524D8B2F273DC698B04444AB6F1E61C04ED"
+                            },
+                            {
+                                "path":  "service-worker.js",
+                                "sha256":  "391FFDF45F60F62702983D2F2CADF015FD108AEF385C13344FE9EC826801A79A"
+                            },
+                            {
+                                "path":  "storage-guard.js",
+                                "sha256":  "69A7AEEDDC098F6EDD2D82AFDA4658670E697EF8D38368E58269068CCC75941A"
+                            },
+                            {
+                                "path":  "streak.js",
+                                "sha256":  "5990245C2D0F69B80BED51BCDD05D106C2BCB438DA4D667D5056F35FEE0D47FA"
+                            },
+                            {
+                                "path":  "study-data.js",
+                                "sha256":  "C5E46C39161EC7DFC352F218A59DDB6497C135FDB35D034F0E999A4688E747D7"
+                            },
+                            {
+                                "path":  "study-stats.js",
+                                "sha256":  "7CADA77F58429B474DC58EF419549C32E2D382A4DA4A4F12F5FED297DF5AD2E6"
+                            },
+                            {
+                                "path":  "test-data.js",
+                                "sha256":  "57BF9CBECDEB4719F85481419676D3CB69666A365B2B7A870E6F99A0E4E0F91A"
+                            },
+                            {
+                                "path":  "test-mode.js",
+                                "sha256":  "BCAB23F7272B32EF2BE4892584FCDC7930B4447ED0CC2CCE0BFA901A79B23741"
+                            },
+                            {
+                                "path":  "today-review-view.js",
+                                "sha256":  "45393DF7E830B599EC258D52E66FF5FE3DD73F95573F82519D6C5B3741AA28B6"
+                            }
+                        ],
+    "protectedFiles":  [
+                           {
+                               "path":  "docs/evidence/home-logo-final/README.md",
+                               "sha256":  "4DBF3D880F94862304CD980D8A6F56FE7305CF5EDA6090DF7881B33C1D5F28EE"
+                           },
+                           {
+                               "path":  "docs/PRD.md",
+                               "sha256":  "202AB6809028E80622A6E3048E8BE2A35B4F088828618049863157637313FA15"
+                           },
+                           {
+                               "path":  "docs/TODO.md",
+                               "sha256":  "C8A147D6E00EB53BDD88A4BE34901BF986B5B5F7EFEA04E871B63CBE3EFC8F3D"
+                           },
+                           {
+                               "path":  "README.md",
+                               "sha256":  "48216E92295A7E23017137CAC30CC6C6F6015E641732AB4C7FD0F4FFA9ADF3B8"
+                           }
+                       ],
+    "snapshotFiles":  [
+                          {
+                              "path":  ".openai/hosting.json",
+                              "sha256":  "E60CACDD724D6762DCA2695B0525E57815286A2707CF5C3F93852AFBEA64A80C"
+                          },
+                          {
+                              "path":  "AGENTS.md",
+                              "sha256":  "65EDAADA4D0F3478BCCDD91428D5F6DD0CF1BDBDE6857AF78B9084450BCE2A33"
+                          },
+                          {
+                              "path":  "app.js",
+                              "sha256":  "1D2FBF1755269349AFDF25FCDAF34B60069A41D239C8D205AE7FFCE4F658DC50"
+                          },
+                          {
+                              "path":  "ASSETS.md",
+                              "sha256":  "ADD622FB2820FC92530261E368B1CBA2E27C256867B7F0E9851CDBD095FCE460"
+                          },
+                          {
+                              "path":  "assets/apple-touch-icon.png",
+                              "sha256":  "0F8F2F09036018BEEC817557AF6B9465D1F1C2054F1028CCD5C8126032F335F3"
+                          },
+                          {
+                              "path":  "assets/date-leaf.png",
+                              "sha256":  "E12E11A034A4ECB0919F6360AD1D6C23A62E739BA090C84FD83B2E19F17B80D4"
+                          },
+                          {
+                              "path":  "assets/favicon.svg",
+                              "sha256":  "EB38F6B613D7097434B70F00D85E5D200F45F946A88139CFE90F9460ECF784FB"
+                          },
+                          {
+                              "path":  "assets/fonts/BMJUA.woff",
+                              "sha256":  "7ACCFA082AB75695ABC7817DA8F8178EF80594B30DD1E526CA1085634E2D5D26"
+                          },
+                          {
+                              "path":  "assets/fonts/Cafe24Ssurround.woff",
+                              "sha256":  "20E83FD0D7BCD3E6FA9D23596A888EF68A82C33E171FB22501481D793CAA540E"
+                          },
+                          {
+                              "path":  "assets/fonts/licenses/BMJUA.txt",
+                              "sha256":  "77341FBC5E4E5DE9530DCF0F36B7355D80E7F4F115C1CBC30C086C6BC39801D9"
+                          },
+                          {
+                              "path":  "assets/fonts/licenses/Cafe24Ssurround.txt",
+                              "sha256":  "8DB8004B82D6A928F01199C52E1F6D24A5C3D7F039D41A09E304A0B842DC92C3"
+                          },
+                          {
+                              "path":  "assets/fonts/licenses/LINESeedKR.txt",
+                              "sha256":  "0E58A83E7FA8C53EC6E1A88110437150F179F1241247A10773275EFF8ED13BDF"
+                          },
+                          {
+                              "path":  "assets/fonts/licenses/SOURCES.md",
+                              "sha256":  "55B5DD66C12656A8ADBCB9017AFC36E41ECE913A2E6D9772D25DB6A797A2101A"
+                          },
+                          {
+                              "path":  "assets/fonts/LINESeedKR-Bd.woff2",
+                              "sha256":  "57F95A6C2CE2FF6FA84E28F96BC5D29DCF5A7E308C9A25ED9541EACFF3EDFA56"
+                          },
+                          {
+                              "path":  "assets/fonts/LINESeedKR-Rg.woff2",
+                              "sha256":  "709275188A8EF23040274490CD1FA048A02E9C441A238A4252837258CF8A43DF"
+                          },
+                          {
+                              "path":  "assets/home-banner-cottage-bear.png",
+                              "sha256":  "5A8167706318055D1680F674BB6449BF7AD097EE45D791BF89233039B4A5FC61"
+                          },
+                          {
+                              "path":  "assets/home-banner-flower-yard-mobile.png",
+                              "sha256":  "772FBCBB00E9D37206FFBEBC6D9E9EBBAF48700E198FD264C82E3B19F3B3A686"
+                          },
+                          {
+                              "path":  "assets/home-banner-flower-yard-pc.jpg",
+                              "sha256":  "D6533641F9E8E21719666879A9038F431923DB7193B0F7F70C03171AA914396F"
+                          },
+                          {
+                              "path":  "assets/home-banner-garden-background.png",
+                              "sha256":  "BC92A508CAB1F7F2D334F4A91FFA0C86C44A878E68F5761ACD0DC3CCE05E4845"
+                          },
+                          {
+                              "path":  "assets/home-logo-approved.png",
+                              "sha256":  "CACBA951539346325C8435C77AFCFA70B2F0AA8BAD0ABFF7BABD33A3E5632FE0"
+                          },
+                          {
+                              "path":  "assets/icon-192.png",
+                              "sha256":  "FB7754581CCA23BAAA5A87CC3D627DC2B2A0A9194573E94B242C214468D14402"
+                          },
+                          {
+                              "path":  "assets/icon-512.png",
+                              "sha256":  "4B2A3EEC5A7915D9172EDC43968E104785B2EB42FEEBB41A30665CD36AD11234"
+                          },
+                          {
+                              "path":  "assets/plants.png",
+                              "sha256":  "DEF8EF168A1F53AA61FDF97055259AB35729D5E6344C2BF95AD4C8FCD4E4E9C7"
+                          },
+                          {
+                              "path":  "assets/plants/cactus-1.png",
+                              "sha256":  "5DAE7AC1C49C09242462F0B05071D44C87197AF220D1A3EED13D12C6A0529ACF"
+                          },
+                          {
+                              "path":  "assets/plants/cactus-2.png",
+                              "sha256":  "8A6E03C3A4727B286059B8F7FE1DED1B2BBC42302B972B3D45FB8FF9E1E72FFF"
+                          },
+                          {
+                              "path":  "assets/plants/cactus-3.png",
+                              "sha256":  "268CC87DF0D9725CBDF5E1C9899BB225A45F6CDBEBECBB222EFC059A63C5A4B1"
+                          },
+                          {
+                              "path":  "assets/plants/cactus-4.png",
+                              "sha256":  "9BE7D0E911854B9398120C479277C4ABBB6623B4457E0717740058DD2873AD9E"
+                          },
+                          {
+                              "path":  "assets/plants/cactus-5.png",
+                              "sha256":  "258AF4EFE1099219B0EBC830943EB28D5CAB4FB5F6CC779772EB6BCACB22FA42"
+                          },
+                          {
+                              "path":  "assets/plants/camellia-1.png",
+                              "sha256":  "477F1CA582737F71290ED0C2463822387E0CEF8ACE32D064AE7104610093E360"
+                          },
+                          {
+                              "path":  "assets/plants/camellia-2.png",
+                              "sha256":  "3C033F3128257FE3BACBFD96678BCCABC0726C5A917D5EFA01974EE0436B35BE"
+                          },
+                          {
+                              "path":  "assets/plants/camellia-3.png",
+                              "sha256":  "E89C4B78565CCCF0A34D86CFDC4AB12374C554CC7AAC7838E93F95B501A007FA"
+                          },
+                          {
+                              "path":  "assets/plants/camellia-4.png",
+                              "sha256":  "F8442CDBF49206E9643614DC6A8705EBD19C5F306FC97E6E90CAC0AC823B74F3"
+                          },
+                          {
+                              "path":  "assets/plants/camellia-5.png",
+                              "sha256":  "22687AF493D11F9CEE36AE6FBD36A281B775B63BF98A565B3F9A0FF155703229"
+                          },
+                          {
+                              "path":  "assets/plants/cherry-1.png",
+                              "sha256":  "928A77F457CACD54F0DCA2711E2A9FA46F38973CB2E3E91169E03402D9EEB987"
+                          },
+                          {
+                              "path":  "assets/plants/cherry-2.png",
+                              "sha256":  "5AB733467271792BA93CA6D1A1A85C934EB4CA2842BAA8DE9C0CEF2E38CCF1B3"
+                          },
+                          {
+                              "path":  "assets/plants/cherry-3.png",
+                              "sha256":  "707E3915F470B6BEB82324341C76A96A0988C02F5E96D0D0A5B64997223039D3"
+                          },
+                          {
+                              "path":  "assets/plants/cherry-4.png",
+                              "sha256":  "D4E6F70AB5C23CA4A0417CBBAD3280FD416B357635EA55E10347A3DB82C021EB"
+                          },
+                          {
+                              "path":  "assets/plants/cherry-5.png",
+                              "sha256":  "BF4FACD7DFBFBE5FF6F54137F2A5D4A79BA62E607C639576169B83E6A9C3F9A5"
+                          },
+                          {
+                              "path":  "assets/plants/daisy-1.png",
+                              "sha256":  "BF4C070240EAF9D135C65C32E58C2856DC2128A08D0FCFC934E3B2C7933BA8E2"
+                          },
+                          {
+                              "path":  "assets/plants/daisy-2.png",
+                              "sha256":  "5138CE402351DE9E0902EC482820E3C076D37AC1FA4CC55D21A1D75058A3F11D"
+                          },
+                          {
+                              "path":  "assets/plants/daisy-3.png",
+                              "sha256":  "1A504010874CB72EA8EDB5427E3BD326FF8302C19D456BDBAC9DDAAFCB2D0640"
+                          },
+                          {
+                              "path":  "assets/plants/daisy-4.png",
+                              "sha256":  "4C58E4A263C59D86C845EB2CDF64F7FB6D4FC890800128F261C51BD1DAD5B054"
+                          },
+                          {
+                              "path":  "assets/plants/daisy-5.png",
+                              "sha256":  "6E88750F925F019A64BF6DFEB3753E79ABA2D3A894ACF9F4426461D5E5645FE1"
+                          },
+                          {
+                              "path":  "assets/plants/gerbera-1.png",
+                              "sha256":  "61A55F2923F9A566E837BDFCC2F24372B324D788F72005FCDDB45941D420FD2E"
+                          },
+                          {
+                              "path":  "assets/plants/gerbera-2.png",
+                              "sha256":  "A0EC642657E90EEA9BAC3760C7E81AD2A5A66412DF5083A6E66A26F54205588B"
+                          },
+                          {
+                              "path":  "assets/plants/gerbera-3.png",
+                              "sha256":  "4DEACFBEEF70BA319F7B7894777E6FEE9DCDBA86B3E5F45A502484A362CAF2C8"
+                          },
+                          {
+                              "path":  "assets/plants/gerbera-4.png",
+                              "sha256":  "AEAC48EFD757EE423D93E9BF441A7B4BC0EC503BC657EDD0972E7A9B60D043C7"
+                          },
+                          {
+                              "path":  "assets/plants/gerbera-5.png",
+                              "sha256":  "D856DA029675DD8C7552413EED76E20F16D536E1C8C17A14A850E61654399629"
+                          },
+                          {
+                              "path":  "assets/plants/hydrangea-1.png",
+                              "sha256":  "10023ED59EA251BBB57FA92DCDDCD3E5C4FE87510A7BA60A2FC1BBA315F70B03"
+                          },
+                          {
+                              "path":  "assets/plants/hydrangea-2.png",
+                              "sha256":  "A8A613A8E0EF9CB2F2D49188DD74F027CB80E8B7C32BCFB2071C350AD446786D"
+                          },
+                          {
+                              "path":  "assets/plants/hydrangea-3.png",
+                              "sha256":  "BCAE64E13B5E6F67D3CA2B8E91BF47D6849273DD4A0D8AE51A06A15F05DA6FE7"
+                          },
+                          {
+                              "path":  "assets/plants/hydrangea-4.png",
+                              "sha256":  "4AE0044206FA7F254B0802DBABE8E7F2882A1F235509AA90633B11D4E01D979F"
+                          },
+                          {
+                              "path":  "assets/plants/hydrangea-5.png",
+                              "sha256":  "D642A56E7261BC60E44DE6E2794A071A1AC0AB03323C3BEB1C2B9AE662705E6D"
+                          },
+                          {
+                              "path":  "assets/plants/manifest.json",
+                              "sha256":  "34A7ACCE00D6D0F9C556E1E4BF6090A2923CCF4553D8B42E8224E3F2EF87EF7B"
+                          },
+                          {
+                              "path":  "assets/plants/oak-1.png",
+                              "sha256":  "43279297DCC20998C4BAFDBAA2BD4193B101A6ACB25E60E749F78D14FACF9F7D"
+                          },
+                          {
+                              "path":  "assets/plants/oak-2.png",
+                              "sha256":  "47D49EA3CC7060FDA06BD79D7F9EF43B3B21FB16240B09240A0984C15F06CF5A"
+                          },
+                          {
+                              "path":  "assets/plants/oak-3.png",
+                              "sha256":  "7854EAA9AB7BF2F31525F5114E4DD1627B58857B77304C71473886D3E5289754"
+                          },
+                          {
+                              "path":  "assets/plants/oak-4.png",
+                              "sha256":  "013371D6F193997CFE2FB411A19102A98BB4663A13C5A7E041EC5BE46DE37C37"
+                          },
+                          {
+                              "path":  "assets/plants/oak-5.png",
+                              "sha256":  "27E5FBD74A8B65FFDEE6DAFA3C5B83128D99171287DA301BD4A8F8A59932E6A5"
+                          },
+                          {
+                              "path":  "assets/plants/sunflower-1.png",
+                              "sha256":  "3153566D4FCDFB61AE6E85032B0C8C67AB36C5195575B6C205E8291479990995"
+                          },
+                          {
+                              "path":  "assets/plants/sunflower-2.png",
+                              "sha256":  "6834F53DE437494C43A2CE3E7AFCDFD0B23C639E928204B008B3FFA4BEEC0FD8"
+                          },
+                          {
+                              "path":  "assets/plants/sunflower-3.png",
+                              "sha256":  "F3BF1426B43E52994F16D62E3B0EE9F832D579F4DF7A600507DA4E7B3400D38A"
+                          },
+                          {
+                              "path":  "assets/plants/sunflower-4.png",
+                              "sha256":  "A7BA40208B9E578F8780BD76459F2F125BD2F21F114957C780B2D1957E138CF8"
+                          },
+                          {
+                              "path":  "assets/plants/sunflower-5.png",
+                              "sha256":  "382AFE50290F602D3291C0C7E31E7F76752AC20C6EB5CB5B7B21471628F793DF"
+                          },
+                          {
+                              "path":  "assets/plants-five-stages.png",
+                              "sha256":  "E32711494FD6FBD1C378C3A8502E74C071EB9708E692CE875EA2526546811B14"
+                          },
+                          {
+                              "path":  "assets/plants-growth-v2.png",
+                              "sha256":  "1447D8D48C0437FB0EC6D3D40B425F71687954A5EE64179A8C6BDF3ED9C5BE25"
+                          },
+                          {
+                              "path":  "assets/sidebar-bear-tree.png",
+                              "sha256":  "7E45D91BFC0BAAADCA094F3B590718A3506E20B903606F4FE3D236714B3426E8"
+                          },
+                          {
+                              "path":  "banner-camera.css",
+                              "sha256":  "93F0CAEE7A762E7D71684015A57492119A3F8D181A6BE50AFE11F021BD4EF8CE"
+                          },
+                          {
+                              "path":  "days-off-picker.js",
+                              "sha256":  "1AB6E797B2CCAA0627A7C54DC7B4BFA73596BC4FFF90429F674B8EF2D91DD055"
+                          },
+                          {
+                              "path":  "dist/app.js",
+                              "sha256":  "8BFB5FD4830B95E98822162B32C635587A92498316B52F9760641CFDF5554774"
+                          },
+                          {
+                              "path":  "dist/assets/apple-touch-icon.png",
+                              "sha256":  "0F8F2F09036018BEEC817557AF6B9465D1F1C2054F1028CCD5C8126032F335F3"
+                          },
+                          {
+                              "path":  "dist/assets/date-leaf.png",
+                              "sha256":  "E12E11A034A4ECB0919F6360AD1D6C23A62E739BA090C84FD83B2E19F17B80D4"
+                          },
+                          {
+                              "path":  "dist/assets/favicon.svg",
+                              "sha256":  "EB38F6B613D7097434B70F00D85E5D200F45F946A88139CFE90F9460ECF784FB"
+                          },
+                          {
+                              "path":  "dist/assets/fonts/BMJUA.woff",
+                              "sha256":  "7ACCFA082AB75695ABC7817DA8F8178EF80594B30DD1E526CA1085634E2D5D26"
+                          },
+                          {
+                              "path":  "dist/assets/fonts/Cafe24Ssurround.woff",
+                              "sha256":  "20E83FD0D7BCD3E6FA9D23596A888EF68A82C33E171FB22501481D793CAA540E"
+                          },
+                          {
+                              "path":  "dist/assets/fonts/licenses/BMJUA.txt",
+                              "sha256":  "77341FBC5E4E5DE9530DCF0F36B7355D80E7F4F115C1CBC30C086C6BC39801D9"
+                          },
+                          {
+                              "path":  "dist/assets/fonts/licenses/Cafe24Ssurround.txt",
+                              "sha256":  "8DB8004B82D6A928F01199C52E1F6D24A5C3D7F039D41A09E304A0B842DC92C3"
+                          },
+                          {
+                              "path":  "dist/assets/fonts/licenses/LINESeedKR.txt",
+                              "sha256":  "0E58A83E7FA8C53EC6E1A88110437150F179F1241247A10773275EFF8ED13BDF"
+                          },
+                          {
+                              "path":  "dist/assets/fonts/licenses/SOURCES.md",
+                              "sha256":  "55B5DD66C12656A8ADBCB9017AFC36E41ECE913A2E6D9772D25DB6A797A2101A"
+                          },
+                          {
+                              "path":  "dist/assets/fonts/LINESeedKR-Bd.woff2",
+                              "sha256":  "57F95A6C2CE2FF6FA84E28F96BC5D29DCF5A7E308C9A25ED9541EACFF3EDFA56"
+                          },
+                          {
+                              "path":  "dist/assets/fonts/LINESeedKR-Rg.woff2",
+                              "sha256":  "709275188A8EF23040274490CD1FA048A02E9C441A238A4252837258CF8A43DF"
+                          },
+                          {
+                              "path":  "dist/assets/forest-banner.png",
+                              "sha256":  "2E9A77B7EC1717AD3B5682C82D8ABCDECEEB27EE3923ED735AC5E24AEB4B39FA"
+                          },
+                          {
+                              "path":  "dist/assets/forest-bear.png",
+                              "sha256":  "41D885294372FC52DFFA28A07054D8F92E875D9BCFE935A2EC8E45B22DEF685B"
+                          },
+                          {
+                              "path":  "dist/assets/forest-bear-b.png",
+                              "sha256":  "E547D0C66792A34BD4B5D535EF2D6B63BD55AE9A595801B67A4A554B666E1829"
+                          },
+                          {
+                              "path":  "dist/assets/home-banner-cottage-bear.png",
+                              "sha256":  "5A8167706318055D1680F674BB6449BF7AD097EE45D791BF89233039B4A5FC61"
+                          },
+                          {
+                              "path":  "dist/assets/home-banner-garden-background.png",
+                              "sha256":  "BC92A508CAB1F7F2D334F4A91FFA0C86C44A878E68F5761ACD0DC3CCE05E4845"
+                          },
+                          {
+                              "path":  "dist/assets/home-logo-approved.png",
+                              "sha256":  "CACBA951539346325C8435C77AFCFA70B2F0AA8BAD0ABFF7BABD33A3E5632FE0"
+                          },
+                          {
+                              "path":  "dist/assets/home-logo-pixel-wood.png",
+                              "sha256":  "5C8D261C412284F15E37AA18D114D1F6E4457486A9B17FBB8F67A57DC3D28985"
+                          },
+                          {
+                              "path":  "dist/assets/icon-192.png",
+                              "sha256":  "FB7754581CCA23BAAA5A87CC3D627DC2B2A0A9194573E94B242C214468D14402"
+                          },
+                          {
+                              "path":  "dist/assets/icon-512.png",
+                              "sha256":  "4B2A3EEC5A7915D9172EDC43968E104785B2EB42FEEBB41A30665CD36AD11234"
+                          },
+                          {
+                              "path":  "dist/assets/plants.png",
+                              "sha256":  "DEF8EF168A1F53AA61FDF97055259AB35729D5E6344C2BF95AD4C8FCD4E4E9C7"
+                          },
+                          {
+                              "path":  "dist/assets/plants/cactus-1.png",
+                              "sha256":  "5DAE7AC1C49C09242462F0B05071D44C87197AF220D1A3EED13D12C6A0529ACF"
+                          },
+                          {
+                              "path":  "dist/assets/plants/cactus-2.png",
+                              "sha256":  "8A6E03C3A4727B286059B8F7FE1DED1B2BBC42302B972B3D45FB8FF9E1E72FFF"
+                          },
+                          {
+                              "path":  "dist/assets/plants/cactus-3.png",
+                              "sha256":  "268CC87DF0D9725CBDF5E1C9899BB225A45F6CDBEBECBB222EFC059A63C5A4B1"
+                          },
+                          {
+                              "path":  "dist/assets/plants/cactus-4.png",
+                              "sha256":  "9BE7D0E911854B9398120C479277C4ABBB6623B4457E0717740058DD2873AD9E"
+                          },
+                          {
+                              "path":  "dist/assets/plants/cactus-5.png",
+                              "sha256":  "258AF4EFE1099219B0EBC830943EB28D5CAB4FB5F6CC779772EB6BCACB22FA42"
+                          },
+                          {
+                              "path":  "dist/assets/plants/camellia-1.png",
+                              "sha256":  "477F1CA582737F71290ED0C2463822387E0CEF8ACE32D064AE7104610093E360"
+                          },
+                          {
+                              "path":  "dist/assets/plants/camellia-2.png",
+                              "sha256":  "3C033F3128257FE3BACBFD96678BCCABC0726C5A917D5EFA01974EE0436B35BE"
+                          },
+                          {
+                              "path":  "dist/assets/plants/camellia-3.png",
+                              "sha256":  "E89C4B78565CCCF0A34D86CFDC4AB12374C554CC7AAC7838E93F95B501A007FA"
+                          },
+                          {
+                              "path":  "dist/assets/plants/camellia-4.png",
+                              "sha256":  "F8442CDBF49206E9643614DC6A8705EBD19C5F306FC97E6E90CAC0AC823B74F3"
+                          },
+                          {
+                              "path":  "dist/assets/plants/camellia-5.png",
+                              "sha256":  "22687AF493D11F9CEE36AE6FBD36A281B775B63BF98A565B3F9A0FF155703229"
+                          },
+                          {
+                              "path":  "dist/assets/plants/cherry-1.png",
+                              "sha256":  "928A77F457CACD54F0DCA2711E2A9FA46F38973CB2E3E91169E03402D9EEB987"
+                          },
+                          {
+                              "path":  "dist/assets/plants/cherry-2.png",
+                              "sha256":  "5AB733467271792BA93CA6D1A1A85C934EB4CA2842BAA8DE9C0CEF2E38CCF1B3"
+                          },
+                          {
+                              "path":  "dist/assets/plants/cherry-3.png",
+                              "sha256":  "707E3915F470B6BEB82324341C76A96A0988C02F5E96D0D0A5B64997223039D3"
+                          },
+                          {
+                              "path":  "dist/assets/plants/cherry-4.png",
+                              "sha256":  "D4E6F70AB5C23CA4A0417CBBAD3280FD416B357635EA55E10347A3DB82C021EB"
+                          },
+                          {
+                              "path":  "dist/assets/plants/cherry-5.png",
+                              "sha256":  "BF4FACD7DFBFBE5FF6F54137F2A5D4A79BA62E607C639576169B83E6A9C3F9A5"
+                          },
+                          {
+                              "path":  "dist/assets/plants/daisy-1.png",
+                              "sha256":  "BF4C070240EAF9D135C65C32E58C2856DC2128A08D0FCFC934E3B2C7933BA8E2"
+                          },
+                          {
+                              "path":  "dist/assets/plants/daisy-2.png",
+                              "sha256":  "5138CE402351DE9E0902EC482820E3C076D37AC1FA4CC55D21A1D75058A3F11D"
+                          },
+                          {
+                              "path":  "dist/assets/plants/daisy-3.png",
+                              "sha256":  "1A504010874CB72EA8EDB5427E3BD326FF8302C19D456BDBAC9DDAAFCB2D0640"
+                          },
+                          {
+                              "path":  "dist/assets/plants/daisy-4.png",
+                              "sha256":  "4C58E4A263C59D86C845EB2CDF64F7FB6D4FC890800128F261C51BD1DAD5B054"
+                          },
+                          {
+                              "path":  "dist/assets/plants/daisy-5.png",
+                              "sha256":  "6E88750F925F019A64BF6DFEB3753E79ABA2D3A894ACF9F4426461D5E5645FE1"
+                          },
+                          {
+                              "path":  "dist/assets/plants/gerbera-1.png",
+                              "sha256":  "61A55F2923F9A566E837BDFCC2F24372B324D788F72005FCDDB45941D420FD2E"
+                          },
+                          {
+                              "path":  "dist/assets/plants/gerbera-2.png",
+                              "sha256":  "A0EC642657E90EEA9BAC3760C7E81AD2A5A66412DF5083A6E66A26F54205588B"
+                          },
+                          {
+                              "path":  "dist/assets/plants/gerbera-3.png",
+                              "sha256":  "4DEACFBEEF70BA319F7B7894777E6FEE9DCDBA86B3E5F45A502484A362CAF2C8"
+                          },
+                          {
+                              "path":  "dist/assets/plants/gerbera-4.png",
+                              "sha256":  "AEAC48EFD757EE423D93E9BF441A7B4BC0EC503BC657EDD0972E7A9B60D043C7"
+                          },
+                          {
+                              "path":  "dist/assets/plants/gerbera-5.png",
+                              "sha256":  "D856DA029675DD8C7552413EED76E20F16D536E1C8C17A14A850E61654399629"
+                          },
+                          {
+                              "path":  "dist/assets/plants/hydrangea-1.png",
+                              "sha256":  "10023ED59EA251BBB57FA92DCDDCD3E5C4FE87510A7BA60A2FC1BBA315F70B03"
+                          },
+                          {
+                              "path":  "dist/assets/plants/hydrangea-2.png",
+                              "sha256":  "A8A613A8E0EF9CB2F2D49188DD74F027CB80E8B7C32BCFB2071C350AD446786D"
+                          },
+                          {
+                              "path":  "dist/assets/plants/hydrangea-3.png",
+                              "sha256":  "BCAE64E13B5E6F67D3CA2B8E91BF47D6849273DD4A0D8AE51A06A15F05DA6FE7"
+                          },
+                          {
+                              "path":  "dist/assets/plants/hydrangea-4.png",
+                              "sha256":  "4AE0044206FA7F254B0802DBABE8E7F2882A1F235509AA90633B11D4E01D979F"
+                          },
+                          {
+                              "path":  "dist/assets/plants/hydrangea-5.png",
+                              "sha256":  "D642A56E7261BC60E44DE6E2794A071A1AC0AB03323C3BEB1C2B9AE662705E6D"
+                          },
+                          {
+                              "path":  "dist/assets/plants/manifest.json",
+                              "sha256":  "34A7ACCE00D6D0F9C556E1E4BF6090A2923CCF4553D8B42E8224E3F2EF87EF7B"
+                          },
+                          {
+                              "path":  "dist/assets/plants/oak-1.png",
+                              "sha256":  "43279297DCC20998C4BAFDBAA2BD4193B101A6ACB25E60E749F78D14FACF9F7D"
+                          },
+                          {
+                              "path":  "dist/assets/plants/oak-2.png",
+                              "sha256":  "47D49EA3CC7060FDA06BD79D7F9EF43B3B21FB16240B09240A0984C15F06CF5A"
+                          },
+                          {
+                              "path":  "dist/assets/plants/oak-3.png",
+                              "sha256":  "7854EAA9AB7BF2F31525F5114E4DD1627B58857B77304C71473886D3E5289754"
+                          },
+                          {
+                              "path":  "dist/assets/plants/oak-4.png",
+                              "sha256":  "013371D6F193997CFE2FB411A19102A98BB4663A13C5A7E041EC5BE46DE37C37"
+                          },
+                          {
+                              "path":  "dist/assets/plants/oak-5.png",
+                              "sha256":  "27E5FBD74A8B65FFDEE6DAFA3C5B83128D99171287DA301BD4A8F8A59932E6A5"
+                          },
+                          {
+                              "path":  "dist/assets/plants/sunflower-1.png",
+                              "sha256":  "3153566D4FCDFB61AE6E85032B0C8C67AB36C5195575B6C205E8291479990995"
+                          },
+                          {
+                              "path":  "dist/assets/plants/sunflower-2.png",
+                              "sha256":  "6834F53DE437494C43A2CE3E7AFCDFD0B23C639E928204B008B3FFA4BEEC0FD8"
+                          },
+                          {
+                              "path":  "dist/assets/plants/sunflower-3.png",
+                              "sha256":  "F3BF1426B43E52994F16D62E3B0EE9F832D579F4DF7A600507DA4E7B3400D38A"
+                          },
+                          {
+                              "path":  "dist/assets/plants/sunflower-4.png",
+                              "sha256":  "A7BA40208B9E578F8780BD76459F2F125BD2F21F114957C780B2D1957E138CF8"
+                          },
+                          {
+                              "path":  "dist/assets/plants/sunflower-5.png",
+                              "sha256":  "382AFE50290F602D3291C0C7E31E7F76752AC20C6EB5CB5B7B21471628F793DF"
+                          },
+                          {
+                              "path":  "dist/assets/plants-five-stages.png",
+                              "sha256":  "E32711494FD6FBD1C378C3A8502E74C071EB9708E692CE875EA2526546811B14"
+                          },
+                          {
+                              "path":  "dist/assets/plants-growth-v2.png",
+                              "sha256":  "1447D8D48C0437FB0EC6D3D40B425F71687954A5EE64179A8C6BDF3ED9C5BE25"
+                          },
+                          {
+                              "path":  "dist/assets/sidebar-bear-tree.png",
+                              "sha256":  "7E45D91BFC0BAAADCA094F3B590718A3506E20B903606F4FE3D236714B3426E8"
+                          },
+                          {
+                              "path":  "dist/banner-camera.css",
+                              "sha256":  "93F0CAEE7A762E7D71684015A57492119A3F8D181A6BE50AFE11F021BD4EF8CE"
+                          },
+                          {
+                              "path":  "dist/days-off-picker.js",
+                              "sha256":  "1AB6E797B2CCAA0627A7C54DC7B4BFA73596BC4FFF90429F674B8EF2D91DD055"
+                          },
+                          {
+                              "path":  "dist/exam-management.js",
+                              "sha256":  "242001DD4980A00BF72CAACCF883F580D646674979C3775DD57D4623BD7066AA"
+                          },
+                          {
+                              "path":  "dist/index.html",
+                              "sha256":  "C4CA7BF3E9C19FC40C916DBCB6D6862FAEC820497DA95CC3F1619DF40A5BB4C9"
+                          },
+                          {
+                              "path":  "dist/learning-plan.js",
+                              "sha256":  "F4F3592FDA8B75397B6721C4BE65C75C31AC5D17FB470738A798BDEBC12662EC"
+                          },
+                          {
+                              "path":  "dist/manifest.webmanifest",
+                              "sha256":  "0266192774AC3681BB88D53D59B1A58D634E3E4DDC578359191C59CE29408BCF"
+                          },
+                          {
+                              "path":  "dist/plant-preview.html",
+                              "sha256":  "D77B93932D3E0F078AFD361E67D1B45753180A15492EB993FAB0B74DEEEA32F3"
+                          },
+                          {
+                              "path":  "dist/pwa.js",
+                              "sha256":  "2DA8E706D971837034E4290036A543D4809F880B08A8B07621EE30CE34F33684"
+                          },
+                          {
+                              "path":  "dist/review-plan.js",
+                              "sha256":  "A8644F6A209BD0E33BA6DDA64652A524D8B2F273DC698B04444AB6F1E61C04ED"
+                          },
+                          {
+                              "path":  "dist/service-worker.js",
+                              "sha256":  "915D3B56EF93CBE7B02B5E75D773232C2847DC2B83E0E04085ACAA43F10BD0EF"
+                          },
+                          {
+                              "path":  "dist/storage-guard.js",
+                              "sha256":  "69A7AEEDDC098F6EDD2D82AFDA4658670E697EF8D38368E58269068CCC75941A"
+                          },
+                          {
+                              "path":  "dist/streak.js",
+                              "sha256":  "5990245C2D0F69B80BED51BCDD05D106C2BCB438DA4D667D5056F35FEE0D47FA"
+                          },
+                          {
+                              "path":  "dist/study-data.js",
+                              "sha256":  "C5E46C39161EC7DFC352F218A59DDB6497C135FDB35D034F0E999A4688E747D7"
+                          },
+                          {
+                              "path":  "dist/study-stats.js",
+                              "sha256":  "7CADA77F58429B474DC58EF419549C32E2D382A4DA4A4F12F5FED297DF5AD2E6"
+                          },
+                          {
+                              "path":  "dist/style.css",
+                              "sha256":  "44165EE193D91ADA8804413E442D771961D0004359E7EE285EEDAD87A9EF8FBB"
+                          },
+                          {
+                              "path":  "dist/test-data.js",
+                              "sha256":  "57BF9CBECDEB4719F85481419676D3CB69666A365B2B7A870E6F99A0E4E0F91A"
+                          },
+                          {
+                              "path":  "dist/test-mode.js",
+                              "sha256":  "BCAB23F7272B32EF2BE4892584FCDC7930B4447ED0CC2CCE0BFA901A79B23741"
+                          },
+                          {
+                              "path":  "dist/today-review-view.js",
+                              "sha256":  "45393DF7E830B599EC258D52E66FF5FE3DD73F95573F82519D6C5B3741AA28B6"
+                          },
+                          {
+                              "path":  "docs/evidence/home-logo-final/README.md",
+                              "sha256":  "4DBF3D880F94862304CD980D8A6F56FE7305CF5EDA6090DF7881B33C1D5F28EE"
+                          },
+                          {
+                              "path":  "docs/PRD.md",
+                              "sha256":  "202AB6809028E80622A6E3048E8BE2A35B4F088828618049863157637313FA15"
+                          },
+                          {
+                              "path":  "docs/TODO.md",
+                              "sha256":  "C8A147D6E00EB53BDD88A4BE34901BF986B5B5F7EFEA04E871B63CBE3EFC8F3D"
+                          },
+                          {
+                              "path":  "exam-management.js",
+                              "sha256":  "242001DD4980A00BF72CAACCF883F580D646674979C3775DD57D4623BD7066AA"
+                          },
+                          {
+                              "path":  "index.html",
+                              "sha256":  "C4CA7BF3E9C19FC40C916DBCB6D6862FAEC820497DA95CC3F1619DF40A5BB4C9"
+                          },
+                          {
+                              "path":  "learning-plan.js",
+                              "sha256":  "F4F3592FDA8B75397B6721C4BE65C75C31AC5D17FB470738A798BDEBC12662EC"
+                          },
+                          {
+                              "path":  "manifest.webmanifest",
+                              "sha256":  "0266192774AC3681BB88D53D59B1A58D634E3E4DDC578359191C59CE29408BCF"
+                          },
+                          {
+                              "path":  "plant-preview.html",
+                              "sha256":  "D77B93932D3E0F078AFD361E67D1B45753180A15492EB993FAB0B74DEEEA32F3"
+                          },
+                          {
+                              "path":  "PROGRESS.md",
+                              "sha256":  "1F12D8256F357594BBF7FE16EF13139AB7A4A6CB4AABE22F6B285C8F53306BAA"
+                          },
+                          {
+                              "path":  "pwa.js",
+                              "sha256":  "2DA8E706D971837034E4290036A543D4809F880B08A8B07621EE30CE34F33684"
+                          },
+                          {
+                              "path":  "QA.md",
+                              "sha256":  "577EBA2AEABD9A96D68C1C2990568EF46C5C9962C4C72B0CE84CEDAD6291A965"
+                          },
+                          {
+                              "path":  "README.md",
+                              "sha256":  "48216E92295A7E23017137CAC30CC6C6F6015E641732AB4C7FD0F4FFA9ADF3B8"
+                          },
+                          {
+                              "path":  "reference/v1/app.js",
+                              "sha256":  "398469CCF2A9A08FEE3850BCF0BC46B26746567F0A7EF9EC01DECC45FB8F8E5F"
+                          },
+                          {
+                              "path":  "reference/v1/favicon.svg",
+                              "sha256":  "55818283581A61F8DD47A289992C21553D92BDAE2B3A4CBB21971518F988E710"
+                          },
+                          {
+                              "path":  "reference/v1/fonts/LINESeedKR-Bd.woff2",
+                              "sha256":  "57F95A6C2CE2FF6FA84E28F96BC5D29DCF5A7E308C9A25ED9541EACFF3EDFA56"
+                          },
+                          {
+                              "path":  "reference/v1/fonts/LINESeedKR-Rg.woff2",
+                              "sha256":  "709275188A8EF23040274490CD1FA048A02E9C441A238A4252837258CF8A43DF"
+                          },
+                          {
+                              "path":  "reference/v1/index.html",
+                              "sha256":  "E39F79962F18CCEF089B462D32C51DD5FE2E1E465423751CF46F8A7D4F16D799"
+                          },
+                          {
+                              "path":  "reference/v1/style.css",
+                              "sha256":  "61BF287A3E5557BEDFFA7F81094F473878C732AA1C78E160723399C831B2A2AE"
+                          },
+                          {
+                              "path":  "review-plan.js",
+                              "sha256":  "A8644F6A209BD0E33BA6DDA64652A524D8B2F273DC698B04444AB6F1E61C04ED"
+                          },
+                          {
+                              "path":  "scripts/build-pwa.cjs",
+                              "sha256":  "03106800670F119A513099613923231250A8D7C13EF6E8CF2F8ED41639C1539A"
+                          },
+                          {
+                              "path":  "scripts/service-worker-template.js",
+                              "sha256":  "46B5EBCD4177F3A72310D3D93DE43910B8E1799959B6E8B06DACF12E695DB8EC"
+                          },
+                          {
+                              "path":  "service-worker.js",
+                              "sha256":  "391FFDF45F60F62702983D2F2CADF015FD108AEF385C13344FE9EC826801A79A"
+                          },
+                          {
+                              "path":  "storage-guard.js",
+                              "sha256":  "69A7AEEDDC098F6EDD2D82AFDA4658670E697EF8D38368E58269068CCC75941A"
+                          },
+                          {
+                              "path":  "streak.js",
+                              "sha256":  "5990245C2D0F69B80BED51BCDD05D106C2BCB438DA4D667D5056F35FEE0D47FA"
+                          },
+                          {
+                              "path":  "study-data.js",
+                              "sha256":  "C5E46C39161EC7DFC352F218A59DDB6497C135FDB35D034F0E999A4688E747D7"
+                          },
+                          {
+                              "path":  "study-stats.js",
+                              "sha256":  "7CADA77F58429B474DC58EF419549C32E2D382A4DA4A4F12F5FED297DF5AD2E6"
+                          },
+                          {
+                              "path":  "style.css",
+                              "sha256":  "15E0C9A19920BE945A9B54C803070C933C77CB5CB2DAACE685184E8289B2E6F0"
+                          },
+                          {
+                              "path":  "test-data.js",
+                              "sha256":  "57BF9CBECDEB4719F85481419676D3CB69666A365B2B7A870E6F99A0E4E0F91A"
+                          },
+                          {
+                              "path":  "test-mode.js",
+                              "sha256":  "BCAB23F7272B32EF2BE4892584FCDC7930B4447ED0CC2CCE0BFA901A79B23741"
+                          },
+                          {
+                              "path":  "tests/days-off-picker.test.cjs",
+                              "sha256":  "609F5B5247A695D5A1ADAA887339FD79CEEA43CE9AF77E1072BA515B65A65128"
+                          },
+                          {
+                              "path":  "tests/developer-data.test.cjs",
+                              "sha256":  "8C02E209F310EFE1F02ED3F11F4F12CB0180E1B0BFB3893E361DC62CA374BF40"
+                          },
+                          {
+                              "path":  "tests/exam-management.test.cjs",
+                              "sha256":  "225ACFE845D56579D86E3EE768AC18503E483EE9C9C1F901AF334BE0E2E30203"
+                          },
+                          {
+                              "path":  "tests/final-integration.test.cjs",
+                              "sha256":  "4A56DA1F1C652F9AFF9ED923B019F049293985702F54DD843AF72EEF6CE99D93"
+                          },
+                          {
+                              "path":  "tests/learning-plan.test.cjs",
+                              "sha256":  "230EAE4508575B7DE71FDFA1293984608B948F3590AEBCFAAEF8644F1A78F6CA"
+                          },
+                          {
+                              "path":  "tests/plant-images.test.cjs",
+                              "sha256":  "64A0B6E0BAC5150F1469D426DC6AC20DE4133E2FE4C2808FD4A2E92AEB5B0AD7"
+                          },
+                          {
+                              "path":  "tests/pwa.test.cjs",
+                              "sha256":  "480045C03EC1D049BD01A9DEF89287DB4AB74816181BAF779BC0DBBD023C8E16"
+                          },
+                          {
+                              "path":  "tests/review-foundation.test.cjs",
+                              "sha256":  "06D4D9D8BE4BA773DFD1A936EE0037E429DC818AFD54EAA908E57353B672BB87"
+                          },
+                          {
+                              "path":  "tests/review-plan.test.cjs",
+                              "sha256":  "AA243A8F7111C52A9129D08F2CAFC6CFAE908003D66C6D5A5554E7A9EF16BA75"
+                          },
+                          {
+                              "path":  "tests/streak.test.cjs",
+                              "sha256":  "BE8A66EB95AD26073BCF9FFACA4CECB9F4B4435F325A88893C00A36E84E279F6"
+                          },
+                          {
+                              "path":  "tests/study-app.test.cjs",
+                              "sha256":  "AC19882D6E206F96C3800BE6D8AF386D4AC15B95596E2152AD989D38D67BB681"
+                          },
+                          {
+                              "path":  "tests/study-data.test.cjs",
+                              "sha256":  "410BEAE6CE8A31149A280AFFE67D9A80B8246EF19BB17833BB5EEE9A032D7D4D"
+                          },
+                          {
+                              "path":  "tests/study-stats.test.cjs",
+                              "sha256":  "596A56957BC084908FD394C63A14A70C1899670677C680F0FDD9FF83385780EA"
+                          },
+                          {
+                              "path":  "tests/today-review-view.test.cjs",
+                              "sha256":  "CDB5D04E8077934D968A063F7A8A7367C79AC2F39FCEDC75FD2C92C61846DB5B"
+                          },
+                          {
+                              "path":  "today-review-view.js",
+                              "sha256":  "45393DF7E830B599EC258D52E66FF5FE3DD73F95573F82519D6C5B3741AA28B6"
+                          }
+                      ],
+    "storageCandidates":  [
+                              {
+                                  "path":  "dist/app.js",
+                                  "line":  11,
+                                  "text":  "try{appStorage=applicationContext?applicationContext.storage:window.localStorage;}catch{}"
+                              },
+                              {
+                                  "path":  "dist/days-off-picker.js",
+                                  "line":  31,
+                                  "text":  "if(button.hasAttribute(\u0027data-off-clear\u0027)){draft.clear();render();modal.querySelector(\u0027[data-off-date]\u0027)?.focus({preventScroll:true});return;}"
+                              },
+                              {
+                                  "path":  "dist/exam-management.js",
+                                  "line":  84,
+                                  "text":  "try{const raw=storage.getItem(KEY);return {state:raw===null?validate(reconcile(initial)):validate(reconcile(validate(JSON.parse(raw)))),writable:true,error:null};}"
+                              },
+                              {
+                                  "path":  "dist/exam-management.js",
+                                  "line":  89,
+                                  "text":  "const raw=storage.getItem(KEY);"
+                              },
+                              {
+                                  "path":  "dist/exam-management.js",
+                                  "line":  92,
+                                  "text":  "if(previous.version===1\u0026\u0026storage.getItem(KEY+\u0027.before-choice-v2\u0027)===null)storage.setItem(KEY+\u0027.before-choice-v2\u0027,raw);"
+                              },
+                              {
+                                  "path":  "dist/exam-management.js",
+                                  "line":  94,
+                                  "text":  "storage.setItem(KEY,JSON.stringify(safe));return safe;"
+                              },
+                              {
+                                  "path":  "dist/service-worker.js",
+                                  "line":  1,
+                                  "text":  "/* Versioned app shell; personal data stays in localStorage, outside this cache. */"
+                              },
+                              {
+                                  "path":  "dist/storage-guard.js",
+                                  "line":  5,
+                                  "text":  "let baseline=storage.getItem(key),conflicted=false,busy=false;"
+                              },
+                              {
+                                  "path":  "dist/storage-guard.js",
+                                  "line":  7,
+                                  "text":  "function check(){if(conflicted||storage.getItem(key)!==baseline){conflicted=true;throw error(\u0027CHAGOK_CONFLICT\u0027);}}"
+                              },
+                              {
+                                  "path":  "dist/storage-guard.js",
+                                  "line":  10,
+                                  "text":  "if((event.key===key||event.key===null)\u0026\u0026(storage.getItem(key)!==baseline||(event.key===key\u0026\u0026event.newValue!==undefined\u0026\u0026event.newValue!==baseline)))conflicted=true;"
+                              },
+                              {
+                                  "path":  "dist/storage-guard.js",
+                                  "line":  15,
+                                  "text":  "const perform=()=\u003e{check();const value=write();baseline=storage.getItem(key);return value;};"
+                              },
+                              {
+                                  "path":  "dist/study-data.js",
+                                  "line":  87,
+                                  "text":  "const raw=storage.getItem(KEY);"
+                              },
+                              {
+                                  "path":  "dist/study-data.js",
+                                  "line":  89,
+                                  "text":  "const legacyRaw=storage.getItem(LEGACY_KEY),examRaw=storage.getItem(api.KEY);"
+                              },
+                              {
+                                  "path":  "dist/study-data.js",
+                                  "line":  94,
+                                  "text":  "storage.setItem(KEY,JSON.stringify(next));"
+                              },
+                              {
+                                  "path":  "dist/study-data.js",
+                                  "line":  98,
+                                  "text":  "function save(storage,state,api){const safe=validate(state,api);storage.setItem(KEY,JSON.stringify(safe));return safe;}"
+                              },
+                              {
+                                  "path":  "dist/study-data.js",
+                                  "line":  102,
+                                  "text":  "const original={v2:storage.getItem(KEY),legacy:storage.getItem(LEGACY_KEY),exams:storage.getItem(api.KEY)};"
+                              },
+                              {
+                                  "path":  "dist/study-data.js",
+                                  "line":  103,
+                                  "text":  "let index=0;while(storage.getItem(KEY+\u0027.before-recovery.\u0027+index)!==null)index++;"
+                              },
+                              {
+                                  "path":  "dist/study-data.js",
+                                  "line":  104,
+                                  "text":  "storage.setItem(KEY+\u0027.before-recovery.\u0027+index,JSON.stringify(original));"
+                              },
+                              {
+                                  "path":  "dist/test-mode.js",
+                                  "line":  1,
+                                  "text":  "/* One tab-local test session. Real LocalStorage is never replaced by virtual data. */"
+                              },
+                              {
+                                  "path":  "dist/test-mode.js",
+                                  "line":  6,
+                                  "text":  "function live(){let storage;try{storage=localStorage;}catch{}return {test:false,storage};}"
+                              },
+                              {
+                                  "path":  "dist/test-mode.js",
+                                  "line":  12,
+                                  "text":  "let raw;try{raw=sessionStorage.getItem(SLOT);}catch{return live();}"
+                              },
+                              {
+                                  "path":  "dist/test-mode.js",
+                                  "line":  23,
+                                  "text":  "if(on)sessionStorage.setItem(SLOT,JSON.stringify({version:1,state:JSON.parse(next.bank.get(StudyData.KEY))}));"
+                              },
+                              {
+                                  "path":  "dist/test-mode.js",
+                                  "line":  24,
+                                  "text":  "else sessionStorage.removeItem(SLOT);"
+                              },
+                              {
+                                  "path":  "dist/test-mode.js",
+                                  "line":  30,
+                                  "text":  "const finish=value=\u003e{if(context.test){sessionStorage.setItem(SLOT,JSON.stringify({version:1,state:JSON.parse(context.storage.getItem(StudyData.KEY))}));}return value;};"
+                              },
+                              {
+                                  "path":  "dist/test-mode.js",
+                                  "line":  31,
+                                  "text":  "const fail=e=\u003e{if(before){context.bank.clear();for(const [k,v]of before)context.bank.set(k,v);}throw e;};"
+                              },
+                              {
+                                  "path":  "dist/test-mode.js",
+                                  "line":  53,
+                                  "text":  "try{sessionStorage.removeItem(OLD);}catch{}"
+                              }
+                          ],
+    "comparison":  {
+                       "changes":  [
+
+                                   ],
+                       "protectedChanges":  [
+
+                                            ]
+                   },
+    "limitations":  [
+                        "Git-ignored files are outside this inventory.",
+                        "Hashes and direct-call patterns do not prove runtime preservation, calculation accuracy or visual correctness.",
+                        "No files, browser storage, caches or deployment assets are modified."
+                    ]
+}

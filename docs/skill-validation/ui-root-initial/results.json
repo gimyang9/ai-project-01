@@ -1,0 +1,26 @@
+{
+  "root": "D:\\Projects\\project-v2-upload",
+  "route": "/index.html",
+  "node": "v24.22.1",
+  "chromePath": "C:/Program Files/Google/Chrome/Application/chrome.exe",
+  "noSandbox": false,
+  "results": [
+    {
+      "case": "setup",
+      "status": "untested",
+      "error": "Chrome connection closed"
+    }
+  ],
+  "networkErrors": [],
+  "runtimeErrors": [],
+  "limitations": [
+    "Viewport simulation is not physical Safari or native keyboard testing.",
+    "Only selected cases/groups; no PWA, cache, deployment or mathematical-oracle audit."
+  ],
+  "profile": "C:\\Users\\alsru\\AppData\\Local\\Temp\\chagok-ui-skill-nP4nv1",
+  "summary": {
+    "passed": 0,
+    "failed": 0,
+    "untested": 1
+  }
+}
