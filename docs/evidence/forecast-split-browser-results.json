@@ -1,0 +1,371 @@
+{
+  "results": [
+    {
+      "name": "/index.html auto plan exists before seven days, actual uses only current round, no-goal/manual/pause states",
+      "pass": true,
+      "value": [
+        {
+          "id": "m",
+          "plan": {
+            "basis": "automatic",
+            "span": 0,
+            "window": 0,
+            "firstDate": null,
+            "recentAmount": 0,
+            "speed": 7,
+            "date": "2026-11-13",
+            "reason": "estimated"
+          },
+          "actual": {
+            "span": 7,
+            "window": 7,
+            "firstDate": "2026-10-27",
+            "recentAmount": 20,
+            "speed": 2.857142857142857,
+            "date": "2026-11-30",
+            "reason": "estimated"
+          },
+          "deadline": "2026-11-13"
+        },
+        {
+          "id": "round",
+          "plan": {
+            "basis": "automatic",
+            "span": 0,
+            "window": 0,
+            "firstDate": null,
+            "recentAmount": 0,
+            "speed": 9,
+            "date": "2026-11-13",
+            "reason": "estimated"
+          },
+          "actual": {
+            "span": 1,
+            "window": 0,
+            "firstDate": "2026-11-02",
+            "recentAmount": 0,
+            "speed": null,
+            "date": null,
+            "reason": "insufficient"
+          },
+          "deadline": "2026-11-13"
+        },
+        {
+          "id": "complete",
+          "plan": {
+            "basis": "automatic",
+            "span": 0,
+            "window": 0,
+            "firstDate": null,
+            "recentAmount": 0,
+            "speed": null,
+            "date": "2026-11-02",
+            "reason": "completed"
+          },
+          "actual": {
+            "span": 1,
+            "window": 0,
+            "firstDate": "2026-11-02",
+            "recentAmount": 0,
+            "speed": null,
+            "date": "2026-11-02",
+            "reason": "completed"
+          },
+          "deadline": null
+        },
+        {
+          "id": "manual",
+          "plan": {
+            "basis": "manual",
+            "span": 0,
+            "window": 0,
+            "firstDate": null,
+            "recentAmount": 0,
+            "speed": 10,
+            "date": "2026-11-11",
+            "reason": "estimated"
+          },
+          "actual": {
+            "span": 0,
+            "window": 0,
+            "firstDate": null,
+            "recentAmount": 0,
+            "speed": null,
+            "date": null,
+            "reason": "insufficient"
+          },
+          "deadline": null
+        },
+        {
+          "id": "none",
+          "plan": {
+            "basis": "automatic",
+            "span": 0,
+            "window": 0,
+            "firstDate": null,
+            "recentAmount": 0,
+            "speed": null,
+            "date": null,
+            "reason": "missing-deadline"
+          },
+          "actual": {
+            "span": 0,
+            "window": 0,
+            "firstDate": null,
+            "recentAmount": 0,
+            "speed": null,
+            "date": null,
+            "reason": "insufficient"
+          },
+          "deadline": null
+        },
+        {
+          "id": "paused",
+          "plan": {
+            "basis": "manual",
+            "span": 0,
+            "window": 0,
+            "firstDate": null,
+            "recentAmount": 0,
+            "speed": 10,
+            "date": null,
+            "reason": "paused"
+          },
+          "actual": {
+            "span": 0,
+            "window": 0,
+            "firstDate": null,
+            "recentAmount": 0,
+            "speed": null,
+            "date": null,
+            "reason": "insufficient"
+          },
+          "deadline": null
+        }
+      ]
+    },
+    {
+      "name": "/index.html live numeric/automatic/invalid previews never save; cancel restores saved setting",
+      "pass": true,
+      "value": {
+        "dates": [
+          "2026-11-09",
+          "2026-11-05",
+          "2027-01-20",
+          "2026-11-13"
+        ]
+      }
+    },
+    {
+      "name": "/index.html saving matches preview and survives reload, clearing switches back to an automatic plan",
+      "pass": true,
+      "value": {
+        "preview": "2026-11-05"
+      }
+    },
+    {
+      "name": "/index.html home/detail/modal/statistics at mobile and desktop: one planned date on home, three distinct meanings in stats",
+      "pass": true,
+      "value": {
+        "widths": [
+          320,
+          375,
+          768,
+          1440
+        ]
+      }
+    },
+    {
+      "name": "/index.html rest days, no eligible weekdays, completion and backup are consistent without losing old rounds",
+      "pass": true,
+      "value": {
+        "restDate": "2026-11-13"
+      }
+    },
+    {
+      "name": "/dist/index.html auto plan exists before seven days, actual uses only current round, no-goal/manual/pause states",
+      "pass": true,
+      "value": [
+        {
+          "id": "m",
+          "plan": {
+            "basis": "automatic",
+            "span": 0,
+            "window": 0,
+            "firstDate": null,
+            "recentAmount": 0,
+            "speed": 7,
+            "date": "2026-11-13",
+            "reason": "estimated"
+          },
+          "actual": {
+            "span": 7,
+            "window": 7,
+            "firstDate": "2026-10-27",
+            "recentAmount": 20,
+            "speed": 2.857142857142857,
+            "date": "2026-11-30",
+            "reason": "estimated"
+          },
+          "deadline": "2026-11-13"
+        },
+        {
+          "id": "round",
+          "plan": {
+            "basis": "automatic",
+            "span": 0,
+            "window": 0,
+            "firstDate": null,
+            "recentAmount": 0,
+            "speed": 9,
+            "date": "2026-11-13",
+            "reason": "estimated"
+          },
+          "actual": {
+            "span": 1,
+            "window": 0,
+            "firstDate": "2026-11-02",
+            "recentAmount": 0,
+            "speed": null,
+            "date": null,
+            "reason": "insufficient"
+          },
+          "deadline": "2026-11-13"
+        },
+        {
+          "id": "complete",
+          "plan": {
+            "basis": "automatic",
+            "span": 0,
+            "window": 0,
+            "firstDate": null,
+            "recentAmount": 0,
+            "speed": null,
+            "date": "2026-11-02",
+            "reason": "completed"
+          },
+          "actual": {
+            "span": 1,
+            "window": 0,
+            "firstDate": "2026-11-02",
+            "recentAmount": 0,
+            "speed": null,
+            "date": "2026-11-02",
+            "reason": "completed"
+          },
+          "deadline": null
+        },
+        {
+          "id": "manual",
+          "plan": {
+            "basis": "manual",
+            "span": 0,
+            "window": 0,
+            "firstDate": null,
+            "recentAmount": 0,
+            "speed": 10,
+            "date": "2026-11-11",
+            "reason": "estimated"
+          },
+          "actual": {
+            "span": 0,
+            "window": 0,
+            "firstDate": null,
+            "recentAmount": 0,
+            "speed": null,
+            "date": null,
+            "reason": "insufficient"
+          },
+          "deadline": null
+        },
+        {
+          "id": "none",
+          "plan": {
+            "basis": "automatic",
+            "span": 0,
+            "window": 0,
+            "firstDate": null,
+            "recentAmount": 0,
+            "speed": null,
+            "date": null,
+            "reason": "missing-deadline"
+          },
+          "actual": {
+            "span": 0,
+            "window": 0,
+            "firstDate": null,
+            "recentAmount": 0,
+            "speed": null,
+            "date": null,
+            "reason": "insufficient"
+          },
+          "deadline": null
+        },
+        {
+          "id": "paused",
+          "plan": {
+            "basis": "manual",
+            "span": 0,
+            "window": 0,
+            "firstDate": null,
+            "recentAmount": 0,
+            "speed": 10,
+            "date": null,
+            "reason": "paused"
+          },
+          "actual": {
+            "span": 0,
+            "window": 0,
+            "firstDate": null,
+            "recentAmount": 0,
+            "speed": null,
+            "date": null,
+            "reason": "insufficient"
+          },
+          "deadline": null
+        }
+      ]
+    },
+    {
+      "name": "/dist/index.html live numeric/automatic/invalid previews never save; cancel restores saved setting",
+      "pass": true,
+      "value": {
+        "dates": [
+          "2026-11-09",
+          "2026-11-05",
+          "2027-01-20",
+          "2026-11-13"
+        ]
+      }
+    },
+    {
+      "name": "/dist/index.html saving matches preview and survives reload, clearing switches back to an automatic plan",
+      "pass": true,
+      "value": {
+        "preview": "2026-11-05"
+      }
+    },
+    {
+      "name": "/dist/index.html home/detail/modal/statistics at mobile and desktop: one planned date on home, three distinct meanings in stats",
+      "pass": true,
+      "value": {
+        "widths": [
+          320,
+          375,
+          768,
+          1440
+        ]
+      }
+    },
+    {
+      "name": "/dist/index.html rest days, no eligible weekdays, completion and backup are consistent without losing old rounds",
+      "pass": true,
+      "value": {
+        "restDate": "2026-11-13"
+      }
+    }
+  ],
+  "missing": [],
+  "errors": [],
+  "physicalSafari": false
+}

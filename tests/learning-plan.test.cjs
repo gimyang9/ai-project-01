@@ -7,6 +7,45 @@ const state=(materials=[m()],goals=[])=>D.validate(D.envelope({version:1,materia
 const plans=s=>P.build(s,today,D,E);
 const record=(id,date,position,sequence=0)=>({id,date,position,sequence});
 
+test('plan and actual forecasts are independent in automatic mode; today counts as the first plan day',()=>{
+ const s=state([m('m',{targetDate:'2026-11-13',records:[record('first','2026-10-27',20)]})]);
+ const p=P.build(s,'2026-11-02',D,E)[0];assert.equal(p.planForecast.basis,'automatic');assert.equal(p.actualForecast.window,7);assert.notEqual(p.planForecast.date,p.actualForecast.date);assert.ok(p.planForecast.date<=p.deadline);
+ const manual=D.update(state([m('m',{manualDailyAmount:10,targetDate:'2026-11-13'})]),{type:'note',id:'m',note:'keep'},E);
+ assert.equal(P.build(manual,'2026-11-02',D,E)[0].planForecast.date,'2026-11-11');
+});
+
+test('automatic forecast uses today remaining quota once, including credits after a plan-condition change',()=>{
+ const original=state([m('m',{total:120,targetDate:'2026-10-30',records:[record('r',today,5)]})]);
+ const p=plans(original)[0];assert.equal(p.initialDaily,20);assert.equal(p.amount,15);assert.equal(p.planForecast.date,'2026-10-30');
+ const draft=D.update(original,{type:'material',material:{id:'m',name:'m',type:'book',unit:'페이지',total:120,targetDate:'2026-10-28'}},E);
+ const prepared=P.stabilize(original,draft,today,D,E),changed=plans(prepared)[0];assert.equal(changed.creditedBefore,5);assert.equal(changed.amount,29);assert.equal(changed.planForecast.date,'2026-10-28');
+ assert.deepEqual(prepared.study.materials[0].records,original.study.materials[0].records);
+});
+
+test('automatic plan on a rest day schedules the remaining eligible days without inventing actual speed',()=>{
+ const p=plans(state([m()],[g('exam','2026-10-30',{learningDays:[0,1,2,3,4]})]))[0];
+ assert.equal(p.amount,0);assert.equal(p.planForecast.date,'2026-10-29');assert.equal(p.actualForecast.reason,'insufficient');
+ const noGoal=plans(state())[0];assert.equal(noGoal.planForecast.reason,'missing-deadline');assert.equal(noGoal.planForecast.date,null);
+});
+
+test('read-only plan previews match saving, reject invalid drafts, and never change originals or metadata',()=>{
+ const s=state([m('m',{targetDate:'2026-10-30',records:[record('r',today,5)],manualDailyAmount:10})]);s.preferences={keep:true};
+ const before=JSON.stringify(s);
+ for(const amount of [20,2,null]){
+  const preview=P.preview(s,'m',amount,today,D,E),saved=P.stabilize(s,D.update(s,{type:'plan',id:'m',amount},E),today,D,E);
+  assert.deepEqual(preview.planForecast,plans(saved)[0].planForecast);assert.equal(JSON.stringify(s),before);
+ }
+ for(const amount of [0,-1,1.5,Number.MAX_SAFE_INTEGER+1])assert.throws(()=>P.preview(s,'m',amount,today,D,E));
+ assert.equal(JSON.stringify(s),before);
+});
+
+test('pausing disables plan date; resume, date rollover and historical lookup preserve stored settings',()=>{
+ let s=state([m('m',{manualDailyAmount:10,records:[record('r','2026-10-19',10)]})]);
+ s.exams=E.update(s.exams,{type:'material-status',id:'m',status:'paused'});assert.equal(plans(s)[0].planForecast.reason,'paused');assert.equal(plans(s)[0].planForecast.date,null);
+ s.exams=E.update(s.exams,{type:'material-status',id:'m',status:'active'});const before=JSON.stringify(s),p=plans(s)[0];
+ assert.equal(P.build(s,P.shift(today,1),D,E)[0].planForecast.date,P.shift(p.planForecast.date,1));assert.equal(JSON.stringify(s),before);
+});
+
 test('manual daily amounts change planned finish immediately without requiring seven days of history',()=>{
  const s=state([m('m',{manualDailyAmount:10})]);assert.equal(plans(s)[0].forecast.date,'2026-11-03');
  assert.equal(plans(s)[0].forecast.basis,'manual');assert.equal(plans(s)[0].actualForecast.reason,'insufficient');
@@ -30,7 +69,7 @@ test('clearing manual quota restores the untouched historical estimate and never
  const material=m('m',{manualDailyAmount:10,records:[{...record('r','2026-10-19',20),understanding:'어려움',custom:{keep:true}}]});
  const s=state([material],[g('exam','2026-11-01')]),before=JSON.stringify(s),p=plans(s)[0];
  assert.equal(JSON.stringify(s),before);assert.deepEqual(p.actualForecast,P.estimate(material,today,D));
- const cleared=D.update(s,{type:'plan',id:'m',amount:null},E);assert.deepEqual(plans(cleared)[0].forecast,p.actualForecast);
+ const cleared=D.update(s,{type:'plan',id:'m',amount:null},E);assert.deepEqual(plans(cleared)[0].actualForecast,p.actualForecast);assert.equal(plans(cleared)[0].planForecast.basis,'automatic');
  assert.deepEqual(cleared.study.materials[0].records,s.study.materials[0].records);assert.deepEqual(cleared.exams,s.exams);
  assert.deepEqual(D.restore(D.backup(s,E),state(),E),s);
 });
@@ -75,28 +114,28 @@ test('progress edits/deletions recalculate derived quotas without changing plan/
  const removed=D.update(progressed,{type:'delete-record',id:'m',recordId:'r'},E);assert.equal(plans(removed)[0].requiredDaily,20);assert.equal(removed.exams.goals[0].focusDate,'2026-10-26');
 });
 for(const [span,window] of [[0,0],[1,0],[6,0],[7,7],[13,7],[14,14],[27,14],[28,28],[60,28]])test(`actual material record span ${span} days selects ${window}-day window`,()=>{
- const material=m('m',{records:span?[record('first',P.shift(today,1-span),10)]:[]});const f=plans(state([material],[g('a','2029-01-01')]))[0].forecast;
+ const material=m('m',{records:span?[record('first',P.shift(today,1-span),10)]:[]});const f=plans(state([material],[g('a','2029-01-01')]))[0].actualForecast;
  assert.equal(f.span,span);assert.equal(f.window,window);if(span<7)assert.equal(f.date,null);
 });
 test('averages include days without study and do not use exam preparation duration',()=>{
  const material=m('m',{records:[record('first','2026-10-19',10),record('second','2026-10-25',20,1)]});
- const p=plans(state([material],[g('a','2030-01-01')]))[0];assert.equal(p.forecast.window,7);assert.equal(p.forecast.speed,20/7);assert.equal(p.forecast.date,'2026-11-22');
+ const p=plans(state([material],[g('a','2030-01-01')]))[0];assert.equal(p.actualForecast.window,7);assert.equal(p.actualForecast.speed,20/7);assert.equal(p.actualForecast.date,'2026-11-22');
 });
 test('latest window excludes older amounts and reviews, including overlapping review ranges',()=>{
  const material=m('m',{records:[record('first','2026-10-12',10),record('now',today,24,1)],reviews:[{id:'review',date:today,start:1,end:100,total:100,unit:'페이지',sequence:2}]});
- const f=plans(state([material]))[0].forecast;assert.equal(f.window,14);assert.equal(f.recentAmount,24);
- const old=m('m',{records:[record('first','2026-09-01',10),record('now',today,38,1)]});assert.equal(plans(state([old]))[0].forecast.recentAmount,28);
+ const f=plans(state([material]))[0].actualForecast;assert.equal(f.window,14);assert.equal(f.recentAmount,24);
+ const old=m('m',{records:[record('first','2026-09-01',10),record('now',today,38,1)]});assert.equal(plans(state([old]))[0].actualForecast.recentAmount,28);
 });
 test('no recent progress means no completion estimate, independent of required quota',()=>{
- const p=plans(state([m('m',{records:[record('old','2026-08-01',50)]})],[g('a','2026-10-30')]))[0];assert.equal(p.forecast.reason,'no-recent-study');assert.equal(p.forecast.date,null);assert.equal(p.requiredDaily,10);
+ const p=plans(state([m('m',{records:[record('old','2026-08-01',50)]})],[g('a','2026-10-30')]))[0];assert.equal(p.actualForecast.reason,'no-recent-study');assert.equal(p.actualForecast.date,null);assert.equal(p.requiredDaily,10);
 });
-test('historical rounds count for material lifetime and speed, partial reviews never establish lifetime',()=>{
+test('current round alone establishes actual speed; older rounds and reviews remain untouched',()=>{
  const material=m('m',{round:2,roundHistory:[{round:1,total:100,unit:'페이지',completedDate:'2026-10-01',records:[record('history','2026-10-01',100)]}],records:[record('current',today,28,1)]});
- const p=plans(state([material]))[0];assert.equal(p.remaining,72);assert.equal(p.forecast.span,25);assert.equal(p.forecast.window,14);assert.equal(p.forecast.recentAmount,28);
- const onlyReview=m('m',{reviews:[{id:'v',date:'2026-08-01',start:1,end:100,total:100,unit:'페이지',sequence:0}]});assert.equal(plans(state([onlyReview]))[0].forecast.span,0);
+ const p=plans(state([material]))[0];assert.equal(p.remaining,72);assert.equal(p.actualForecast.span,1);assert.equal(p.actualForecast.window,0);assert.equal(p.actualForecast.reason,'insufficient');assert.equal(material.roundHistory[0].records[0].position,100);
+ const onlyReview=m('m',{reviews:[{id:'v',date:'2026-08-01',start:1,end:100,total:100,unit:'페이지',sequence:0}]});assert.equal(plans(state([onlyReview]))[0].actualForecast.span,0);
 });
 test('history of a different unit is not added to current-unit average',()=>{
- const material=m('m',{round:2,roundHistory:[{round:1,total:100,unit:'문제',completedDate:'2026-10-01',records:[record('history','2026-10-01',100)]}],records:[record('current',today,28,1)]});assert.equal(plans(state([material]))[0].forecast.recentAmount,28);
+ const material=m('m',{round:2,roundHistory:[{round:1,total:100,unit:'문제',completedDate:'2026-10-01',records:[record('history','2026-10-01',100)]}],records:[record('start','2026-10-19',10,1),record('current',today,28,2)]});assert.equal(plans(state([material]))[0].actualForecast.recentAmount,28);
 });
 test('manual target persists through progress and backup; today done is subtracted from the automatic day-start quota too',()=>{
  let s=D.update(state([m()],[g('a','2026-10-30')]),{type:'plan',id:'m',amount:10},E);assert.equal(plans(s)[0].amount,10);assert.equal(plans(s)[0].manualShortfall,50);
@@ -117,10 +156,10 @@ test('plans and estimates never mutate source study history, raw evaluations or 
  const s=state([m('m',{records:[{...record('r','2026-10-01',10),understanding:'어려움',custom:{keep:1}}]})],[g('a','2026-10-30',{daysOff:['2026-10-28'],focusMode:'manual',focusDate:'2026-10-27'})]);const before=JSON.stringify(s);plans(s);plans(s);assert.equal(JSON.stringify(s),before);
 });
 test('same-day progress uses deltas, not sum of positions; mean never counts duplicate days as extra time',()=>{
- const material=m('m',{records:[record('first','2026-10-19',10),record('second',today,20,1),record('third',today,30,2)]});const p=plans(state([material]))[0];assert.equal(p.forecast.recentAmount,30);assert.equal(p.forecast.speed,30/7);assert.equal(p.remaining,70);
+ const material=m('m',{records:[record('first','2026-10-19',10),record('second',today,20,1),record('third',today,30,2)]});const p=plans(state([material]))[0];assert.equal(p.actualForecast.recentAmount,30);assert.equal(p.actualForecast.speed,30/7);assert.equal(p.remaining,70);
 });
 test('unrepresentable finish date yields explicit no-estimate result instead of crashing',()=>{
- const material=m('m',{total:Number.MAX_SAFE_INTEGER,records:[record('first','2026-10-19',1)]});const p=plans(state([material]))[0];assert.equal(p.forecast.reason,'out-of-range');assert.equal(p.forecast.date,null);
+ const material=m('m',{total:Number.MAX_SAFE_INTEGER,records:[record('first','2026-10-19',1)]});const p=plans(state([material]))[0];assert.equal(p.actualForecast.reason,'out-of-range');assert.equal(p.actualForecast.date,null);
 });
 
 test('earlier material target remains binding; future preparing exam wins over an expired goal',()=>{
@@ -148,5 +187,5 @@ test('manual notice uses actual remaining capacity and never overwrites the manu
 test('burden and forecasts stay independent from quota increases and same-day completion',()=>{
  const s=state([m('m',{total:1000,records:[record('old','2026-09-28',28)]})],[g('exam','2026-10-30')]);
  const before=JSON.stringify(s),p=plans(s)[0];assert.equal(p.habit.speed,1);assert.ok(p.burdenRatio>1.5);assert.match(P.notice(p),/다소 부담/);
- const noExam=state(s.study.materials);assert.equal(plans(noExam)[0].forecast.date,p.forecast.date);assert.equal(JSON.stringify(s),before);
+ const noExam=state(s.study.materials);assert.equal(plans(noExam)[0].actualForecast.date,p.actualForecast.date);assert.equal(JSON.stringify(s),before);
 });

@@ -1,0 +1,50 @@
+{
+  "results": [
+    {
+      "name": "/index.html original four-row layout at 320/375/624/1440px with no forecast or target clutter",
+      "pass": true,
+      "value": {
+        "widths": [
+          320,
+          375,
+          624,
+          1440
+        ]
+      }
+    },
+    {
+      "name": "/index.html detailed plan, live draft preview and three-way statistics remain available",
+      "pass": true,
+      "value": true
+    },
+    {
+      "name": "/index.html progress button still records and refreshes remaining/today figures",
+      "pass": true,
+      "value": true
+    },
+    {
+      "name": "/dist/index.html original four-row layout at 320/375/624/1440px with no forecast or target clutter",
+      "pass": true,
+      "value": {
+        "widths": [
+          320,
+          375,
+          624,
+          1440
+        ]
+      }
+    },
+    {
+      "name": "/dist/index.html detailed plan, live draft preview and three-way statistics remain available",
+      "pass": true,
+      "value": true
+    },
+    {
+      "name": "/dist/index.html progress button still records and refreshes remaining/today figures",
+      "pass": true,
+      "value": true
+    }
+  ],
+  "missing": [],
+  "physicalSafari": false
+}

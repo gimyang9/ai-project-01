@@ -87,8 +87,8 @@ test('compact plan modal keeps stored unit/value, removes long explanation, and 
  const a=boot();a.run("commitStudy({type:'material',material:{id:'m',name:'실제 단위',type:'other',unit:'묶음',total:100}},'ok');commitStudy({type:'plan',id:'m',amount:15},'ok')");
  const raw=a.map.get(D.KEY),classes=new Set();a.element('app-dialog').classList={add:n=>classes.add(n),remove:(...names)=>names.forEach(n=>classes.delete(n)),toggle:(n,on)=>on?classes.add(n):classes.delete(n)};
  a.run("openDialog('study-plan','m')");const content=a.element('dialog-content').innerHTML;
- assert.match(content,/하루 학습량 <small>\(선택사항\)/);assert.match(content,/class="plan-amount"/);assert.match(content,/>묶음<\/span>/);assert.match(content,/value="15"/);assert.match(content,/비워 두면 자동 추천을 사용해요\./);assert.doesNotMatch(content,/7·14·28|최근 .*일 평균|남은 분량과 가능한 날/);
- const status=content.match(/<div class="plan-status">([\s\S]*?)<\/div>/)[1];assert.ok((status.match(/<p[ >]/g)||[]).length<=2);assert.equal(classes.has('study-plan-dialog'),true);assert.equal(a.map.get(D.KEY),raw);
+ assert.match(content,/하루 학습량 <small>\(선택사항\)/);assert.match(content,/class="plan-amount"/);assert.match(content,/>묶음<\/span>/);assert.match(content,/value="15"/);assert.match(content,/입력하지 않으면 시험일과 목표 완료일에 맞춰 자동 추천해요\./);assert.doesNotMatch(content,/7·14·28|최근 .*일 평균|남은 분량과 가능한 날/);
+ assert.match(content,/id="plan-preview".*aria-live="polite"/);assert.equal(classes.has('study-plan-dialog'),true);assert.equal(a.map.get(D.KEY),raw);
  a.run("openDialog('memo','m')");assert.equal(classes.has('study-plan-dialog'),false);
  a.run("openDialog('study-plan','m');presentExamDialog('시험 메모','<p>예시</p>')");assert.equal(classes.has('study-plan-dialog'),false);
 });
@@ -104,7 +104,7 @@ test('modal status keeps rest independent, prioritises actionable warnings, and 
  for(const [fixture,primary,secondary] of cases){const before=JSON.stringify(fixture);a.context.statusFixture=fixture;const shown=a.run("compactPlanStatus(statusFixture,'페이지')");assert.equal(shown.primary,primary);assert.equal(shown.secondary,secondary);assert.equal(JSON.stringify(fixture),before);}
 });
 
-test('home today-list focuses daily remainder and state without forecast clutter',()=>{
+test('home today-list keeps its concise original layout without plan dates or forecasts',()=>{
  const a=boot();
  const base={id:'sample',remaining:25,isActive:true,todayAllowed:true,manualDailyAmount:null,amount:null,deadline:null,noTime:false,overdue:false,manualShortfall:0,expectedLate:false,forecast:{reason:'insufficient'}};
  const cases=[
@@ -122,7 +122,7 @@ test('home today-list focuses daily remainder and state without forecast clutter
   a.run("demoMaterials=[{id:'sample',name:'아주 긴 자료명 <안전한 표시>',unit:'강'}];currentPlans=()=>homeFixture;renderToday()");
   const html=a.element('today-list').innerHTML;
   assert.ok(html.includes(expected));assert.equal((html.match(/<small/g)||[]).length,1);
-  assert.doesNotMatch(html,/추정할 기록|최근 14일|예상 완료|목표일을 정하면 권장량/);
+  assert.doesNotMatch(html,/추정할 기록|최근 14일|예상 완료일|목표 완료일|계획한 학습량 기준|today-plan-metrics/);
   assert.match(html,/data-dialog="record" data-material="sample"/);
   assert.match(html,/&lt;안전한 표시&gt;/);assert.equal(JSON.stringify(plan),before);
  }

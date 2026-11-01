@@ -28,6 +28,7 @@ function refreshData(){
 
   renderMaterials(materialFilter);renderGoals(goalFilter);renderToday();renderHomeWelcome();renderReviewSummary();renderExamSummary();renderStorageNote();renderStats(statsPeriod);renderCalendar();
   if(dialog.open&&reviewDialogVisible)renderReviewBrowser();
+  if(dialog.open&&dialog.querySelector('[data-study-form="plan"]'))refreshPlanPreview();
 }
 function renderStorageNote(){
   const note=document.querySelector('.preview-note');
@@ -304,14 +305,32 @@ function dailyPlanLabel(p,unit){
   if(p.amount===null)return '목표일을 정하면 권장량을 안내해요';
   return `오늘 권장 ${p.amount}${unit}`;
 }
-function forecastLabel(p,f=p.forecast){
+function forecastText(p,f=p.planForecast||p.forecast){
+ if(!p.remaining||f?.reason==='completed')return '이번 회독 완료';
+ if(!p.isActive||f?.reason==='paused')return '학습 중단 중';
+ if(f?.reason==='missing-deadline')return '목표일 미정';
+ if(f?.reason==='no-learning-days')return '학습 가능일 없음';
+ if(f?.reason==='no-recent-study')return '최근 학습량 없음';
+ if(f?.reason==='out-of-range')return '추정 범위 초과';
+ return f?.date?f.date.replaceAll('-','.'):'추정 기록 부족';
+}
+function planNotice(p){
+ if(!p.isActive||!p.remaining)return '';
+ const f=p.planForecast||p.forecast;
+ if(f?.date&&p.deadline&&f.date>p.deadline)return ' 기한보다 늦게 완료될 것으로 예상해요.';
+ return LearningPlan.notice(p);
+}
+function forecastLabel(p,f=p.planForecast||p.forecast){
   if(!p.isActive)return '학습 재개 후 예상일을 확인해 주세요.';
   if(f.reason==='completed')return '이번 회독 완료';
   if(f.reason==='insufficient')return '추정할 기록이 부족해요 (학습 기록 기간 7일 미만)';
   if(f.reason==='no-recent-study')return `최근 ${f.window}일 학습량이 0이라 예상일을 계산하지 않아요.`;
   if(f.reason==='out-of-range')return '예상 완료일이 계산 가능한 범위를 넘어요.';
   if(f.reason==='no-learning-days')return '학습 가능한 요일을 설정하면 예상일을 계산해요.';
+  if(f.reason==='missing-deadline')return '목표일을 설정하면 권장량을 안내해요';
+  if(f.reason==='paused')return '학습 재개 후 예상일을 확인해 주세요.';
   if(f.basis==='manual')return `예상 완료 ${f.date} · 직접 설정한 하루 분량 기준`;
+  if(f.basis==='automatic')return `예상 완료 ${f.date} · 계획한 학습량 기준`;
   return `예상 완료 ${f.date} · 최근 ${f.window}일 평균 기준`;
 }
 function planWarning(p,unit){
@@ -322,12 +341,38 @@ function planWarning(p,unit){
 }
 function planMarkup(p,m){
   const label=p.manualDailyAmount?'오늘 설정 학습량':'오늘 권장 학습량';
-  const amount=!p.remaining?'이번 회독 완료':!p.isActive?'학습 중단 중':!p.todayAllowed?'오늘은 쉬는 날':p.noTime?'학습 가능일 없음':p.amount===null?'미정':p.amount+escapeHTML(m.unit);
-  const date=p.forecast.reason==='completed'?'이번 회독 완료':p.isActive&&p.forecast.date?p.forecast.date.replaceAll('-','.'):'추정 기록 부족';
-  const forecast=p.forecast.reason==='no-recent-study'?'최근 학습량 없음':p.forecast.reason==='out-of-range'?'추정 범위 초과':p.forecast.reason==='no-learning-days'?'학습 가능일 없음':!p.isActive?'학습 중단 중':date;
-  const notice=LearningPlan.notice(p);
+  const amount=!p.remaining?'이번 회독 완료':!p.isActive?'학습 중단 중':!p.todayAllowed?'오늘은 쉬는 날':p.noTime&&!p.manualDailyAmount?'학습 가능일 없음':p.amount===null?'미정':p.amount+escapeHTML(m.unit);
+  const forecast=forecastText(p),notice=planNotice(p);
   const target=m.targetDate?'<div class="plan-exam plan-target"><span>목표 완료일</span><span><b>'+escapeHTML(m.targetDate.replaceAll('-','.'))+'</b></span></div>':'';
-  return '<section class="learning-plan plan-compact"><h3>'+icon('calendar')+'학습 계획</h3><div class="plan-metrics"><div><small>'+label+'</small><strong>'+amount+'</strong></div><div><small>예상 완료일</small><strong>'+escapeHTML(forecast)+'</strong></div></div>'+(p.goalDate?'<div class="plan-exam"><span>시험 일정</span><span><small>'+escapeHTML(p.goalName)+'</small><b>'+p.goalDate.replaceAll('-','.')+'</b></span></div>':'')+target+(p.goalDate&&notice?'<p class="plan-inline-notice">'+icon('info')+escapeHTML(notice)+'</p>':'')+'</section>';
+  return '<section class="learning-plan plan-compact"><h3>'+icon('calendar')+'학습 계획</h3><div class="plan-metrics"><div><small>'+label+'</small><strong>'+amount+'</strong></div><div><small>예상 완료일</small><strong>'+escapeHTML(forecast)+'</strong><small class="forecast-basis">계획한 학습량 기준</small></div></div>'+(p.goalDate?'<div class="plan-exam"><span>시험 일정</span><span><small>'+escapeHTML(p.goalName)+'</small><b>'+p.goalDate.replaceAll('-','.')+'</b></span></div>':'')+target+(notice?'<p class="plan-inline-notice">'+icon('info')+escapeHTML(notice)+'</p>':'')+'</section>';
+}
+
+function refreshPlanPreview(){
+ const form=dialog.querySelector('[data-study-form="plan"]'),id=form?.dataset?.material;
+ if(!id)return;
+ const input=$('manual-daily-amount'),host=$('plan-preview');
+ if(!input||!host)return;
+ input.setCustomValidity?.('');
+ const raw=input.value.trim(),amount=raw?Number(raw):null;
+ if(input.validity?.badInput||(raw&&(!Number.isSafeInteger(amount)||amount<1))){
+  input.setCustomValidity?.('1 이상의 정수를 입력해 주세요.');host.innerHTML='<p class="plan-preview-warning">1 이상의 정수를 입력해 주세요.</p>';return;
+ }
+ try{
+  const p=LearningPlan.preview(dataState,id,amount,localToday(),studyAPI,examAPI);
+  if(!p){host.innerHTML='';return;}
+  const warning=planNotice(p),target=p.targetDate?p.targetDate.replaceAll('-','.'):'미정';
+  host.innerHTML='<dl class="forecast-comparison"><div><dt>예상 완료일</dt><dd>'+escapeHTML(forecastText(p))+'</dd></div><div><dt>목표 완료일</dt><dd>'+escapeHTML(target)+'</dd></div></dl><p class="forecast-basis">계획한 학습량 기준 · '+(p.manualDailyAmount?'직접 설정':'자동 추천')+'</p>'+(p.planForecast.reason==='missing-deadline'?'<p class="field-help">목표일을 설정하면 권장량을 안내해요.</p>':'')+(warning?'<p class="plan-preview-warning">'+escapeHTML(warning)+'</p>':'');
+ }catch(error){host.innerHTML='<p class="plan-preview-warning">'+escapeHTML(error.message)+'</p>';}
+}
+function forecastComparisonMarkup(p,m){
+ const actual=p.actualForecast,planned=p.planForecast;
+ const speed=actual.window&&actual.speed>0?'최근 '+actual.window+'일 평균 · 하루 '+Math.round(actual.speed*100)/100+escapeHTML(m.unit):'';
+ let note=planNotice(p);
+ if(!note&&p.isActive&&p.remaining&&actual.date&&planned.date){
+  if(actual.date>planned.date)note='최근 실제 학습 속도는 계획보다 느려요.'+(p.deadline&&planned.date<=p.deadline?' 계획한 분량을 유지하면 목표 기한 안에 완료할 수 있는 계획이에요.':'');
+  else note='최근 실제 학습 속도는 계획과 같거나 빨라요.';
+ }
+ return '<article class="stats-forecast-item"><h3>'+escapeHTML(m.name)+'</h3>'+(speed?'<p class="forecast-speed">'+speed+'</p>':'')+'<div class="actual-forecast"><small>현재 속도 예상 완료일</small><strong>'+escapeHTML(forecastText(p,actual))+'</strong></div>'+(actual.reason==='insufficient'?'<p class="forecast-basis">현재 회독 학습 기록이 7일 이상이면 실제 속도를 안내해요.</p>':'')+'<dl class="forecast-comparison"><div><dt>계획상 예상 완료일</dt><dd>'+escapeHTML(forecastText(p))+'</dd></div><div><dt>목표 완료일</dt><dd>'+escapeHTML(p.targetDate?p.targetDate.replaceAll('-','.'):'미정')+'</dd></div></dl>'+(note?'<p class="forecast-comparison-note">'+escapeHTML(note)+'</p>':'')+'</article>';
 }
 
 // Modal-only presentation: use existing derived plan values without changing policy.
@@ -398,7 +443,7 @@ function renderStats(period='week'){
   $('stats-group-label').textContent=statsGroup==='exam'?'시험 / 독립':'자료';
   $('stats-proportions').innerHTML=shares.map((g,i)=>`<li><i class="legend-dot" style="background:${statsColors[i%statsColors.length]}"></i><span>${escapeHTML(g.name)}</span><b>${Math.round(g.percent*10)/10}%</b></li>`).join('');
   const plans=currentPlans();
-  $('stats-forecast').innerHTML=plans.map(p=>{const m=demoMaterials.find(m=>m.id===p.id),f=p.actualForecast||p.forecast;return `<article class="stats-forecast-item"><h3>${escapeHTML(m.name)}</h3><p>${p.isActive&&f.reason==='estimated'&&f.window&&f.speed!==null?`최근 ${f.window}일 평균 ${Math.round(f.speed*100)/100}${escapeHTML(m.unit)}/일 · `:''}${escapeHTML(f.reason==='estimated'&&p.isActive?'예상 완료 '+f.date:forecastLabel(p,f))}</p></article>`;}).join('')||'<p class="field-help">자료와 학습 기록을 등록하면 속도를 확인할 수 있어요.</p>';
+  $('stats-forecast').innerHTML=plans.map(p=>forecastComparisonMarkup(p,demoMaterials.find(m=>m.id===p.id))).join('')||'<p class="field-help">자료와 학습 기록을 등록하면 속도를 확인할 수 있어요.</p>';
 }
 function calendarData(){return StudyStats.calendar(dataState,localToday(),studyAPI,currentReviews());}
 let selectedCalendarDate=localToday(),calendarExpanded=false;
@@ -529,9 +574,8 @@ function openDialog(type, materialId, editing = false) {
     title='다음 회독을 시작할까요?';content=`<p class="dialog-intro">이전 회독의 날짜·단위·기록은 그대로 보관하고 새 회독의 진도를 0부터 시작해요.</p><form data-study-form="next-round" data-material="${escapeHTML(m.id)}">${dialogFooter('다음 회독 시작')}</form>`;
   } else if (type === 'study-plan') {
     const p=currentPlans().find(p=>p.id===m.id);if(!p)return;
-    const status=compactPlanStatus(p,m.unit);
-    title='학습 계획';
-    content=`<p class="dialog-material-name">${escapeHTML(m.name)}</p><div class="plan-status"><p><strong>${escapeHTML(status.primary)}</strong></p>${status.secondary?`<p class="${status.warning?'plan-status-warning':''}">${escapeHTML(status.secondary)}</p>`:''}</div><form data-study-form="plan" data-material="${escapeHTML(m.id)}"><div class="form-field"><label for="manual-daily-amount">하루 학습량 <small>(선택사항)</small></label><div class="plan-amount"><input id="manual-daily-amount" type="number" min="1" step="1" inputmode="numeric" value="${m.manualDailyAmount||''}"><span>${escapeHTML(m.unit)}</span></div><p class="field-help">직접 설정한 분량으로 예상 완료일을 계산해요. 비워 두면 자동 추천을 사용해요.</p></div>${dialogFooter('저장')}</form>`;
+    title='하루 학습량 설정';
+    content=`<p class="dialog-material-name">${escapeHTML(m.name)}</p><form data-study-form="plan" data-material="${escapeHTML(m.id)}"><div class="form-field"><label for="manual-daily-amount">하루 학습량 <small>(선택사항)</small></label><div class="plan-amount"><input id="manual-daily-amount" type="number" min="1" step="1" inputmode="numeric" value="${m.manualDailyAmount||''}"><span>${escapeHTML(m.unit)}</span></div><p class="field-help">입력하지 않으면 시험일과 목표 완료일에 맞춰 자동 추천해요.</p></div><div id="plan-preview" class="plan-preview" role="status" aria-live="polite" aria-atomic="true"></div>${dialogFooter('저장')}</form>`;
   } else if (type === 'record') {
     title = '진도 기록';
     content = `<p class="dialog-material-name">${escapeHTML(m.name)}</p><form data-study-form="record" data-material="${escapeHTML(m.id)}"><div class="form-field"><label for="study-date">공부 날짜</label><input id="study-date" type="date" value="${localToday()}" max="${localToday()}" required></div><div class="form-field"><label for="study-position">현재 위치</label><div class="input-unit"><input id="study-position" type="number" min="0" max="${m.total}" step="1" inputmode="numeric" required><span>/ ${m.total} ${escapeHTML(m.unit)}</span></div><p class="field-help">이전 위치 ${m.current}${escapeHTML(m.unit)} · 공부량은 이전 기록과 비교해 계산해요.</p></div>${understanding()}${dialogFooter()}</form>`;
@@ -577,6 +621,7 @@ function openDialog(type, materialId, editing = false) {
   if (!alreadyOpen) dialogReturnFocus = document.activeElement;
   $('dialog-title').textContent = title;
   $('dialog-content').innerHTML = content;
+  if(type==='study-plan')refreshPlanPreview();
   if(type==='settings')applicationContext?.updateSettings?.();
   if (type === 'material') {
     updateMaterialType(editing ? m.typeKey : 'book',editing ? m.unit : '페이지');
@@ -848,6 +893,7 @@ document.addEventListener('change',(event)=>{
   if (target.id==='material-unit') $('total-unit').textContent=target.value;
 });
 document.addEventListener('input',(event)=>{
+  if(event.target.id==='manual-daily-amount')refreshPlanPreview();
   if(event.target.hasAttribute('data-memo'))resizeMemo();
   if(event.target.id==='custom-unit') $('total-unit').textContent=event.target.value.trim()||'단위';
 });

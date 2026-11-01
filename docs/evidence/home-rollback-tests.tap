@@ -1,0 +1,52 @@
+﻿TAP version 13
+# Subtest: PWA shell revision matches every referenced local file and project-relative manifest
+ok 1 - PWA shell revision matches every referenced local file and project-relative manifest
+  ---
+  duration_ms: 23.502
+  type: 'test'
+  ...
+# Subtest: dist/PWA shell revision matches every referenced local file and project-relative manifest
+ok 2 - dist/PWA shell revision matches every referenced local file and project-relative manifest
+  ---
+  duration_ms: 31.5881
+  type: 'test'
+  ...
+# Subtest: worker install/activate/cache fetch stays scoped and never forces an update or caches data requests
+ok 3 - worker install/activate/cache fetch stays scoped and never forces an update or caches data requests
+  ---
+  duration_ms: 9.3488
+  type: 'test'
+  ...
+# Subtest: all actual local HTML/CSS assets including separate banner layers are precached
+ok 4 - all actual local HTML/CSS assets including separate banner layers are precached
+  ---
+  duration_ms: 1.5728
+  type: 'test'
+  ...
+# Subtest: home today-list keeps its concise original layout without plan dates or forecasts
+ok 5 - home today-list keeps its concise original layout without plan dates or forecasts
+  ---
+  duration_ms: 43.7509
+  type: 'test'
+  ...
+# Subtest: home completion stays concise while detailed plan warnings remain available
+ok 6 - home completion stays concise while detailed plan warnings remain available
+  ---
+  duration_ms: 3.2268
+  type: 'test'
+  ...
+# Subtest: home progress uses actual daily deltas, handles plan rebase and preserves detailed warnings
+ok 7 - home progress uses actual daily deltas, handles plan rebase and preserves detailed warnings
+  ---
+  duration_ms: 2.5686
+  type: 'test'
+  ...
+1..7
+# tests 7
+# suites 0
+# pass 7
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 280.9693

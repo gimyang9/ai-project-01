@@ -462,3 +462,7 @@ body:has(#view-more:not([hidden])) .preview-note{margin-top:18px}
 
 /* Individual transparent PNGs; keep existing plant container dimensions. */
 .plant-sprite[class*='growth-'][class*='stage-']{background-size:contain;background-position:center;background-repeat:no-repeat;clip-path:none;aspect-ratio:1;image-rendering:pixelated}
+
+/* Plan dates are distinct from record-based dates; retain the existing card and input controls. */
+.forecast-basis{font-size:10px!important;font-weight:400;color:var(--muted);line-height:1.6}.plan-metrics .forecast-basis{margin:4px 0 0}
+.plan-preview{margin-top:15px;padding:12px;border:1px solid var(--line);border-radius:13px;background:#f4eddf}.forecast-comparison{margin:10px 0 0;font-size:12px}.forecast-comparison>div{display:flex;justify-content:space-between;align-items:baseline;gap:12px;padding:6px 0}.forecast-comparison dt{min-width:0;color:var(--muted)}.forecast-comparison dd{margin:0;min-width:0;text-align:right;font-weight:700;overflow-wrap:anywhere}.plan-preview .forecast-comparison{margin:0}.plan-preview .forecast-basis{margin-top:6px}.plan-preview-warning,.forecast-comparison-note{margin-top:8px;font-size:11px;line-height:1.7;color:#a46748}.actual-forecast{margin-top:9px}.actual-forecast small{display:block;font-size:11px;color:var(--muted)}.actual-forecast strong{display:block;font-size:18px;line-height:1.7;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}.stats-forecast-item .forecast-comparison{border-top:1px solid var(--line);padding-top:7px}

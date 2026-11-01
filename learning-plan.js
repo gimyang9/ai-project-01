@@ -27,7 +27,7 @@
   }
   function estimate(material,today,study){
     const remaining=Math.max(0,material.total-study.project(material).current);
-    const rows=studyRows(material,study).filter(r=>r.date<=today);
+    const rows=study.calculate(material.records,material.total).map(r=>({...r,unit:r.unit||material.unit})).filter(r=>r.date<=today);
     const first=rows.map(r=>r.date).sort()[0]||null;
     const span=first?diff(today,first)+1:0;
     const window=span>=28?28:span>=14?14:span>=7?7:0;
@@ -42,10 +42,13 @@
     result.date=shift(today,days);result.reason=result.date?'estimated':'out-of-range';
     return result;
   }
-  function manualEstimate(remaining,today,amount,todayDone,goal){
-    const result={basis:'manual',span:0,window:0,firstDate:null,recentAmount:0,speed:amount,date:null,reason:'estimated'};
+  function forecastPlan(remaining,today,amount,todayCapacity,goal,basis,isActive){
+    const result={basis,span:0,window:0,firstDate:null,recentAmount:0,speed:amount,date:null,reason:'estimated'};
     if(!remaining)return {...result,date:today,reason:'completed'};
-    const capacity=allowed(today,goal)?Math.max(0,amount-todayDone):0;
+    if(!isActive)return {...result,reason:'paused'};
+    if(amount===null)return {...result,reason:'missing-deadline'};
+    if(!Number.isSafeInteger(amount)||amount<=0)return {...result,reason:'no-learning-days'};
+    const capacity=allowed(today,goal)?Math.max(0,todayCapacity):0;
     if(remaining<=capacity)return {...result,date:today};
     if(goal&&!goal.learningDays.length)return {...result,reason:'no-learning-days'};
     const start=shift(today,1),last='9999-12-31',needed=Math.ceil((remaining-capacity)/amount);
@@ -111,15 +114,24 @@
       const creditedBefore=valid?saved.creditedBefore:0;
       const required=initialDaily;
       const amount=!isActive||!remaining||!todayAllowed?0:manual?Math.min(remaining,Math.max(0,manual-todayDone)):initialDaily===null?null:Math.min(remaining,Math.max(0,initialDaily-Math.max(0,todayDone-creditedBefore)));
-      const actualForecast=estimate(material,today,study),forecast=manual?manualEstimate(remaining,today,manual,todayDone,goal):actualForecast,usual=habit(material,today,study,goal);
+      const actualForecast=estimate(material,today,study);
+      const dailyAmount=manual||initialDaily;
+      const todayCapacity=manual?Math.max(0,manual-todayDone):Math.max(0,(initialDaily||0)-Math.max(0,todayDone-creditedBefore));
+      const planForecast=forecastPlan(remaining,today,dailyAmount,todayCapacity,goal,manual?'manual':'automatic',isActive);
+      if(planForecast.reason==='missing-deadline'&&end&&days===0)planForecast.reason='no-learning-days';
+      const forecast=planForecast,usual=habit(material,today,study,goal);
       const burdenRatio=remaining&&isActive&&days&&Number.isFinite(initialDaily)&&usual.speed>0?initialDaily/usual.speed:null;
-      return {id:m.id,remaining,goalId:goal?.id||null,goalName:goal?.name||'',goalDate:goal?.date||null,habit:usual,burdenRatio,deadline:end,deadlineSource:target&&end===target?'material':goal?.date?'exam':null,availableDays:days,initialDaily,creditedBefore,requiredCurrent,todayAllowed,isActive,requiredDaily:required,manualDailyAmount:manual,todayDone,amount,rank:rank.get(m.id)??Infinity,forecast,actualForecast,
+      return {id:m.id,remaining,targetDate:target||null,goalId:goal?.id||null,goalName:goal?.name||'',goalDate:goal?.date||null,habit:usual,burdenRatio,deadline:end,deadlineSource:target&&end===target?'material':goal?.date?'exam':null,availableDays:days,initialDaily,creditedBefore,requiredCurrent,todayAllowed,isActive,requiredDaily:required,manualDailyAmount:manual,todayDone,amount,rank:rank.get(m.id)??Infinity,planForecast,forecast,actualForecast,
         noTime:!!remaining&&!!end&&days===0,
         overdue:!!remaining&&!!end&&end<today,
         manualShortfall:manual&&end?Math.max(0,remaining-Math.max(0,days*manual-(todayAllowed?Math.min(todayDone,manual):0))):0,
         expectedLate:!!forecast.date&&!!end&&forecast.date>end};
     }).sort((a,b)=>a.rank-b.rank||(a.deadline||'9999-12-31').localeCompare(b.deadline||'9999-12-31')||a.id.localeCompare(b.id));
   }
-  const api={BURDEN_THRESHOLD,habit,notice,signature,stabilize,shift,diff,weekday,allowed,availableDays,studyRows,estimate,build};
+  function preview(state,id,amount,today,study,exam){
+    const draft=study.update(state,{type:'plan',id,amount},exam);
+    return build(stabilize(state,draft,today,study,exam),today,study,exam).find(p=>p.id===id)||null;
+  }
+  const api={forecastPlan,preview,BURDEN_THRESHOLD,habit,notice,signature,stabilize,shift,diff,weekday,allowed,availableDays,studyRows,estimate,build};
   if(typeof module!=='undefined'&&module.exports)module.exports=api;else root.LearningPlan=api;
 })(typeof window==='undefined'?this:window);
