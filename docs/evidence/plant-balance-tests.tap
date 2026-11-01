@@ -1,0 +1,274 @@
+﻿TAP version 13
+# Subtest: new registration uses all eight species deterministically and backups retain the assignment
+ok 1 - new registration uses all eight species deterministically and backups retain the assignment
+  ---
+  duration_ms: 11.3432
+  type: 'test'
+  ...
+# Subtest: colliding IDs use unused species first, then keep counts balanced without reassigning older plants
+ok 2 - colliding IDs use unused species first, then keep counts balanced without reassigning older plants
+  ---
+  duration_ms: 65.6494
+  type: 'test'
+  ...
+# Subtest: legacy aliases and archived assignments count as their displayed species; a missing species wins
+ok 3 - legacy aliases and archived assignments count as their displayed species; a missing species wins
+  ---
+  duration_ms: 1.5164
+  type: 'test'
+  ...
+# Subtest: skewed counts select the least-used species; editing and backup restoration never rebalance
+ok 4 - skewed counts select the least-used species; editing and backup restoration never rebalance
+  ---
+  duration_ms: 4.2772
+  type: 'test'
+  ...
+# Subtest: deleting a material makes its unused species available without changing surviving assignments
+ok 5 - deleting a material makes its unused species available without changing surviving assignments
+  ---
+  duration_ms: 1.0572
+  type: 'test'
+  ...
+# Subtest: all forty real images map to the shared card/detail renderer, without sprites or cropping
+ok 6 - all forty real images map to the shared card/detail renderer, without sprites or cropping
+  ---
+  duration_ms: 32.6649
+  type: 'test'
+  ...
+# Subtest: legacy assignments, unassigned hash fallback, originals and unknown collection metadata survive
+ok 7 - legacy assignments, unassigned hash fallback, originals and unknown collection metadata survive
+  ---
+  duration_ms: 1.1616
+  type: 'test'
+  ...
+# Subtest: learning, partial review, completion, next round, archive and restore preserve plant assignment and originals
+ok 8 - learning, partial review, completion, next round, archive and restore preserve plant assignment and originals
+  ---
+  duration_ms: 1.0076
+  type: 'test'
+  ...
+# Subtest: PWA shell revision matches every referenced local file and project-relative manifest
+ok 9 - PWA shell revision matches every referenced local file and project-relative manifest
+  ---
+  duration_ms: 23.8387
+  type: 'test'
+  ...
+# Subtest: dist/PWA shell revision matches every referenced local file and project-relative manifest
+ok 10 - dist/PWA shell revision matches every referenced local file and project-relative manifest
+  ---
+  duration_ms: 29.3472
+  type: 'test'
+  ...
+# Subtest: worker install/activate/cache fetch stays scoped and never forces an update or caches data requests
+ok 11 - worker install/activate/cache fetch stays scoped and never forces an update or caches data requests
+  ---
+  duration_ms: 7.0951
+  type: 'test'
+  ...
+# Subtest: all actual local HTML/CSS assets including separate banner layers are precached
+ok 12 - all actual local HTML/CSS assets including separate banner layers are precached
+  ---
+  duration_ms: 1.5545
+  type: 'test'
+  ...
+# Subtest: migration preserves legacy bytes, IDs, histories, unknown fields and sequences
+ok 13 - migration preserves legacy bytes, IDs, histories, unknown fields and sequences
+  ---
+  duration_ms: 18.4135
+  type: 'test'
+  ...
+# Subtest: new installation is empty, never persists UI fixtures
+ok 14 - new installation is empty, never persists UI fixtures
+  ---
+  duration_ms: 0.3489
+  type: 'test'
+  ...
+# Subtest: corrupt, unsupported legacy or exam source blocks migration without any write
+ok 15 - corrupt, unsupported legacy or exam source blocks migration without any write
+  ---
+  duration_ms: 0.9777
+  type: 'test'
+  ...
+# Subtest: migration write failure leaves original dataset available and blocks mutation
+ok 16 - migration write failure leaves original dataset available and blocks mutation
+  ---
+  duration_ms: 0.7495
+  type: 'test'
+  ...
+# Subtest: copy-on-write transaction failure does not mutate current state or saved data
+ok 17 - copy-on-write transaction failure does not mutate current state or saved data
+  ---
+  duration_ms: 1.3465
+  type: 'test'
+  ...
+# Subtest: new/edit material, custom unit, target date, notes, archive and restore persist
+ok 18 - new/edit material, custom unit, target date, notes, archive and restore persist
+  ---
+  duration_ms: 2.0691
+  type: 'test'
+  ...
+# Subtest: material edits retain unknown fields and reject relabelling recorded ranges
+ok 19 - material edits retain unknown fields and reject relabelling recorded ranges
+  ---
+  duration_ms: 1.6565
+  type: 'test'
+  ...
+# Subtest: same date sequence orders progress; backdated edits recalculate deltas only
+ok 20 - same date sequence orders progress; backdated edits recalculate deltas only
+  ---
+  duration_ms: 1.9222
+  type: 'test'
+  ...
+# Subtest: future/invalid dates and fractional/out of range positions rejected
+ok 21 - future/invalid dates and fractional/out of range positions rejected
+  ---
+  duration_ms: 0.8051
+  type: 'test'
+  ...
+# Subtest: delete/edit progress recalculates; review ranges may overlap without changing progress/round
+ok 22 - delete/edit progress recalculates; review ranges may overlap without changing progress/round
+  ---
+  duration_ms: 0.9059
+  type: 'test'
+  ...
+# Subtest: invalid review ranges rejected and original state remains unchanged
+ok 23 - invalid review ranges rejected and original state remains unchanged
+  ---
+  duration_ms: 1.3425
+  type: 'test'
+  ...
+# Subtest: next round snapshots original records and units; repeated rounds retain all history
+ok 24 - next round snapshots original records and units; repeated rounds retain all history
+  ---
+  duration_ms: 1.8565
+  type: 'test'
+  ...
+# Subtest: v2 backup round trip includes exams, paused state, archived study and unknown fields
+ok 25 - v2 backup round trip includes exams, paused state, archived study and unknown fields
+  ---
+  duration_ms: 1.5257
+  type: 'test'
+  ...
+# Subtest: legacy backup formats preserve raw history and current exams; malformed files rejected
+ok 26 - legacy backup formats preserve raw history and current exams; malformed files rejected
+  ---
+  duration_ms: 0.4927
+  type: 'test'
+  ...
+# Subtest: deleting a material removes only its exam links and settings, retains other data
+ok 27 - deleting a material removes only its exam links and settings, retains other data
+  ---
+  duration_ms: 0.7252
+  type: 'test'
+  ...
+# Subtest: explicit recovery preserves unreadable original sources, then restores; preservation failure aborts
+ok 28 - explicit recovery preserves unreadable original sources, then restores; preservation failure aborts
+  ---
+  duration_ms: 0.7943
+  type: 'test'
+  ...
+# Subtest: empty statistics contain zero records and never manufacture chart percentages
+ok 29 - empty statistics contain zero records and never manufacture chart percentages
+  ---
+  duration_ms: 5.0877
+  type: 'test'
+  ...
+# Subtest: current week/month and recent calendar months have explicit year-safe boundaries
+ok 30 - current week/month and recent calendar months have explicit year-safe boundaries
+  ---
+  duration_ms: 0.2489
+  type: 'test'
+  ...
+# Subtest: historical rounds and archived materials count once with original units and positive deltas
+ok 31 - historical rounds and archived materials count once with original units and positive deltas
+  ---
+  duration_ms: 17.3447
+  type: 'test'
+  ...
+# Subtest: future and zero-delta entries do not create completed study-day activity
+ok 32 - future and zero-delta entries do not create completed study-day activity
+  ---
+  duration_ms: 4.4371
+  type: 'test'
+  ...
+# Subtest: mixed units remain separate, repeated actual review entries are counted as real records
+ok 33 - mixed units remain separate, repeated actual review entries are counted as real records
+  ---
+  duration_ms: 1.851
+  type: 'test'
+  ...
+# Subtest: multiple exam shares split a record instead of increasing the denominator
+ok 34 - multiple exam shares split a record instead of increasing the denominator
+  ---
+  duration_ms: 1.4974
+  type: 'test'
+  ...
+# Subtest: calendar completion rows and current manual/automatic schedules remain separate
+ok 35 - calendar completion rows and current manual/automatic schedules remain separate
+  ---
+  duration_ms: 2.4163
+  type: 'test'
+  ...
+# Subtest: record edits/deletes and backup restoration produce statistics from the remaining originals
+ok 36 - record edits/deletes and backup restoration produce statistics from the remaining originals
+  ---
+  duration_ms: 1.2725
+  type: 'test'
+  ...
+# Subtest: new materials persist deterministic automatic plants while existing aliases survive
+ok 37 - new materials persist deterministic automatic plants while existing aliases survive
+  ---
+  duration_ms: 0.5475
+  type: 'test'
+  ...
+# Subtest: first completion stays completed after correction/deletion, next round, archive and restore
+ok 38 - first completion stays completed after correction/deletion, next round, archive and restore
+  ---
+  duration_ms: 0.7455
+  type: 'test'
+  ...
+# Subtest: legacy validation/load remains read-compatible and does not rewrite bytes to assign growth
+ok 39 - legacy validation/load remains read-compatible and does not rewrite bytes to assign growth
+  ---
+  duration_ms: 0.3684
+  type: 'test'
+  ...
+# Subtest: failed growth save leaves original plant and records unchanged
+ok 40 - failed growth save leaves original plant and records unchanged
+  ---
+  duration_ms: 0.5397
+  type: 'test'
+  ...
+# Subtest: date lookup includes archived history, original units and rounds; latest first; read only
+ok 41 - date lookup includes archived history, original units and rounds; latest first; read only
+  ---
+  duration_ms: 1.4058
+  type: 'test'
+  ...
+# Subtest: date lookup excludes planned events and reflects edits/deletions without a second store
+ok 42 - date lookup excludes planned events and reflects edits/deletions without a second store
+  ---
+  duration_ms: 0.5374
+  type: 'test'
+  ...
+# Subtest: many same-day mixed-unit records are returned individually by sequence
+ok 43 - many same-day mixed-unit records are returned individually by sequence
+  ---
+  duration_ms: 1.1035
+  type: 'test'
+  ...
+# Subtest: legacy review between completed and next round is not assigned a guessed round
+ok 44 - legacy review between completed and next round is not assigned a guessed round
+  ---
+  duration_ms: 0.9147
+  type: 'test'
+  ...
+1..44
+# tests 44
+# suites 0
+# pass 44
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 291.9015

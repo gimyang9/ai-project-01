@@ -42,7 +42,20 @@
     result.date=shift(today,days);result.reason=result.date?'estimated':'out-of-range';
     return result;
   }
-  // Burden uses actual increases on eligible learning days; forecasting keeps its calendar-day policy.
+  function manualEstimate(remaining,today,amount,todayDone,goal){
+    const result={basis:'manual',span:0,window:0,firstDate:null,recentAmount:0,speed:amount,date:null,reason:'estimated'};
+    if(!remaining)return {...result,date:today,reason:'completed'};
+    const capacity=allowed(today,goal)?Math.max(0,amount-todayDone):0;
+    if(remaining<=capacity)return {...result,date:today};
+    if(goal&&!goal.learningDays.length)return {...result,reason:'no-learning-days'};
+    const start=shift(today,1),last='9999-12-31',needed=Math.ceil((remaining-capacity)/amount);
+    if(!start||availableDays(start,last,goal)<needed)return {...result,reason:'out-of-range'};
+    // Find the Nth eligible day without scanning an unbounded calendar day by day.
+    let low=0,high=diff(last,start);
+    while(low<high){const middle=Math.floor((low+high)/2);if(availableDays(start,shift(start,middle),goal)>=needed)high=middle;else low=middle+1;}
+    return {...result,date:shift(start,low)};
+  }
+  // Burden and historical statistics continue to use actual study records.
   const BURDEN_THRESHOLD=1.5;
   function habit(material,today,study,goal){
     const rows=studyRows(material,study).filter(r=>r.date<=today&&r.unit===material.unit);
@@ -98,9 +111,9 @@
       const creditedBefore=valid?saved.creditedBefore:0;
       const required=initialDaily;
       const amount=!isActive||!remaining||!todayAllowed?0:manual?Math.min(remaining,Math.max(0,manual-todayDone)):initialDaily===null?null:Math.min(remaining,Math.max(0,initialDaily-Math.max(0,todayDone-creditedBefore)));
-      const forecast=estimate(material,today,study),usual=habit(material,today,study,goal);
+      const actualForecast=estimate(material,today,study),forecast=manual?manualEstimate(remaining,today,manual,todayDone,goal):actualForecast,usual=habit(material,today,study,goal);
       const burdenRatio=remaining&&isActive&&days&&Number.isFinite(initialDaily)&&usual.speed>0?initialDaily/usual.speed:null;
-      return {id:m.id,remaining,goalId:goal?.id||null,goalName:goal?.name||'',goalDate:goal?.date||null,habit:usual,burdenRatio,deadline:end,deadlineSource:target&&end===target?'material':goal?.date?'exam':null,availableDays:days,initialDaily,creditedBefore,requiredCurrent,todayAllowed,isActive,requiredDaily:required,manualDailyAmount:manual,todayDone,amount,rank:rank.get(m.id)??Infinity,forecast,
+      return {id:m.id,remaining,goalId:goal?.id||null,goalName:goal?.name||'',goalDate:goal?.date||null,habit:usual,burdenRatio,deadline:end,deadlineSource:target&&end===target?'material':goal?.date?'exam':null,availableDays:days,initialDaily,creditedBefore,requiredCurrent,todayAllowed,isActive,requiredDaily:required,manualDailyAmount:manual,todayDone,amount,rank:rank.get(m.id)??Infinity,forecast,actualForecast,
         noTime:!!remaining&&!!end&&days===0,
         overdue:!!remaining&&!!end&&end<today,
         manualShortfall:manual&&end?Math.max(0,remaining-Math.max(0,days*manual-(todayAllowed?Math.min(todayDone,manual):0))):0,

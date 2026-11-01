@@ -19,6 +19,8 @@ for(const prefix of ['', 'dist']){
  }
  for(const m of css.matchAll(/url\(\s*['"]?([^)'"]+)['"]?\s*\)/g))add(m[1].trim());
  const manifest=JSON.parse(fs.readFileSync(path.join(directory,'manifest.webmanifest'),'utf8'));for(const icon of manifest.icons)add(icon.src);
+ // Plant paths are chosen at runtime, so HTML/CSS scanning alone cannot discover them.
+ for(const species of require(path.join(directory,'study-data.js')).plantSpecies)for(let stage=1;stage<=5;stage++)add(`assets/plants/${species}-${stage}.png`);
  const ordered=[...files].sort(),hash=crypto.createHash('sha256');
  for(const file of ordered){hash.update(file);hash.update(fs.readFileSync(path.join(directory,file)));}
  const revision=hash.digest('hex').slice(0,16);

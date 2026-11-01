@@ -1,0 +1,162 @@
+﻿TAP version 13
+# Subtest: real app initialises empty, shows registration/settings dialogs and persists form submissions on reload
+ok 1 - real app initialises empty, shows registration/settings dialogs and persists form submissions on reload
+  ---
+  duration_ms: 41.4158
+  type: 'test'
+  ...
+# Subtest: app completed list, resume, delete confirmation, and reset use live storage
+ok 2 - app completed list, resume, delete confirmation, and reset use live storage
+  ---
+  duration_ms: 7.7191
+  type: 'test'
+  ...
+# Subtest: blocked initial load surfaces error; explicit reset preserves unreadable data before recovery
+ok 3 - blocked initial load surfaces error; explicit reset preserves unreadable data before recovery
+  ---
+  duration_ms: 2.7725
+  type: 'test'
+  ...
+# Subtest: failed real-app save retains visible and in-memory state
+ok 4 - failed real-app save retains visible and in-memory state
+  ---
+  duration_ms: 3.4841
+  type: 'test'
+  ...
+# Subtest: file restore stages data for confirmation and commits only after submission
+ok 5 - file restore stages data for confirmation and commits only after submission
+  ---
+  duration_ms: 4.4808
+  type: 'test'
+  ...
+# Subtest: resit UI stages only original linked materials and commits selected ids with days off
+ok 6 - resit UI stages only original linked materials and commits selected ids with days off
+  ---
+  duration_ms: 12.6875
+  type: 'test'
+  ...
+# Subtest: approved plans render quota and adaptive estimate; manual form persists and survives reload
+ok 7 - approved plans render quota and adaptive estimate; manual form persists and survives reload
+  ---
+  duration_ms: 15.3278
+  type: 'test'
+  ...
+# Subtest: failed manual-plan save keeps original plan; clearing it restores automatic quota
+ok 8 - failed manual-plan save keeps original plan; clearing it restores automatic quota
+  ---
+  duration_ms: 5.6351
+  type: 'test'
+  ...
+# Subtest: compact plan modal keeps stored unit/value, removes long explanation, and limits styling to this modal
+ok 9 - compact plan modal keeps stored unit/value, removes long explanation, and limits styling to this modal
+  ---
+  duration_ms: 6.2021
+  type: 'test'
+  ...
+# Subtest: modal status keeps rest independent, prioritises actionable warnings, and never mutates calculations
+ok 10 - modal status keeps rest independent, prioritises actionable warnings, and never mutates calculations
+  ---
+  duration_ms: 2.7236
+  type: 'test'
+  ...
+# Subtest: home today-list focuses daily remainder and state without forecast clutter
+ok 11 - home today-list focuses daily remainder and state without forecast clutter
+  ---
+  duration_ms: 2.5009
+  type: 'test'
+  ...
+# Subtest: home completion stays concise while detailed plan warnings remain available
+ok 12 - home completion stays concise while detailed plan warnings remain available
+  ---
+  duration_ms: 2.083
+  type: 'test'
+  ...
+# Subtest: material heading and filters reflect live unarchived data across changes and reload
+ok 13 - material heading and filters reflect live unarchived data across changes and reload
+  ---
+  duration_ms: 12.8253
+  type: 'test'
+  ...
+# Subtest: review groups hide ranges initially and original completion stores one history row
+not ok 14 - review groups hide ranges initially and original completion stores one history row
+  ---
+  duration_ms: 16.6021
+  type: 'test'
+  location: 'D:\\Projects\\project-v2-upload\\tests\\study-app.test.cjs:160:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    The expression evaluated to a falsy value:
+    
+      assert.ok(a.run('activeReviewPlans()').every(p=>p.start>first.end||p.end<first.start))
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (D:\Projects\project-v2-upload\tests\study-app.test.cjs:172:9)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1402:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+    Test.postRun (node:internal/test_runner/test:1542:19)
+    Test.run (node:internal/test_runner/test:1467:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:974:7)
+  ...
+# Subtest: manual review quantity/date forms persist independently and survive app reload
+ok 15 - manual review quantity/date forms persist independently and survive app reload
+  ---
+  duration_ms: 11.1827
+  type: 'test'
+  ...
+# Subtest: stats UI refreshes after writes; inline calendar records exclude scheduled ranges
+ok 16 - stats UI refreshes after writes; inline calendar records exclude scheduled ranges
+  ---
+  duration_ms: 5.5
+  type: 'test'
+  ...
+# Subtest: five plant stages retain first completion and render the stored family in archive
+ok 17 - five plant stages retain first completion and render the stored family in archive
+  ---
+  duration_ms: 4.6718
+  type: 'test'
+  ...
+# Subtest: day rollover refreshes schedules without changing input, modal, filters or stored data
+ok 18 - day rollover refreshes schedules without changing input, modal, filters or stored data
+  ---
+  duration_ms: 7.5878
+  type: 'test'
+  ...
+# Subtest: chart display range follows all visible bins without changing aggregation end
+ok 19 - chart display range follows all visible bins without changing aggregation end
+  ---
+  duration_ms: 2.7035
+  type: 'test'
+  ...
+# Subtest: exam edit removes material picker but preserves links; separate links form supports cancel/save
+ok 20 - exam edit removes material picker but preserves links; separate links form supports cancel/save
+  ---
+  duration_ms: 7.6994
+  type: 'test'
+  ...
+# Subtest: exam menus match state; archived cannot resume or prepare without confirmation
+ok 21 - exam menus match state; archived cannot resume or prepare without confirmation
+  ---
+  duration_ms: 4.2744
+  type: 'test'
+  ...
+# Subtest: home progress uses actual daily deltas, handles plan rebase and preserves detailed warnings
+ok 22 - home progress uses actual daily deltas, handles plan rebase and preserves detailed warnings
+  ---
+  duration_ms: 2.2485
+  type: 'test'
+  ...
+1..22
+# tests 22
+# suites 0
+# pass 21
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 423.3469

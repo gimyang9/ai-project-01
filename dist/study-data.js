@@ -15,11 +15,30 @@
     return sorted(records).map(r=>{check(integer(r.position)&&r.position<=total&&r.position>=previous,'날짜·순서별 현재 위치가 줄어들거나 전체 분량을 넘을 수 없어요.');const value={...r,amount:r.position-previous};previous=r.position;return value;});
   }
   const plantAliases={daisy:'flower',sprout:'flower',flower:'flower',seed:'tree',sapling:'tree',tree:'tree',cactus:'cactus',mushroom:'mushroom'};
+  const plantSpecies=Object.freeze(['gerbera','sunflower','daisy','hydrangea','camellia','cherry','oak','cactus']);
+  const legacyPlantImages={flower:'daisy',tree:'oak',mushroom:'hydrangea'};
+  function plantHash(id){let hash=0;for(const c of id)hash=(Math.imul(hash,31)+c.charCodeAt(0))>>>0;return hash;}
   function growth(material){
-    let hash=0;for(const c of material.id)hash=(Math.imul(hash,31)+c.charCodeAt(0))>>>0;
-    const family=material.growthState?.family||plantAliases[material.plant]||['flower','tree','cactus','mushroom'][hash%4];
+    // Keep old assignments and their original hash fallback without rewriting stored data.
+    const family=material.growthState?.family||plantAliases[material.plant]||(plantSpecies.includes(material.plant)?material.plant:null)||['flower','tree','cactus','mushroom'][plantHash(material.id)%4];
     const completed=!!material.growthState?.completed||material.plantCompleted===true||material.round>1||calculate(material.records,material.total).at(-1)?.position===material.total;
     return {family,completed};
+  }
+  function plantType(material){
+    const family=growth(material).family,species=legacyPlantImages[family]||family;
+    return plantSpecies.includes(species)?species:'daisy';
+  }
+  function nextPlant(materials,id){
+    // Count displayed species, including completed/archived and legacy assignments.
+    const counts=new Map(plantSpecies.map(species=>[species,0]));
+    for(const material of materials){const species=plantType(material);counts.set(species,counts.get(species)+1);}
+    const minimum=Math.min(...counts.values()),candidates=plantSpecies.filter(species=>counts.get(species)===minimum);
+    return candidates[plantHash(id)%candidates.length];
+  }
+  function plantImage(material,stage){
+    const safeSpecies=plantType(material);
+    const safeStage=Number.isInteger(stage)?Math.max(0,Math.min(4,stage)):0;
+    return `assets/plants/${safeSpecies}-${safeStage+1}.png`;
   }
   function validateStudy(input){
     const value=clone(input);check(value&&value.version===1&&Array.isArray(value.materials));
@@ -33,7 +52,7 @@
       check(m.archived===undefined||typeof m.archived==='boolean');
       check(m.manualDailyAmount===undefined||m.manualDailyAmount===null||positive(m.manualDailyAmount),'직접 정한 하루 분량은 1 이상의 정수로 입력해 주세요.');
       if(m.dailyPlan!==undefined)check(m.dailyPlan&&date(m.dailyPlan.date)&&typeof m.dailyPlan.signature==='string'&&(m.dailyPlan.initialAmount===null||integer(m.dailyPlan.initialAmount))&&integer(m.dailyPlan.creditedBefore),'오늘 학습 계획 정보를 확인해 주세요.');
-      if(m.growthState!==undefined)check(m.growthState&&['flower','tree','cactus','mushroom'].includes(m.growthState.family)&&typeof m.growthState.completed==='boolean','식물 성장 상태를 확인해 주세요.');
+      if(m.growthState!==undefined)check(m.growthState&&[...plantSpecies,'flower','tree','mushroom'].includes(m.growthState.family)&&typeof m.growthState.completed==='boolean','식물 성장 상태를 확인해 주세요.');
       if(m.reviewSettings!==undefined){
         const settings=m.reviewSettings;check(settings&&typeof settings==='object'&&!Array.isArray(settings));
         check(settings.dailyAmount===undefined||settings.dailyAmount===null||positive(settings.dailyAmount),'하루 복습량은 1 이상의 정수로 입력해 주세요.');
@@ -93,7 +112,7 @@
     if(action.type==='material'){
       const draft=clone(action.material);check(text(draft.id));m=s.materials.find(m=>m.id===draft.id);
       if(m){check(draft.unit===m.unit||(!m.records.length&&!m.reviews.length&&!m.roundHistory.length),'기록이 있는 자료의 단위는 바꿀 수 없어요. 기존 범위와 단위를 보존합니다.');Object.assign(m,draft);}
-      else {m={...draft,round:1,records:[],reviews:[],roundHistory:[],note:'',archived:false};s.materials.push(m);}
+      else {m={...draft,round:1,records:[],reviews:[],roundHistory:[],note:'',archived:false};m.growthState=m.growthState||{family:draft.plant?growth(m).family:nextPlant(s.materials,m.id),completed:false};s.materials.push(m);}
       if(action.goalIds){check(Array.isArray(action.goalIds)&&action.goalIds.every(id=>next.exams.goals.some(g=>g.id===id)));for(const g of next.exams.goals)g.materialIds=[...g.materialIds.filter(id=>id!==m.id),...(action.goalIds.includes(g.id)?[m.id]:[])];}
     }else{
       check(m,'자료를 찾을 수 없어요.');
@@ -149,6 +168,6 @@
     // Legacy files have no exams: retain current exam data explicitly, with original IDs.
     return validate({...current,study},api);
   }
-  const api={growth,KEY,LEGACY_KEY,labels,date,calculate,sorted,validateStudy,validate,emptyStudy,emptyExams,envelope,load,save,recover,project,update,backup,restore};
+  const api={growth,plantSpecies,plantImage,KEY,LEGACY_KEY,labels,date,calculate,sorted,validateStudy,validate,emptyStudy,emptyExams,envelope,load,save,recover,project,update,backup,restore};
   if(typeof module!=='undefined'&&module.exports)module.exports=api;else root.StudyData=api;
 })(typeof window==='undefined'?this:window);

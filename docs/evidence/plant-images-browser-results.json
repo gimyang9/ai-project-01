@@ -1,0 +1,74 @@
+{
+  "results": [
+    {
+      "name": "/ai-project-01/index.html legacy load and card/detail mapping preserve stored bytes",
+      "pass": true,
+      "value": 4
+    },
+    {
+      "name": "/ai-project-01/index.html all forty rendered images at mobile/desktop with no crop or distortion",
+      "pass": true,
+      "value": {
+        "images": 40,
+        "widths": [
+          375,
+          1440
+        ]
+      }
+    },
+    {
+      "name": "/dist/index.html legacy load and card/detail mapping preserve stored bytes",
+      "pass": true,
+      "value": 4
+    },
+    {
+      "name": "/dist/index.html all forty rendered images at mobile/desktop with no crop or distortion",
+      "pass": true,
+      "value": {
+        "images": 40,
+        "widths": [
+          375,
+          1440
+        ]
+      }
+    },
+    {
+      "name": "real registration, progress, review, next round and backup roundtrip",
+      "pass": true,
+      "value": {
+        "counts": [
+          1,
+          2,
+          1,
+          1,
+          2,
+          2,
+          1,
+          2
+        ],
+        "round": 2,
+        "reviews": 1,
+        "history": 1,
+        "completed": true,
+        "equal": true,
+        "collection": {
+          "items": [
+            "keep"
+          ]
+        }
+      }
+    },
+    {
+      "name": "root Pages subdirectory worker caches all forty PNGs, offline app and storage survive",
+      "pass": true,
+      "value": {
+        "cachedImages": 40,
+        "storageUnchanged": true
+      }
+    }
+  ],
+  "missing": [],
+  "errors": [],
+  "consoleErrors": [],
+  "physicalSafari": false
+}

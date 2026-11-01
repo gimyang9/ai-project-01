@@ -48,7 +48,7 @@ test('record edits/deletes and backup restoration produce statistics from the re
  s=D.restore(backup,s,E);assert.equal(S.summarize(s,today,'week',D,L).units[0].amount,30);
 });
 test('new materials persist deterministic automatic plants while existing aliases survive',()=>{
- const s=seed(),m=s.study.materials[0];assert.ok(['tree','flower','cactus','mushroom'].includes(m.growthState.family));
+ const s=seed(),m=s.study.materials[0];assert.ok(D.plantSpecies.includes(m.growthState.family));
  assert.deepEqual(D.restore(D.backup(s,E),seed(),E).study.materials[0].growthState,m.growthState);
  const raw={...m,plant:'daisy'};delete raw.growthState;assert.equal(D.growth(raw).family,'flower');
  assert.deepEqual(D.growth({...raw,plant:undefined}),D.growth({...raw,plant:undefined}));

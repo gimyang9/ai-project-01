@@ -6,6 +6,42 @@ const g=(id,date,extra={})=>({id,name:id,date,status:'active',note:'',materialId
 const state=(materials=[m()],goals=[])=>D.validate(D.envelope({version:1,materials,recordSequence:100},{...D.emptyExams(),goals}),E);
 const plans=s=>P.build(s,today,D,E);
 const record=(id,date,position,sequence=0)=>({id,date,position,sequence});
+
+test('manual daily amounts change planned finish immediately without requiring seven days of history',()=>{
+ const s=state([m('m',{manualDailyAmount:10})]);assert.equal(plans(s)[0].forecast.date,'2026-11-03');
+ assert.equal(plans(s)[0].forecast.basis,'manual');assert.equal(plans(s)[0].actualForecast.reason,'insufficient');
+ const faster=D.update(s,{type:'plan',id:'m',amount:20},E);assert.equal(plans(faster)[0].forecast.date,'2026-10-29');
+ assert.equal(plans(D.update(s,{type:'plan',id:'m',amount:100},E))[0].forecast.date,today);
+});
+
+test('manual finish counts only allowed weekdays and configured days off, even past the deadline',()=>{
+ const material=m('m',{manualDailyAmount:20}),goal=g('exam','2026-10-27',{learningDays:[0,2,4],daysOff:['2026-10-26']});
+ const p=plans(state([material],[goal]))[0];assert.equal(p.forecast.date,'2026-11-06');assert.equal(p.todayAllowed,false);assert.equal(p.expectedLate,true);
+ assert.equal(plans(state([material],[{...goal,daysOff:[]}]))[0].forecast.date,'2026-11-04');
+});
+
+test('today is counted only for the uncompleted part of its manual quota',()=>{
+ for(const done of [6,10,15]){const p=plans(state([m('m',{manualDailyAmount:10,records:[record('r',today,done)]})]))[0];assert.equal(p.forecast.date,'2026-11-03');}
+ const p=plans(state([m('m',{total:20,manualDailyAmount:10,records:[record('r',today,15)]})]))[0];assert.equal(p.forecast.date,'2026-10-26');
+ const exact=plans(state([m('m',{total:10,manualDailyAmount:10,records:[record('r',today,6)]})]))[0];assert.equal(exact.forecast.date,today);
+});
+
+test('clearing manual quota restores the untouched historical estimate and never changes original history',()=>{
+ const material=m('m',{manualDailyAmount:10,records:[{...record('r','2026-10-19',20),understanding:'어려움',custom:{keep:true}}]});
+ const s=state([material],[g('exam','2026-11-01')]),before=JSON.stringify(s),p=plans(s)[0];
+ assert.equal(JSON.stringify(s),before);assert.deepEqual(p.actualForecast,P.estimate(material,today,D));
+ const cleared=D.update(s,{type:'plan',id:'m',amount:null},E);assert.deepEqual(plans(cleared)[0].forecast,p.actualForecast);
+ assert.deepEqual(cleared.study.materials[0].records,s.study.materials[0].records);assert.deepEqual(cleared.exams,s.exams);
+ assert.deepEqual(D.restore(D.backup(s,E),state(),E),s);
+});
+
+test('manual forecast handles completion, impossible calendars and finite date limits',()=>{
+ const material=m('m',{manualDailyAmount:1});
+ const none=plans(state([material],[g('a','2026-11-01',{learningDays:[]})]))[0].forecast;assert.equal(none.date,null);assert.equal(none.reason,'no-learning-days');
+ assert.equal(plans(state([m('m',{manualDailyAmount:1,total:Number.MAX_SAFE_INTEGER})]))[0].forecast.reason,'out-of-range');
+ const last=P.build(state([m('m',{manualDailyAmount:1,total:2})]),'9999-12-31',D,E)[0];assert.equal(last.forecast.reason,'out-of-range');
+ const done=plans(state([m('m',{manualDailyAmount:10,records:[record('r',today,100)]})]))[0].forecast;assert.equal(done.reason,'completed');assert.equal(done.date,today);
+});
 test('approved example: 100 remaining / 5 days = 20, exam day excluded',()=>{
  const p=plans(state([m()],[g('exam','2026-10-30')]))[0];assert.equal(p.deadline,'2026-10-29');assert.equal(p.availableDays,5);assert.equal(p.requiredDaily,20);assert.equal(p.amount,20);
 });

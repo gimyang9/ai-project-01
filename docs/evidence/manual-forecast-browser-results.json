@@ -1,0 +1,59 @@
+{
+  "results": [
+    {
+      "name": "/index.html manual form 10 then 20 refreshes card immediately; actual statistics remain unchanged",
+      "pass": true,
+      "value": {
+        "ten": "2026-11-09",
+        "twenty": "2026-11-05",
+        "actual": null
+      }
+    },
+    {
+      "name": "/index.html reload retains manual setting, clearing form restores actual estimate and original history",
+      "pass": true,
+      "value": true
+    },
+    {
+      "name": "/index.html configured weekdays/rest dates and no available weekdays",
+      "pass": true,
+      "value": {
+        "forecast": "2026-11-11"
+      }
+    },
+    {
+      "name": "/index.html failed save retains manual setting, estimate and stored bytes",
+      "pass": true,
+      "value": true
+    },
+    {
+      "name": "/dist/index.html manual form 10 then 20 refreshes card immediately; actual statistics remain unchanged",
+      "pass": true,
+      "value": {
+        "ten": "2026-11-09",
+        "twenty": "2026-11-05",
+        "actual": null
+      }
+    },
+    {
+      "name": "/dist/index.html reload retains manual setting, clearing form restores actual estimate and original history",
+      "pass": true,
+      "value": true
+    },
+    {
+      "name": "/dist/index.html configured weekdays/rest dates and no available weekdays",
+      "pass": true,
+      "value": {
+        "forecast": "2026-11-11"
+      }
+    },
+    {
+      "name": "/dist/index.html failed save retains manual setting, estimate and stored bytes",
+      "pass": true,
+      "value": true
+    }
+  ],
+  "missing": [],
+  "errors": [],
+  "physicalSafari": false
+}
