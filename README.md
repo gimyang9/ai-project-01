@@ -39,11 +39,12 @@
 
 ## 4. 스킬(Skill)
 
-| 스킬 | 주요 역할 | SKILL.md 원문 |
+| 스킬 | 주요 역할 | SKILL.md |
 |---|---|---|
-| `chagok-data-guard` | 학습 기록·수동 설정 보존과 변경 경계 확인 | [`SKILL.md`](../skills/chagok-data-guard/SKILL.md) |
-| `chagok-learning-check` | 권장 학습량·예상 완료일·복습 계산 검증 | [`SKILL.md`](../skills/chagok-learning-check/SKILL.md) |
-| `chagok-ui-regression` | 반응형 화면·입력 및 저장 조작의 회귀 검증 | [`SKILL.md`](../skills/chagok-ui-regression/SKILL.md) |
+| `chagok-data-guard` | 기존 데이터와 사용자 설정 보호 | [SKILL.md](./skills/chagok-data-guard/SKILL.md) |
+| `chagok-learning-check` | 권장 학습량·예상 완료일·복습 계산 검증 | [SKILL.md](./skills/chagok-learning-check/SKILL.md) |
+| `chagok-ui-regression` | 반응형 화면·입력 및 저장 조작의 회귀 검증 | [SKILL.md](./skills/chagok-ui-regression/SKILL.md) |
+
 
 ### 4.1. 데이터·기록 보호 — `chagok-data-guard`
 
