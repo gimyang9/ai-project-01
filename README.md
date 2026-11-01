@@ -37,8 +37,8 @@
 
 ## 3. PRD / TODO 리스트
 
-- [`PRD.md`](docs/PRD.md)
-- [`TODO.md`](docs/TODO.md)
+- [`PRD.md`](docs/PRD.md): 프로젝트 요구사항 및 변경 사항
+- [`TODO.md`](docs/TODO.md): 단계별 작업 진행 현황 및 변경 이력
 
 
 ## 4. 스킬(Skill)
