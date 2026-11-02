@@ -317,7 +317,7 @@ function forecastText(p,f=p.planForecast||p.forecast){
 function planNotice(p){
  if(!p.isActive||!p.remaining)return '';
  const f=p.planForecast||p.forecast;
- if(f?.date&&p.deadline&&f.date>p.deadline)return ' 기한보다 늦게 완료될 것으로 예상해요.';
+ if(f?.date&&p.deadline&&f.date>p.deadline)return '현재 학습량으로는 목표 기한보다 늦게 완료될 것으로 예상해요.';
  return LearningPlan.notice(p);
 }
 function forecastLabel(p,f=p.planForecast||p.forecast){

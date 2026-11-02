@@ -22,7 +22,9 @@ for(const prefix of ['', 'dist']){
  // Plant paths are chosen at runtime, so HTML/CSS scanning alone cannot discover them.
  for(const species of require(path.join(directory,'study-data.js')).plantSpecies)for(let stage=1;stage<=5;stage++)add(`assets/plants/${species}-${stage}.png`);
  const ordered=[...files].sort(),hash=crypto.createHash('sha256');
- for(const file of ordered){hash.update(file);hash.update(fs.readFileSync(path.join(directory,file)));}
+ // Git may check text out as CRLF. Line endings do not change the app shell's meaning.
+ // Binary assets keep their exact bytes so image/font changes still revise the cache.
+ for(const file of ordered){const bytes=fs.readFileSync(path.join(directory,file));hash.update(file);hash.update(/\.(?:html|css|js|webmanifest|svg)$/.test(file)?bytes.toString('utf8').replace(/\r\n/g,'\n'):bytes);}
  const revision=hash.digest('hex').slice(0,16);
  fs.writeFileSync(path.join(directory,'service-worker.js'),template.replace('__REVISION__',JSON.stringify(revision)).replace('__FILES__',JSON.stringify(ordered)));
  console.log((prefix||'root')+': '+revision+' ('+ordered.length+' shell files)');

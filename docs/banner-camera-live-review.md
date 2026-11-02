@@ -1,8 +1,8 @@
 # R2 배너 — 직접 조작하는 반응형 검토 페이지
 
-2026-10-26 최종 승인 후 **실제 앱·배포본에 적용 완료했다.** 아래 미리보기 단계의 검증 기록은 보존한다. [실제 반영 결과](banner-camera-applied.md) 참조. 이전 미리보기도 보존했으며, 새 검토 페이지를 별도 폴더에 만들었다.
+2026-10-26 최종 승인 후 **실제 앱·배포본에 적용 완료했다.** 아래 미리보기 단계의 검증 기록은 보존한다. [실제 반영 결과](banner-camera-applied.md) 참조. 현재는 미리보기 페이지 폴더가 없어 아래 실행 절차는 당시 기록이며, [보존된 검토 결과](evidence/banner-camera-live/results.json)로 확인한다.
 
-## Live Server 실행
+## 당시 Live Server 실행 절차 (현재 페이지는 제거됨)
 
 1. VS Code에서 프로젝트 폴더 D:\Projects\project-v2-upload를 연다.
 2. **previews/banner-camera-r2-live/index.html**을 연다.
@@ -10,7 +10,7 @@
 
 기본5500 포트 예시는 http://127.0.0.1:5500/previews/banner-camera-r2-live/index.html 이다. Live Server 설정에 따라 포트는 달라질 수 있다. Node 설치나 빌드 명령은 필요하지 않다.
 
-[미리보기 파일 열기](../previews/banner-camera-r2-live/index.html)
+[당시 검토 결과 보기](evidence/banner-camera-live/results.json)
 
 ## 직접 확인할 기능
 

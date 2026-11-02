@@ -1,7 +1,16 @@
 const test=require('node:test'),assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path'),vm=require('node:vm'),crypto=require('node:crypto');
-for(const prefix of ['', 'dist/'])test(prefix+'PWA shell revision matches every referenced local file and project-relative manifest',()=>{
+for(const prefix of ['', 'dist/'])test(prefix+'PWA revision matches all assets and is stable across text line endings',()=>{
  const source=fs.readFileSync(prefix+'service-worker.js','utf8'),revision=JSON.parse(source.match(/const REVISION=(.*);/)[1]),files=JSON.parse(source.match(/const FILES=(.*);/)[1]),hash=crypto.createHash('sha256');
- for(const f of files){assert.ok(!f.startsWith('/'));hash.update(f);hash.update(fs.readFileSync(prefix+f));}
+ const crlfHash=crypto.createHash('sha256');
+ for(const f of files){
+  assert.ok(!f.startsWith('/'));const bytes=fs.readFileSync(prefix+f),text=/\.(?:html|css|js|webmanifest|svg)$/.test(f);
+  hash.update(f);crlfHash.update(f);
+  if(text){
+   const lf=bytes.toString('utf8').replace(/\r\n/g,'\n');hash.update(lf);
+   const checkout=lf.replace(/\n/g,'\r\n');crlfHash.update(checkout.replace(/\r\n/g,'\n'));
+  }else{hash.update(bytes);crlfHash.update(bytes);}
+ }
+ assert.equal(crlfHash.digest('hex').slice(0,16),revision,'CRLF checkout must retain the same shell revision');
  assert.equal(hash.digest('hex').slice(0,16),revision);
  const m=JSON.parse(fs.readFileSync(prefix+'manifest.webmanifest','utf8'));assert.equal(m.scope,'./');assert.equal(m.start_url,'./index.html#home');assert.equal(m.display,'standalone');
  for(const icon of m.icons){const png=fs.readFileSync(prefix+icon.src);const size=Number(icon.sizes.split('x')[0]);assert.equal(png.readUInt32BE(16),size);assert.equal(png.readUInt32BE(20),size);}

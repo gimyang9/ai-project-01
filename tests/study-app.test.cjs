@@ -157,8 +157,10 @@ test('material heading and filters reflect live unarchived data across changes a
  submit(a,'reset');assert.deepEqual(counts(),[0,0,0,0]);
 });
 
-test('review groups hide ranges initially and original completion stores one history row',()=>{
- const a=boot();
+test('review groups hide ranges initially, completion stores one history row, and the range returns when due',()=>{
+ let clock='2026-10-25T12:00:00+09:00';
+ class FixedDate extends Date{constructor(...args){super(...(args.length?args:[clock]));}static now(){return new Date(clock).getTime();}}
+ const a=boot({}, {Date:FixedDate});
  a.run("commitStudy({type:'material',material:{id:'m',name:'복습 UI',type:'book',unit:'페이지',total:100}},'ok')");
  a.run("commitStudy({type:'record',id:'m',record:{id:'r',date:'2026-10-01',position:60,understanding:'보통'},today:'2026-10-25'},'ok')");
  a.run("commitExam({type:'upsert',goal:{id:'g',name:'시험',date:'2026-11-10',status:'active',note:'',materialIds:['m'],learningDays:[0,1,2,3,4,5,6],daysOff:[],focusMode:'manual',focusDate:'2026-10-20',continuedMaterialIds:[]}},'ok')");
@@ -170,6 +172,17 @@ test('review groups hide ranges initially and original completion stores one his
  a.element('review-date').value='2026-10-25';submit(a,'review','m');
  const saved=JSON.parse(a.map.get(D.KEY));assert.equal(saved.study.materials[0].reviews.length,1);assert.equal(saved.study.materials[0].records.length,1);
  assert.ok(a.run('activeReviewPlans()').every(p=>p.start>first.end||p.end<first.start));
+ const due=a.run(`ReviewPlan.derive(dataState.study.materials[0],localToday(),studyAPI,LearningPlan).segments.find(s=>s.start<=${first.start}&&s.end>=${first.start}).dueDate`);
+ clock=due+'T12:00:00+09:00';a.dispatchWindow('focus');
+ assert.ok(a.run('activeReviewPlans()').some(p=>p.start<=first.end&&p.end>=first.start));
+ assert.equal(JSON.parse(a.map.get(D.KEY)).study.materials[0].reviews.length,1,'Becoming due must not add a completion record');
+});
+
+test('root and dist entry documents have unique HTML IDs',()=>{
+ for(const file of ['index.html','dist/index.html']){
+  const ids=[...fs.readFileSync(file,'utf8').matchAll(/\bid="([^"]+)"/g)].map(m=>m[1]);
+  assert.equal(new Set(ids).size,ids.length,file+' contains duplicate IDs');
+ }
 });
 test('manual review quantity/date forms persist independently and survive app reload',()=>{
  const a=boot();a.run("commitStudy({type:'material',material:{id:'m',name:'범위',type:'book',unit:'페이지',total:100}},'ok')");

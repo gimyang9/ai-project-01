@@ -1,6 +1,15 @@
 # 디자인 에셋
 
-## 이미지
+## 현재 앱에서 사용하는 이미지
+
+- 홈: `assets/home-banner-garden-background.png`, `home-banner-cottage-bear.png`, `home-banner-flower-yard-mobile.png`, `home-banner-flower-yard-pc.jpg`와 `home-logo-approved.png`를 사용한다. 앱 버전 번호는 표시하지 않는다.
+- 식물: `assets/plants/<식별자>-<1~5>.png`의 8종·40개 개별 투명 PNG를 사용한다. 식별자는 `gerbera`, `sunflower`, `daisy`, `hydrangea`, `forget-me-not`, `cherry`, `oak`, `cactus`다. `camellia`는 기존 저장값 호환 별칭이며 현재 이미지 파일명이 아니다.
+- 기타: 날짜의 `date-leaf.png`, PC 사이드바의 `sidebar-bear-tree.png`, PWA 아이콘과 `favicon.svg`를 사용한다.
+- 루트와 dist에 같은 이미지 사본을 유지한다. 현재 식물은 `contain`으로 표시하며 스프라이트 셀 위치로 잘라내지 않는다.
+
+아래는 개발 중 제작·선택한 이전 에셋의 이력이다. 파일명·당시 적용 방식을 보존하며, 현재 앱 사용 여부는 위 목록과 실제 HTML/CSS·식물 경로를 기준으로 확인한다. 제거된 시안·미리보기 경로도 제작 당시 기록이다.
+
+## 초기 이미지 제작 기록
 
 내장 ImageGen으로 이 프로젝트용 이미지 두 장을 제작했다.
 
