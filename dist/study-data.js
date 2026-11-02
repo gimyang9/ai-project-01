@@ -14,13 +14,14 @@
     let previous=0;
     return sorted(records).map(r=>{check(integer(r.position)&&r.position<=total&&r.position>=previous,'날짜·순서별 현재 위치가 줄어들거나 전체 분량을 넘을 수 없어요.');const value={...r,amount:r.position-previous};previous=r.position;return value;});
   }
-  const plantAliases={daisy:'flower',sprout:'flower',flower:'flower',seed:'tree',sapling:'tree',tree:'tree',cactus:'cactus',mushroom:'mushroom'};
-  const plantSpecies=Object.freeze(['gerbera','sunflower','daisy','hydrangea','camellia','cherry','oak','cactus']);
+  const plantAliases={daisy:'flower',sprout:'flower',flower:'flower',seed:'tree',sapling:'tree',tree:'tree',cactus:'cactus',mushroom:'mushroom',camellia:'forget-me-not'};
+  const plantSpecies=Object.freeze(['gerbera','sunflower','daisy','hydrangea','forget-me-not','cherry','oak','cactus']);
   const legacyPlantImages={flower:'daisy',tree:'oak',mushroom:'hydrangea'};
   function plantHash(id){let hash=0;for(const c of id)hash=(Math.imul(hash,31)+c.charCodeAt(0))>>>0;return hash;}
   function growth(material){
     // Keep old assignments and their original hash fallback without rewriting stored data.
-    const family=material.growthState?.family||plantAliases[material.plant]||(plantSpecies.includes(material.plant)?material.plant:null)||['flower','tree','cactus','mushroom'][plantHash(material.id)%4];
+    const assigned=material.growthState?.family||plantAliases[material.plant]||(plantSpecies.includes(material.plant)?material.plant:null)||['flower','tree','cactus','mushroom'][plantHash(material.id)%4];
+    const family=assigned==='camellia'?'forget-me-not':assigned;
     const completed=!!material.growthState?.completed||material.plantCompleted===true||material.round>1||calculate(material.records,material.total).at(-1)?.position===material.total;
     return {family,completed};
   }
@@ -52,7 +53,7 @@
       check(m.archived===undefined||typeof m.archived==='boolean');
       check(m.manualDailyAmount===undefined||m.manualDailyAmount===null||positive(m.manualDailyAmount),'직접 정한 하루 분량은 1 이상의 정수로 입력해 주세요.');
       if(m.dailyPlan!==undefined)check(m.dailyPlan&&date(m.dailyPlan.date)&&typeof m.dailyPlan.signature==='string'&&(m.dailyPlan.initialAmount===null||integer(m.dailyPlan.initialAmount))&&integer(m.dailyPlan.creditedBefore),'오늘 학습 계획 정보를 확인해 주세요.');
-      if(m.growthState!==undefined)check(m.growthState&&[...plantSpecies,'flower','tree','mushroom'].includes(m.growthState.family)&&typeof m.growthState.completed==='boolean','식물 성장 상태를 확인해 주세요.');
+      if(m.growthState!==undefined)check(m.growthState&&[...plantSpecies,'camellia','flower','tree','mushroom'].includes(m.growthState.family)&&typeof m.growthState.completed==='boolean','식물 성장 상태를 확인해 주세요.');
       if(m.reviewSettings!==undefined){
         const settings=m.reviewSettings;check(settings&&typeof settings==='object'&&!Array.isArray(settings));
         check(settings.dailyAmount===undefined||settings.dailyAmount===null||positive(settings.dailyAmount),'하루 복습량은 1 이상의 정수로 입력해 주세요.');
@@ -156,7 +157,7 @@
         if(!review){m.records=calculate(m.records,m.total);m.current=m.records.at(-1)?.position||0;}
       }else throw Error('지원하지 않는 작업이에요.');
     }
-    if(m&&s.materials.some(item=>item.id===m.id)){const nextGrowth=growth(m);m.growthState={...m.growthState,family:previousGrowth?.family||nextGrowth.family,completed:!!previousGrowth?.completed||nextGrowth.completed};}
+    if(m&&s.materials.some(item=>item.id===m.id)){const nextGrowth=growth(m);m.growthState={...m.growthState,family:m.growthState?.family||previousGrowth?.family||nextGrowth.family,completed:!!previousGrowth?.completed||nextGrowth.completed};}
     return validate(next,api);
   }
   function backup(state,api){return {app:'chagok-v2',backupVersion:1,createdAt:new Date().toISOString(),data:validate(state,api)};}

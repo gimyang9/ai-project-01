@@ -12,6 +12,33 @@ test('new registration uses all eight species deterministically and backups reta
  assert.deepEqual(repeated.study.materials.map(m=>m.growthState),state.study.materials.map(m=>m.growthState));
 });
 
+test('forget-me-not is canonical while camellia saves and backups remain readable without rewriting originals',()=>{
+ for(const api of [D,require('../study-data.js')])for(const oldField of ['growthState','plant']){
+  let state=add(base(),'old-forget');const m=state.study.materials[0];
+  if(oldField==='growthState')m.growthState={family:'camellia',completed:true,ledger:['keep']};
+  else{delete m.growthState;m.plant='camellia';}
+  const before=JSON.stringify(state),storage={getItem:key=>key===api.KEY?before:null,setItem(){assert.fail('Read must not rewrite storage');}};
+  const loaded=api.load(storage,E);assert.equal(loaded.writable,true);assert.deepEqual(loaded.state,state);
+  assert.equal(api.growth(m).family,'forget-me-not');
+  for(let stage=0;stage<5;stage++)assert.equal(api.plantImage(m,stage),`assets/plants/forget-me-not-${stage+1}.png`);
+  assert.deepEqual(api.restore(api.backup(state,E),base(),E),state);
+  const next=api.update(state,{type:'note',id:m.id,note:'updated'},E).study.materials[0];
+  if(oldField==='growthState')assert.deepEqual(next.growthState,m.growthState);
+  else{assert.equal(next.plant,'camellia');assert.equal(next.growthState.family,'forget-me-not');}
+  assert.equal(JSON.stringify(state),before);
+ }
+ assert.ok(D.plantSpecies.includes('forget-me-not'));assert.ok(!D.plantSpecies.includes('camellia'));
+});
+
+test('old camellia assignments count toward forget-me-not when balancing new registrations',()=>{
+ let state=base();
+ for(const family of D.plantSpecies.filter(s=>s!=='forget-me-not'))state=add(state,'other-'+family,{growthState:{family,completed:false}});
+ for(let i=0;i<2;i++)state=add(state,'old-forget-'+i,{growthState:{family:'camellia',completed:true}});
+ const before=structuredClone(state.study.materials);state=add(state,'next');
+ assert.notEqual(state.study.materials.at(-1).growthState.family,'forget-me-not');
+ assert.deepEqual(state.study.materials.slice(0,-1),before);
+});
+
 test('colliding IDs use unused species first, then keep counts balanced without reassigning older plants',()=>{
  let state=base();const counts=()=>D.plantSpecies.map(species=>state.study.materials.filter(m=>m.growthState.family===species).length);
  const ids=['a','i','q','y','A','I','Q','Y',...Array.from({length:72},(_,i)=>'extra-'+i)];
